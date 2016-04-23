@@ -8,7 +8,7 @@ int main( int argc, char* args[] )
 {
 	
 
-
+Escenario* mapa = new Escenario(500,500);
 
 
 
