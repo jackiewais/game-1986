@@ -27,3 +27,11 @@ main.o
 *.exe
 *.out
 *.app
+
+/Debug/
+/Release/
+.project
+.cproject
+.settings/
+
+
