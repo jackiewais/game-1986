@@ -1,14 +1,14 @@
 
 #include <SDL2/SDL.h>
 #include <stdio.h>
-
+#include "Escenario.h"
 
 using namespace std;
 int main( int argc, char* args[] )
 {
 	
-
-//Escenario* mapa = new Escenario(500,500);
+//crea una ventana y muestra una imagen
+Escenario* mapa = new Escenario(500,500);
 
 
 
