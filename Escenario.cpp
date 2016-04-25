@@ -46,9 +46,15 @@ Escenario::Escenario(int height, int width) {
 											quit = true;
 										}
 									}
+									SDL_Rect stretchRect;
+									stretchRect.x = 0;
+									stretchRect.y = 0;
+									stretchRect.w = this->screen.width;
+									stretchRect.h = this->screen.height;
+									SDL_BlitScaled( this->gHelloWorld, NULL, gScreenSurface, &stretchRect);
 
 									//Apply the image
-									SDL_BlitSurface( this->gHelloWorld, NULL, gScreenSurface, NULL );
+									//SDL_BlitSurface( this->gHelloWorld, NULL, gScreenSurface, NULL );
 
 									//Update the surface
 									SDL_UpdateWindowSurface( gWindow );
@@ -96,7 +102,7 @@ bool Escenario::init()
 	else
 	{
 		//Create window
-		this->gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->screen.width,this->screen.height, SDL_WINDOW_SHOWN );
+		this->gWindow = SDL_CreateWindow( "1986 ", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->screen.width,this->screen.height, SDL_WINDOW_SHOWN );
 		if( gWindow == NULL )
 		{
 			printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
@@ -118,10 +124,10 @@ bool Escenario::loadMedia()
 	bool success = true;
 
 	//Load splash image
-	this->gHelloWorld = SDL_LoadBMP( "lu.bmp" );
+	this->gHelloWorld = SDL_LoadBMP( "background.bmp" );
 	if( this->gHelloWorld == NULL )
 	{
-		printf( "Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError() );
+		printf( "Unable to load image %s! SDL Error: %s\n", "background.bmp", SDL_GetError() );
 		success = false;
 	}
 
