@@ -26,46 +26,51 @@ Escenario::Escenario(int height, int width) {
 				{
 					printf( "Failed to load media!\n" );
 				}
-				else
-				{
-					//Main loop flag
-								bool quit = false;
+				
 
-								//Event handler
-								SDL_Event e;
+}
+}
+void Escenario::lunchScreen(){
 
-								//While application is running
-								while( !quit )
-								{
-									//Handle events on queue
-									while( SDL_PollEvent( &e ) != 0 )
-									{
-										//User requests quit
-										if( e.type == SDL_QUIT )
-										{
-											quit = true;
-										}
-									}
-									SDL_Rect stretchRect;
-									stretchRect.x = 0;
-									stretchRect.y = 0;
-									stretchRect.w = this->screen.width;
-									stretchRect.h = this->screen.height;
-									SDL_BlitScaled( this->gHelloWorld, NULL, gScreenSurface, &stretchRect);
+//Main loop flag
+bool quit = false;
+//Event handler
+SDL_Event e;
 
-									//Apply the image
-									//SDL_BlitSurface( this->gHelloWorld, NULL, gScreenSurface, NULL );
-
-									//Update the surface
-									SDL_UpdateWindowSurface( gWindow );
-								}
-				}
+//While application is running
+	while( !quit )
+	{
+		//Handle events on queue
+		while( SDL_PollEvent( &e ) != 0 )
+		{
+			//User requests quit
+			 if( e.type == SDL_QUIT )
+			{
+        		quit = true;
 			}
+		}
+	
 
-			//Free resources and close SDL
-			//close();
-			SDL_Quit();
+	 SDL_Rect stretchRect;
+	 stretchRect.x = 0;
+	 stretchRect.y = 0;
+	 stretchRect.w = this->screen.width;
+	 stretchRect.h = this->screen.height;
 
+         SDL_BlitScaled( this->gHelloWorld, NULL, gScreenSurface, &stretchRect);
+
+	 //Apply the image
+	 //SDL_BlitSurface( this->gHelloWorld, NULL, gScreenSurface, NULL );
+
+	 //Update the surface
+	 SDL_UpdateWindowSurface( gWindow );
+	}
+	
+			
+
+//Free resources and close SDL
+//close();
+SDL_Quit();
 
 }
 
@@ -148,7 +153,4 @@ void Escenario::close()
 }
 
 
-void Escenario::lunchScreen()
-{
-	//
-}
+

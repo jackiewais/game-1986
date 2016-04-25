@@ -10,7 +10,7 @@ int width= 500;
 int height = 1000;	
 //crea una ventana y muestra una imagen
 Escenario* mapa = new Escenario(width,height);
-
+mapa->lunchScreen();
 
 
 
