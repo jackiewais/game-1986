@@ -11,6 +11,7 @@
 
 using namespace std;
 
+SDL_Renderer* gRenderer = NULL;
 
 Escenario::Escenario(int height, int width) {
 	this->setSize(width,height);
@@ -37,6 +38,10 @@ bool quit = false;
 //Event handler
 SDL_Event e;
 
+
+Jugador jugador (gRenderer);
+//jugador.setRenderer(gRenderer);
+
 //While application is running
 	while( !quit )
 	{
@@ -48,7 +53,9 @@ SDL_Event e;
 			{
         		quit = true;
 			}
+			 jugador.handleEvent(e);
 		}
+		jugador.move();
 	
 
 	 SDL_Rect stretchRect;
@@ -58,6 +65,17 @@ SDL_Event e;
 	 stretchRect.h = this->screen.height;
 
          SDL_BlitScaled( this->gHelloWorld, NULL, gScreenSurface, &stretchRect);
+
+
+
+			//Clear screen
+			SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+			SDL_RenderClear( gRenderer );
+
+			jugador.render();
+
+			//Update screen
+			SDL_RenderPresent( gRenderer );
 
 	 //Apply the image
 	 //SDL_BlitSurface( this->gHelloWorld, NULL, gScreenSurface, NULL );
@@ -106,6 +124,13 @@ bool Escenario::init()
 	}
 	else
 	{
+		//Set texture filtering to linear
+		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+		{
+			printf( "Warning: Linear texture filtering not enabled!" );
+		}
+
+
 		//Create window
 		this->gWindow = SDL_CreateWindow( "1986 ", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->screen.width,this->screen.height, SDL_WINDOW_SHOWN );
 		if( gWindow == NULL )
@@ -115,9 +140,32 @@ bool Escenario::init()
 		}
 		else
 		{
+			//Create vsynced renderer for window
+			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+			if( gRenderer == NULL )
+			{
+				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
+				success = false;
+			}
+			else
+			{
+				//Initialize renderer color
+				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+
+				//Initialize PNG loading
+				int imgFlags = IMG_INIT_PNG;
+				if( !( IMG_Init( imgFlags ) & imgFlags ) )
+				{
+					printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+					success = false;
+				}
+			}
+
+
 			//Get window surface
 			this->gScreenSurface = SDL_GetWindowSurface( gWindow );
 		}
+
 	}
 
 	return success;

@@ -12,6 +12,7 @@
 #include <iostream>
 #include <list>
 #include <SDL2/SDL.h>
+#include "Jugador.h"
 
 using namespace std;
 
