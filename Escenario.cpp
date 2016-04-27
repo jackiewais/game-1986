@@ -38,9 +38,7 @@ bool quit = false;
 //Event handler
 SDL_Event e;
 
-
-Jugador jugador (gRenderer);
-//jugador.setRenderer(gRenderer);
+Jugador jugador (gRenderer,screen.width,screen.height);
 
 //While application is running
 	while( !quit )
@@ -69,7 +67,7 @@ Jugador jugador (gRenderer);
 
 
 			//Clear screen
-			SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+			SDL_SetRenderDrawColor( gRenderer, 0xFF, 0x00, 0xFF, 0xFF );
 			SDL_RenderClear( gRenderer );
 
 			jugador.render();
@@ -81,14 +79,13 @@ Jugador jugador (gRenderer);
 	 //SDL_BlitSurface( this->gHelloWorld, NULL, gScreenSurface, NULL );
 
 	 //Update the surface
-	 SDL_UpdateWindowSurface( gWindow );
+	 //SDL_UpdateWindowSurface( gWindow );
 	}
 	
 			
 
 //Free resources and close SDL
-//close();
-SDL_Quit();
+close();
 
 }
 
@@ -197,6 +194,15 @@ void Escenario::close()
 	this->gWindow = NULL;
 
 	//Quit SDL subsystems
+	//Free loaded images
+
+		//Destroy window
+		SDL_DestroyRenderer( gRenderer );
+		gRenderer = NULL;
+
+		//Quit SDL subsystems
+		IMG_Quit();
+		SDL_Quit();
 
 }
 

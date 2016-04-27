@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Jugador::Jugador(SDL_Renderer* gRend)
+Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height)
 {
 	gJugadorTexture.gRenderer = gRend;
 
@@ -14,6 +14,11 @@ Jugador::Jugador(SDL_Renderer* gRend)
     //Initialize the velocity
     mVelX = 0;
     mVelY = 0;
+
+    frame = 0;
+
+    screen_width = scr_width;
+    screen_height = scr_height;
 
 	//Load media
 	if( !loadMedia())
@@ -31,6 +36,14 @@ bool Jugador::loadMedia()
 	{
 		printf( "Failed to load player texture!\n" );
 		success = false;
+	}else
+	{
+		for (unsigned int i=0;i < JUGADOR_ANIMATION_FRAMES ;i++){
+			gSpriteClips[ i ].x =   JUG_WIDTH * i;
+			gSpriteClips[ i ].y =   0;
+			gSpriteClips[ i ].w =  JUG_WIDTH;
+			gSpriteClips[ i ].h =  JUG_HEIGHT;
+		}
 	}
 
 	return success;
@@ -69,7 +82,7 @@ void Jugador::move()
     mPosX += mVelX;
 
     //If the dot went too far to the left or right
-    if( ( mPosX < 0 ) || ( mPosX + JUG_WIDTH > SCREEN_WIDTH ) )
+    if( ( mPosX < 0 ) || ( mPosX + JUG_WIDTH > screen_width ) )
     {
         //Move back
         mPosX -= mVelX;
@@ -79,7 +92,7 @@ void Jugador::move()
     mPosY += mVelY;
 
     //If the dot went too far up or down
-    if( ( mPosY < 0 ) || ( mPosY + JUG_HEIGHT > SCREEN_HEIGHT ) )
+    if( ( mPosY < 0 ) || ( mPosY + JUG_HEIGHT > screen_height ) )
     {
         //Move back
         mPosY -= mVelY;
@@ -88,6 +101,17 @@ void Jugador::move()
 
 void Jugador::render()
 {
-    //Show the dot
-	gJugadorTexture.render( mPosX, mPosY );
+	//Render current frame
+	SDL_Rect* currentClip = &gSpriteClips[ frame / 6 ];
+	gJugadorTexture.render( mPosX, mPosY, currentClip );
+	++frame;
+	if( frame / 6 >= JUGADOR_ANIMATION_FRAMES ){
+		frame = 0;
+	}
+
+}
+
+Jugador::~Jugador()
+{
+	gJugadorTexture.free();
 }
