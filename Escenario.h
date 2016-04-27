@@ -11,9 +11,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <list>
-#include <SDL2/SDL.h>
+#include "LTexture.h"
 #include "Jugador.h"
-
+#include <SDL2/SDL.h>
 using namespace std;
 
 struct coordinates
@@ -46,14 +46,14 @@ class Escenario{
 
 		list<backgroundObjects> objects;
 
-		//The window we'll be rendering to
-		SDL_Window* gWindow = NULL;
+
 
 		//The surface contained by the window
 		SDL_Surface* gScreenSurface = NULL;
 
-		//The image we will load and show on the screen
-		SDL_Surface* gHelloWorld = NULL;
+		
+		LTexture gBGTexture;
+
 
 		//Starts up SDL and creates window
 		bool init();
@@ -67,7 +67,7 @@ class Escenario{
 	public:
 
 	Escenario(int widht, int height);
-    void lunchScreen();
+        void lunchScreen();
 	void insertBackgroundObject(backgroundObjects object);
 	void setSize(int width, int height );
 	void mostrarVariables();
