@@ -4,30 +4,34 @@
  *  Created on: 22/04/2016
  *      Author: nahue
  */
-
-#include "Escenario.h"
-#include <stdio.h>
 #include <SDL2/SDL.h>
+#include "Escenario.h"	
+#include <stdio.h>
+
 
 using namespace std;
-
+//The window renderer		
 SDL_Renderer* gRenderer = NULL;
-
+		//The window we'll be rendering to
+		SDL_Window* gWindow = NULL;
 Escenario::Escenario(int height, int width) {
 	this->setSize(width,height);
+	cout << gRenderer << endl;
 	//Start up SDL and create window
 			if( !init() )
 			{
 				printf( "Failed to initialize!\n" );
 			}
 			else
-			{
+			{ cout << gRenderer << endl;
+				this->gBGTexture.gRenderer=gRenderer;
 				//Load media
+			
 				if( !loadMedia() )
 				{
 					printf( "Failed to load media!\n" );
 				}
-				
+					
 
 }
 }
@@ -37,9 +41,9 @@ void Escenario::lunchScreen(){
 bool quit = false;
 //Event handler
 SDL_Event e;
-
+int scrollingOffset = 0;
 Jugador jugador (gRenderer,screen.width,screen.height);
-
+cout << gRenderer << endl;
 //While application is running
 	while( !quit )
 	{
@@ -51,35 +55,31 @@ Jugador jugador (gRenderer,screen.width,screen.height);
 			{
         		quit = true;
 			}
-			 jugador.handleEvent(e);
+		 jugador.handleEvent(e);
 		}
-		jugador.move();
-	
-
-	 SDL_Rect stretchRect;
-	 stretchRect.x = 0;
-	 stretchRect.y = 0;
-	 stretchRect.w = this->screen.width;
-	 stretchRect.h = this->screen.height;
-
-         SDL_BlitScaled( this->gHelloWorld, NULL, gScreenSurface, &stretchRect);
+				jugador.move();
 
 
 
-			//Clear screen
-			SDL_SetRenderDrawColor( gRenderer, 0xFF, 0x00, 0xFF, 0xFF );
-			SDL_RenderClear( gRenderer );
+			
+				
+						//Scroll background
+				++scrollingOffset;
+				if( scrollingOffset >gBGTexture.getHeight() )
+				{
+					scrollingOffset = 0;
+				}
+
+				gBGTexture.render( 0, scrollingOffset);
+				gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
+				
+
+				//Render objects
 
 			jugador.render();
 
-			//Update screen
-			SDL_RenderPresent( gRenderer );
-
-	 //Apply the image
-	 //SDL_BlitSurface( this->gHelloWorld, NULL, gScreenSurface, NULL );
-
-	 //Update the surface
-	 //SDL_UpdateWindowSurface( gWindow );
+				//Update screen
+				SDL_RenderPresent( gRenderer );
 	}
 	
 			
@@ -116,7 +116,7 @@ bool Escenario::init()
 	//Initialize SDL
 	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
 	{
-		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
+		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
 	}
 	else
@@ -127,12 +127,11 @@ bool Escenario::init()
 			printf( "Warning: Linear texture filtering not enabled!" );
 		}
 
-
 		//Create window
-		this->gWindow = SDL_CreateWindow( "1986 ", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->screen.width,this->screen.height, SDL_WINDOW_SHOWN );
+		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 500, 500, SDL_WINDOW_SHOWN );
 		if( gWindow == NULL )
 		{
-			printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
+			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
 			success = false;
 		}
 		else
@@ -149,20 +148,9 @@ bool Escenario::init()
 				//Initialize renderer color
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 
-				//Initialize PNG loading
-				int imgFlags = IMG_INIT_PNG;
-				if( !( IMG_Init( imgFlags ) & imgFlags ) )
-				{
-					printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
-					success = false;
-				}
+				
 			}
-
-
-			//Get window surface
-			this->gScreenSurface = SDL_GetWindowSurface( gWindow );
 		}
-
 	}
 
 	return success;
@@ -173,11 +161,9 @@ bool Escenario::loadMedia()
 	//Loading success flag
 	bool success = true;
 
-	//Load splash image
-	this->gHelloWorld = SDL_LoadBMP( "background.bmp" );
-	if( this->gHelloWorld == NULL )
+	if( !gBGTexture.loadFromFile( "background.bmp") )
 	{
-		printf( "Unable to load image %s! SDL Error: %s\n", "background.bmp", SDL_GetError() );
+		printf( "Failed to load background texture!\n" );
 		success = false;
 	}
 
@@ -186,12 +172,12 @@ bool Escenario::loadMedia()
 void Escenario::close()
 {
 	//Deallocate surface
-	SDL_FreeSurface( gHelloWorld );
-	this->gHelloWorld = NULL;
+	gBGTexture.free();
+	
 
 	//Destroy window
 	SDL_DestroyWindow( gWindow );
-	this->gWindow = NULL;
+	
 
 	//Quit SDL subsystems
 	//Free loaded images
@@ -201,7 +187,7 @@ void Escenario::close()
 		gRenderer = NULL;
 
 		//Quit SDL subsystems
-		IMG_Quit();
+		
 		SDL_Quit();
 
 }

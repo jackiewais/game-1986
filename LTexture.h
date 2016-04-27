@@ -1,6 +1,8 @@
+#ifndef LTEXTURE_H_
+#define LTEXTURE_H_
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <stdio.h>
 #include <string>
 
 //Texture wrapper class
@@ -51,3 +53,5 @@ class LTexture
 		int mWidth;
 		int mHeight;
 };
+
+#endif 
