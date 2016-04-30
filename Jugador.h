@@ -15,8 +15,12 @@ class Jugador
 
 		static const int JUG_VEL = 5;
 
-		Jugador(SDL_Renderer* gRend , int scr_width, int scr_height);
+		Jugador(SDL_Renderer* gRend , int scr_width, int scr_height, double iWidth);
 		~Jugador();
+
+		void patear();
+		void moverPelotas();
+		void forzarPosicion(int x, int y);
 
 		void handleEvent( SDL_Event& e);
 

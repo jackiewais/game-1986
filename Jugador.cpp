@@ -3,12 +3,12 @@
 
 using namespace std;
 
-Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height)
+Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, double iWidth)
 {
 	gJugadorTexture.gRenderer = gRend;
 
     //Initialize the offsets
-    mPosX = scr_width/4;
+    mPosX = scr_width*iWidth;
     mPosY = scr_height-JUG_HEIGHT;
 
     //Initialize the velocity
@@ -53,11 +53,9 @@ bool Jugador::loadMedia()
 void Jugador::handleEvent( SDL_Event& e )
 {
     //If a key was pressed
-	if( e.type == SDL_KEYDOWN && e.key.repeat == 0 )
-    {
+	if( e.type == SDL_KEYDOWN && e.key.repeat == 0 ){
         //Adjust the velocity
-        switch( e.key.keysym.sym )
-        {
+        switch( e.key.keysym.sym ){
             case SDLK_UP: mVelY -= JUG_VEL; break;
             case SDLK_DOWN: mVelY += JUG_VEL; break;
             case SDLK_LEFT: mVelX -= JUG_VEL; break;
@@ -66,21 +64,34 @@ void Jugador::handleEvent( SDL_Event& e )
         }
     }
     //If a key was released
-    else if( e.type == SDL_KEYUP && e.key.repeat == 0 )
-    {
+    else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){
         //Adjust the velocity
-        switch( e.key.keysym.sym )
-        {
+        switch( e.key.keysym.sym ){
             case SDLK_UP: mVelY += JUG_VEL; break;
             case SDLK_DOWN: mVelY -= JUG_VEL; break;
             case SDLK_LEFT: mVelX += JUG_VEL; break;
             case SDLK_RIGHT: mVelX -= JUG_VEL; break;
             case SDLK_SPACE:
-            		Pelota* pelota = new Pelota(&pelotaHelper.gPelotaTexture,mPosX+(JUG_WIDTH/2),mPosY);
-            		lista_pelotas.push_back(pelota);
+            		patear();
                  	break;
         }
     }
+}
+
+void Jugador::patear(){
+	Pelota* pelota = new Pelota(&pelotaHelper.gPelotaTexture,mPosX+(JUG_WIDTH/2),mPosY);
+	lista_pelotas.push_back(pelota);
+}
+
+void Jugador::moverPelotas(){
+    Pelota* pelToDelete;
+    for (list<Pelota *>::iterator it=lista_pelotas.begin(); it != lista_pelotas.end(); ++it){
+    	(*it)->move();
+    	if ((*it)->ballIsOut())
+    		pelToDelete = (*it);
+    }
+
+    lista_pelotas.remove(pelToDelete);
 }
 
 void Jugador::move()
@@ -96,14 +107,12 @@ void Jugador::move()
         mPosY -= mVelY;
     }
 
-    Pelota* pelToDelete;
-    for (list<Pelota *>::iterator it=lista_pelotas.begin(); it != lista_pelotas.end(); ++it){
-    	(*it)->move();
-    	if ((*it)->ballIsOut())
-    		pelToDelete = (*it);
-    }
+    moverPelotas();
+}
 
-    lista_pelotas.remove(pelToDelete);
+void Jugador::forzarPosicion(int x, int y){
+	mPosX = x;
+	mPosY = y;
 }
 
 void Jugador::render()

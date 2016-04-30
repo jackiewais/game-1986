@@ -30,8 +30,6 @@ Escenario::Escenario(int height, int width) {
 				{
 					printf( "Failed to load media!\n" );
 				}
-					
-
 }
 }
 void Escenario::lunchScreen(){
@@ -41,8 +39,9 @@ bool quit = false;
 //Event handler
 SDL_Event e;
 int scrollingOffset = 0;
-Jugador jugador (gRenderer,screen.width,screen.height);
-cout << gRenderer << endl;
+Jugador jugador (gRenderer,screen.width,screen.height, 0.3);
+
+Jugador otroJugador (gRenderer,screen.width,screen.height, 0.6);
 //While application is running
 	while( !quit )
 	{
@@ -50,13 +49,25 @@ cout << gRenderer << endl;
 		while( SDL_PollEvent( &e ) != 0 )
 		{
 			//User requests quit
-			 if( e.type == SDL_QUIT )
-			{
-        		quit = true;
+			if( e.type == SDL_QUIT ){
+				quit = true;
 			}
-		 jugador.handleEvent(e);
+			jugador.handleEvent(e);
+
+			//TODO ESTO SE REEMPLAZA POR LOS MENSAJES DEL SERVIDOR
+			if (e.key.keysym.sym == SDLK_0 && e.type == SDL_KEYUP && e.key.repeat == 0){
+				otroJugador.patear();
+			}
+			if (e.key.keysym.sym == SDLK_1 && e.type == SDL_KEYUP && e.key.repeat == 0){
+				otroJugador.forzarPosicion(15,70);
+			}
+			if (e.key.keysym.sym == SDLK_2 && e.type == SDL_KEYUP && e.key.repeat == 0){
+				otroJugador.forzarPosicion(230,400);
+			}
+			//-------------------------------------------------------------
 		}
 				jugador.move();
+				otroJugador.moverPelotas();
 
 				//Scroll background
 				++scrollingOffset;
@@ -72,6 +83,7 @@ cout << gRenderer << endl;
 				gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
 				
 
+				otroJugador.render();
 				jugador.render();
 
 				//Update screen
