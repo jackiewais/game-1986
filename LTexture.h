@@ -2,6 +2,7 @@
 #define LTEXTURE_H_
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <string>
 
@@ -44,8 +45,6 @@ class LTexture
 		SDL_Renderer* gRenderer = NULL;
 
 	private:
-
-
 		//The actual hardware texture
 		SDL_Texture* mTexture;
 

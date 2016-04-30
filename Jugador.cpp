@@ -8,8 +8,8 @@ Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height)
 	gJugadorTexture.gRenderer = gRend;
 
     //Initialize the offsets
-    mPosX = 0;
-    mPosY = 0;
+    mPosX = scr_width/4;
+    mPosY = scr_height-JUG_HEIGHT;
 
     //Initialize the velocity
     mVelX = 0;
@@ -25,6 +25,8 @@ Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height)
 	{
 		printf( "Failed to load media!\n" );
 	}
+
+	pelotaHelper.initTexture(gJugadorTexture.gRenderer);
 }
 
 bool Jugador::loadMedia()
@@ -32,7 +34,7 @@ bool Jugador::loadMedia()
 	//Loading success flag
 	bool success = true;
 
-	if( !gJugadorTexture.loadFromFile( "sprites/spriteJugador.bmp" ) )
+	if( !gJugadorTexture.loadFromFile  ( "sprites/spriteJugador.png" ) )// ( "sprites/spriteJugador.bmp" ) )
 	{
 		printf( "Failed to load player texture!\n" );
 		success = false;
@@ -60,6 +62,7 @@ void Jugador::handleEvent( SDL_Event& e )
             case SDLK_DOWN: mVelY += JUG_VEL; break;
             case SDLK_LEFT: mVelX -= JUG_VEL; break;
             case SDLK_RIGHT: mVelX += JUG_VEL; break;
+
         }
     }
     //If a key was released
@@ -72,43 +75,48 @@ void Jugador::handleEvent( SDL_Event& e )
             case SDLK_DOWN: mVelY -= JUG_VEL; break;
             case SDLK_LEFT: mVelX += JUG_VEL; break;
             case SDLK_RIGHT: mVelX -= JUG_VEL; break;
+            case SDLK_SPACE:
+            		Pelota* pelota = new Pelota(&pelotaHelper.gPelotaTexture,mPosX+(JUG_WIDTH/2),mPosY);
+            		lista_pelotas.push_back(pelota);
+                 	break;
         }
     }
 }
 
 void Jugador::move()
 {
-    //Move the dot left or right
     mPosX += mVelX;
-
-    //If the dot went too far to the left or right
-    if( ( mPosX < 0 ) || ( mPosX + JUG_WIDTH > screen_width ) )
-    {
+    if( ( mPosX < 0 ) || ( mPosX + JUG_WIDTH > screen_width ) ){
         //Move back
         mPosX -= mVelX;
     }
 
-    //Move the dot up or down
     mPosY += mVelY;
-
-    //If the dot went too far up or down
-    if( ( mPosY < 0 ) || ( mPosY + JUG_HEIGHT > screen_height ) )
-    {
-        //Move back
+    if( ( mPosY < 0 ) || ( mPosY + JUG_HEIGHT > screen_height ) ){
         mPosY -= mVelY;
     }
+
+    Pelota* pelToDelete;
+    for (list<Pelota *>::iterator it=lista_pelotas.begin(); it != lista_pelotas.end(); ++it){
+    	(*it)->move();
+    	if ((*it)->ballIsOut())
+    		pelToDelete = (*it);
+    }
+
+    lista_pelotas.remove(pelToDelete);
 }
 
 void Jugador::render()
 {
-	//Render current frame
+	for (list<Pelota *>::iterator it=lista_pelotas.begin(); it != lista_pelotas.end(); ++it)
+		(*it)->render();
+
 	SDL_Rect* currentClip = &gSpriteClips[ frame / 6 ];
 	gJugadorTexture.render( mPosX, mPosY, currentClip );
 	++frame;
 	if( frame / 6 >= JUGADOR_ANIMATION_FRAMES ){
 		frame = 0;
 	}
-
 }
 
 Jugador::~Jugador()

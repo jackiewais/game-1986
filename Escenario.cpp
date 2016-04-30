@@ -16,14 +16,13 @@ SDL_Renderer* gRenderer = NULL;
 		SDL_Window* gWindow = NULL;
 Escenario::Escenario(int height, int width) {
 	this->setSize(width,height);
-	cout << gRenderer << endl;
 	//Start up SDL and create window
 			if( !init() )
 			{
 				printf( "Failed to initialize!\n" );
 			}
 			else
-			{ cout << gRenderer << endl;
+			{
 				this->gBGTexture.gRenderer=gRenderer;
 				//Load media
 			
@@ -59,24 +58,21 @@ cout << gRenderer << endl;
 		}
 				jugador.move();
 
-
-
-			
-				
-						//Scroll background
+				//Scroll background
 				++scrollingOffset;
 				if( scrollingOffset >gBGTexture.getHeight() )
 				{
 					scrollingOffset = 0;
 				}
 
+                SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+                SDL_RenderClear( gRenderer );
+
 				gBGTexture.render( 0, scrollingOffset);
 				gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
 				
 
-				//Render objects
-
-			jugador.render();
+				jugador.render();
 
 				//Update screen
 				SDL_RenderPresent( gRenderer );
@@ -147,7 +143,6 @@ bool Escenario::init()
 			{
 				//Initialize renderer color
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-
 				
 			}
 		}

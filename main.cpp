@@ -9,7 +9,7 @@ using namespace std;
 int main( int argc, char* args[] )
 {
 int width= 500;
-int height = 1000;	
+int height = 500;
 //crea una ventana y muestra una imagen
 Escenario* mapa = new Escenario(width,height);
 mapa->lunchScreen();

@@ -1,4 +1,10 @@
 #include "LTexture.h"
+#include "Pelota.h"
+#include "PelotaHelper.h"
+#include <iostream>
+#include <list>
+
+using namespace std;
 
 class Jugador
 {
@@ -23,9 +29,10 @@ class Jugador
     private:
 		LTexture gJugadorTexture;
 		SDL_Rect gSpriteClips[ JUGADOR_ANIMATION_FRAMES ];
+		list<Pelota *> lista_pelotas;
+		PelotaHelper pelotaHelper;
 
 		int mPosX, mPosY;
-
 		int mVelX, mVelY;
 
 		int frame;

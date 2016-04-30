@@ -28,7 +28,7 @@ bool LTexture::loadFromFile( std::string path )
 	SDL_Texture* newTexture = NULL;
 
 	//Load image at specified path
-	SDL_Surface* loadedSurface = SDL_LoadBMP( path.c_str() );
+	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
 	if( loadedSurface == NULL )
 	{
 		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), SDL_GetError() );
@@ -36,10 +36,9 @@ bool LTexture::loadFromFile( std::string path )
 	else
 	{
 		//Color key image
-		SDL_SetColorKey( loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 0xFF, 0xFF ) );
+		SDL_SetColorKey( loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0xFF, 0, 0xFF ) );
 
 		//Create texture from surface pixels
-	cout << gRenderer << endl;
         newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
 		if( newTexture == NULL )
 		{
