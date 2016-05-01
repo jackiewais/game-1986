@@ -69,7 +69,7 @@ Jugador otroJugador (gRenderer,screen.width,screen.height, 0.6);
 			//-------------------------------------------------------------
 		}
 				jugador.move();
-				//otroJugador.moverPelotas();
+				otroJugador.moverPelotas();
 
 				//Scroll background
 				++scrollingOffset;
@@ -78,8 +78,8 @@ Jugador otroJugador (gRenderer,screen.width,screen.height, 0.6);
 					scrollingOffset = 0;
 				}
 
-            			SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-               			SDL_RenderClear( gRenderer );
+				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+				SDL_RenderClear( gRenderer );
 
 				gBGTexture.render( 0, scrollingOffset);
 				gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
@@ -87,7 +87,7 @@ Jugador otroJugador (gRenderer,screen.width,screen.height, 0.6);
 				renderBackgroundObjects(scrollingOffset);
 				
 				//pruebaOb.render(pruebaOb.x,scrollingOffset-pruebaOb.y);
-				//otroJugador.render();
+				otroJugador.render();
 				jugador.render();
 
 				//Update screen
@@ -101,12 +101,12 @@ close();
 
 }
 
-void Escenario::insertBackgroundObject(string path , int x , int y){
+void Escenario::insertBackgroundObject(string path , int x , int y, int height, int scrH ){
 
 	cout << path << endl;
 	cout << x << endl;
 	cout << y << endl;
-	BackgroundTemplate* object = new BackgroundTemplate(gRenderer,x,y,path);
+	BackgroundTemplate* object = new BackgroundTemplate(gRenderer,path, x,y,height, scrH);
 	
 	
 	backgroundObjetcs.push_back(object);

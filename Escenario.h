@@ -65,7 +65,7 @@ class Escenario{
 
 	Escenario(int widht, int height);
         void lunchScreen();
-	void insertBackgroundObject(string path, int x, int y);
+	void insertBackgroundObject(string path, int x, int y, int height, int scrH  );
 	void setSize(int width, int height );
 	void mostrarVariables();
 	void renderBackgroundObjects(int scrollingOffset);	

@@ -9,10 +9,15 @@ class BackgroundTemplate
     public:
 
 		LTexture textura;
-		BackgroundTemplate(SDL_Renderer* gRender, int x,int y,string path);
+		BackgroundTemplate(SDL_Renderer* gRender, string path, int x,int y, int height, int scrH );
 		void render(int scrollingOffset);
+
+		~BackgroundTemplate();
     private:
 		int posX;
 		int posY;
 		
+		int height,scrH;
+
+
 };
