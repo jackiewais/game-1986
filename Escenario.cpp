@@ -67,7 +67,7 @@ Jugador otroJugador (gRenderer,screen.width,screen.height, 0.6);
 			//-------------------------------------------------------------
 		}
 				jugador.move();
-				otroJugador.moverPelotas();
+				//otroJugador.moverPelotas();
 
 				//Scroll background
 				++scrollingOffset;
@@ -76,14 +76,14 @@ Jugador otroJugador (gRenderer,screen.width,screen.height, 0.6);
 					scrollingOffset = 0;
 				}
 
-                SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-                SDL_RenderClear( gRenderer );
+            			SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+               			SDL_RenderClear( gRenderer );
 
 				gBGTexture.render( 0, scrollingOffset);
 				gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
 				
 
-				otroJugador.render();
+				//otroJugador.render();
 				jugador.render();
 
 				//Update screen
@@ -136,7 +136,7 @@ bool Escenario::init()
 		}
 
 		//Create window
-		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 500, 500, SDL_WINDOW_SHOWN );
+		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->screen.width, this->screen.height, SDL_WINDOW_SHOWN );
 		if( gWindow == NULL )
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
