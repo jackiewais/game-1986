@@ -15,7 +15,7 @@ Escenario* mapa = new Escenario(width,height);
 int x = 200;
 int y = 500;
 //cargo varios backround 
-mapa->insertBackgroundObject("sprites/spriteJugador.png", x,y);
+mapa->insertBackgroundObject("sprites/pelota.png", x,y);
 mapa->insertBackgroundObject("enfermera", 100,500);
 mapa->insertBackgroundObject("sprites/pelota.png", 200,2000);
 mapa->insertBackgroundObject("sprites/pelota.png", 150,700);
