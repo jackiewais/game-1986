@@ -7,30 +7,32 @@
 #include <SDL2/SDL.h>
 #include "Escenario.h"	
 #include <stdio.h>
+#include <map>
 
 
 using namespace std;
 //The window renderer		
 SDL_Renderer* gRenderer = NULL;
-		//The window we'll be rendering to
-		SDL_Window* gWindow = NULL;
+//The window we'll be rendering to
+SDL_Window* gWindow = NULL;
+
 Escenario::Escenario(int height, int width) {
-	this->setSize(width,height);
-	//Start up SDL and create window
-			if( !init() )
-			{
-				printf( "Failed to initialize!\n" );
-			}
-			else
-			{
-				this->gBGTexture.gRenderer=gRenderer;
-				//Load media
+this->setSize(width,height);
+//Start up SDL and create window
+	if( !init() )
+	{
+		printf( "Failed to initialize!\n" );
+	}
+	else
+	{
+		this->gBGTexture.gRenderer=gRenderer;
+		//Load media
 			
-				if( !loadMedia() )
-				{
-					printf( "Failed to load media!\n" );
-				}
-}
+		if( !loadMedia() )
+		{
+		printf( "Failed to load media!\n" );
+		}
+	}
 }
 void Escenario::lunchScreen(){
 
@@ -82,9 +84,9 @@ Jugador otroJugador (gRenderer,screen.width,screen.height, 0.6);
 				gBGTexture.render( 0, scrollingOffset);
 				gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
 				//---------------------
-				//renderBackgroundObjects();
+				renderBackgroundObjects(scrollingOffset);
 				
-				pruebaOb.render(200,scrollingOffset-500);
+				//pruebaOb.render(pruebaOb.x,scrollingOffset-pruebaOb.y);
 				//otroJugador.render();
 				jugador.render();
 
@@ -104,27 +106,23 @@ void Escenario::insertBackgroundObject(string path , int x , int y){
 	cout << path << endl;
 	cout << x << endl;
 	cout << y << endl;
-	cout << gRenderer << endl;
-//	LTexture BackgroundObject;
-//	BackgroundObject.gRenderer=gRenderer;
-	pruebaOb.gRenderer=gRenderer;
-	if( !pruebaOb.loadFromFile(path) )// !BackgroundObject.loadFromFile(path)
-	{
-		printf( "Failed to load player texture!\n" );
+	BackgroundTemplate* object = new BackgroundTemplate(gRenderer,x,y,path);
 	
-	}
 	
-
-	//backgroundObjetcs.push_back(BackgroundObject);
+	backgroundObjetcs.push_back(object);
 
 }
 
-void Escenario::renderBackgroundObjects()
+void Escenario::renderBackgroundObjects(int scrollingOffset)
 {
-for (list<LTexture>::iterator it=backgroundObjetcs.begin(); it !=backgroundObjetcs.end(); ++it)
-		(it)->render(500,500);
+	
+	for (list<BackgroundTemplate *>::iterator it=backgroundObjetcs.begin(); it != backgroundObjetcs.end(); ++it)
+		(*it)->render(scrollingOffset);
 
 }
+		
+
+
 
 
 void Escenario::setSize(int width, int height) {

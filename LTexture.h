@@ -1,11 +1,12 @@
 #ifndef LTEXTURE_H_
 #define LTEXTURE_H_
 
+
+
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <string>
-
+#include <SDL2/SDL_image.h>
 //Texture wrapper class
 class LTexture
 {
@@ -43,6 +44,7 @@ class LTexture
 		int getWidth();
 		int getHeight();
 		SDL_Renderer* gRenderer = NULL;
+
 
 	private:
 		//The actual hardware texture

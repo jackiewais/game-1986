@@ -14,6 +14,8 @@
 #include "LTexture.h"
 #include "Jugador.h"
 #include <SDL2/SDL.h>
+#include <map>
+#include "BackgroundTemplate.h"	
 using namespace std;
 
 struct coordinates
@@ -41,14 +43,14 @@ class Escenario{
 		int scroll ;
 
 		//list<backgroundObjects> objects;
-		list<LTexture> backgroundObjetcs;
+		list<BackgroundTemplate*> backgroundObjetcs;
 
 		//The surface contained by the window
 		SDL_Surface* gScreenSurface = NULL;
 
-		LTexture pruebaOb;
+		BackgroundTemplate* object;
 		LTexture gBGTexture;
-		
+	
 		SDL_Renderer* dondeRenderiza = NULL;
 		//Starts up SDL and creates window
 		bool init();
@@ -66,7 +68,7 @@ class Escenario{
 	void insertBackgroundObject(string path, int x, int y);
 	void setSize(int width, int height );
 	void mostrarVariables();
-	void renderBackgroundObjects();	
+	void renderBackgroundObjects(int scrollingOffset);	
 
 
 };
