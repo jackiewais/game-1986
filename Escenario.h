@@ -22,10 +22,6 @@ struct coordinates
 	int y;
 };
 
-struct backgroundObjects{
-		 coordinates position;
-		 int id;
-};
 
 struct resolution
 {
@@ -44,17 +40,16 @@ class Escenario{
 		// fps
 		int scroll ;
 
-		list<backgroundObjects> objects;
-
-
+		//list<backgroundObjects> objects;
+		list<LTexture> backgroundObjetcs;
 
 		//The surface contained by the window
 		SDL_Surface* gScreenSurface = NULL;
 
-		
+		LTexture pruebaOb;
 		LTexture gBGTexture;
-
-
+		
+		SDL_Renderer* dondeRenderiza = NULL;
 		//Starts up SDL and creates window
 		bool init();
 
@@ -68,9 +63,11 @@ class Escenario{
 
 	Escenario(int widht, int height);
         void lunchScreen();
-	void insertBackgroundObject(backgroundObjects object);
+	void insertBackgroundObject(string path, int x, int y);
 	void setSize(int width, int height );
 	void mostrarVariables();
+	void renderBackgroundObjects();	
+
 
 };
 

@@ -81,8 +81,10 @@ Jugador otroJugador (gRenderer,screen.width,screen.height, 0.6);
 
 				gBGTexture.render( 0, scrollingOffset);
 				gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
+				//---------------------
+				//renderBackgroundObjects();
 				
-
+				pruebaOb.render(200,scrollingOffset-500);
 				//otroJugador.render();
 				jugador.render();
 
@@ -97,9 +99,30 @@ close();
 
 }
 
-void Escenario::insertBackgroundObject(backgroundObjects object){
+void Escenario::insertBackgroundObject(string path , int x , int y){
 
-	this->objects.push_back(object);
+	cout << path << endl;
+	cout << x << endl;
+	cout << y << endl;
+	cout << gRenderer << endl;
+//	LTexture BackgroundObject;
+//	BackgroundObject.gRenderer=gRenderer;
+	pruebaOb.gRenderer=gRenderer;
+	if( !pruebaOb.loadFromFile(path) )// !BackgroundObject.loadFromFile(path)
+	{
+		printf( "Failed to load player texture!\n" );
+	
+	}
+	
+
+	//backgroundObjetcs.push_back(BackgroundObject);
+
+}
+
+void Escenario::renderBackgroundObjects()
+{
+for (list<LTexture>::iterator it=backgroundObjetcs.begin(); it !=backgroundObjetcs.end(); ++it)
+		(it)->render(500,500);
 
 }
 
@@ -136,7 +159,7 @@ bool Escenario::init()
 		}
 
 		//Create window
-		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->screen.width, this->screen.height, SDL_WINDOW_SHOWN );
+		gWindow = SDL_CreateWindow( "1986", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->screen.width, this->screen.height, SDL_WINDOW_SHOWN );
 		if( gWindow == NULL )
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -198,6 +221,8 @@ void Escenario::close()
 		SDL_Quit();
 
 }
+
+
 
 
 
