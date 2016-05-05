@@ -30,6 +30,9 @@ class Jugador
 
 		bool loadMedia();
 
+		void managePausa(bool pausa);
+		void manageDesconexion(bool d);
+
     private:
 		LTexture gJugadorTexture;
 		SDL_Rect gSpriteClips[ JUGADOR_ANIMATION_FRAMES ];
@@ -41,4 +44,9 @@ class Jugador
 
 		int frame;
 		int screen_width,screen_height;
+
+		bool pausa = true;
+		bool desconectado;
+
+		void manageAlpha();
 };

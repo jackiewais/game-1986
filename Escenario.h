@@ -42,6 +42,8 @@ class Escenario{
 		// fps
 		int scroll ;
 
+		bool pausa = true;
+
 		//list<backgroundObjects> objects;
 		list<BackgroundTemplate*> backgroundObjetcs;
 
@@ -64,7 +66,7 @@ class Escenario{
 	public:
 
 	Escenario(int widht, int height);
-        void lunchScreen();
+    bool lunchScreen();
 	void insertBackgroundObject(string path, int x, int y, int height, int scrH  );
 	void setSize(int width, int height );
 	void mostrarVariables();

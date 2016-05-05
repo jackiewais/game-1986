@@ -117,15 +117,34 @@ void Jugador::forzarPosicion(int x, int y){
 
 void Jugador::render()
 {
+	if (!pausa){
+		++frame;
+		if( frame / 6 >= JUGADOR_ANIMATION_FRAMES ){
+			frame = 0;
+		}
+	}
+
 	for (list<Pelota *>::iterator it=lista_pelotas.begin(); it != lista_pelotas.end(); ++it)
 		(*it)->render();
 
 	SDL_Rect* currentClip = &gSpriteClips[ frame / 6 ];
 	gJugadorTexture.render( mPosX, mPosY, currentClip );
-	++frame;
-	if( frame / 6 >= JUGADOR_ANIMATION_FRAMES ){
-		frame = 0;
-	}
+}
+
+void Jugador::manageAlpha(){
+	int alpha = (pausa || desconectado)?128:255;
+		gJugadorTexture.setAlpha(alpha);
+}
+
+void Jugador::managePausa(bool p){
+	pausa = p;
+	manageAlpha();
+
+}
+
+void Jugador::manageDesconexion(bool d){
+	desconectado = d;
+	manageAlpha();
 }
 
 Jugador::~Jugador()
