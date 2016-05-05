@@ -46,7 +46,7 @@ class Jugador
 		int screen_width,screen_height;
 
 		bool pausa = true;
-		bool desconectado;
+		bool desconectado = false;
 
 		void manageAlpha();
 };

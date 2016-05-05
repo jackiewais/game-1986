@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <string>
 #include <SDL2/SDL_image.h>
+
+#include <SDL2/SDL_ttf.h>
 //Texture wrapper class
 class LTexture
 {
@@ -44,7 +46,8 @@ class LTexture
 		int getWidth();
 		int getHeight();
 		SDL_Renderer* gRenderer = NULL;
-
+		//Globally used font
+		TTF_Font *gFont = NULL;
 
 	private:
 		//The actual hardware texture
