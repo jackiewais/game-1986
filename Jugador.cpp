@@ -34,7 +34,7 @@ bool Jugador::loadMedia()
 	//Loading success flag
 	bool success = true;
 
-	if( !gJugadorTexture.loadFromFile  ( "sprites/spriteJugador.png" ) )// ( "sprites/spriteJugador.bmp" ) )
+	if( !gJugadorTexture.loadFromFile  ( "sprites/spriteJugador.png" ) )
 	{
 		printf( "Failed to load player texture!\n" );
 		success = false;

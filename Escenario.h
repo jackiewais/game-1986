@@ -16,6 +16,8 @@
 #include <SDL2/SDL.h>
 #include <map>
 #include "BackgroundTemplate.h"	
+#include "Label.h"
+
 using namespace std;
 
 struct coordinates

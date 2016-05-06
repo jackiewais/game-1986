@@ -11,14 +11,11 @@
 
 
 using namespace std;
-//The window renderer		
 SDL_Renderer* gRenderer = NULL;
-//The window we'll be rendering to
 SDL_Window* gWindow = NULL;
 
 Escenario::Escenario(int height, int width) {
-this->setSize(width,height);
-//Start up SDL and create window
+	this->setSize(width,height);
 	if( !init() )
 	{
 		printf( "Failed to initialize!\n" );
@@ -36,13 +33,13 @@ this->setSize(width,height);
 }
 bool Escenario::lunchScreen(){
 
-//Main loop flag
 bool quit = false;
-//Event handler
 SDL_Event e;
 int scrollingOffset = 0;
 Jugador jugador (gRenderer,screen.width,screen.height, 0.3);
 Jugador otroJugador (gRenderer,screen.width,screen.height, 0.6);
+
+Label lpausa (gRenderer, string("Pause"),screen.width/2,screen.height/2);
 
 bool reset = false;
 
@@ -56,12 +53,18 @@ bool reset = false;
 				quit = true;
 			}
 
-			if (e.key.keysym.sym == SDLK_p && e.type == SDL_KEYUP && e.key.repeat == 0){
-				pausa = !pausa;
-				jugador.managePausa(pausa);
-				otroJugador.managePausa(pausa);
-			}else if (e.key.keysym.sym == SDLK_r && e.type == SDL_KEYUP && e.key.repeat == 0){
-				reset = true;
+			if ( e.type == SDL_KEYUP && e.key.repeat == 0){
+				switch(e.key.keysym.sym){
+					case SDLK_p:
+						pausa = !pausa;
+						jugador.managePausa(pausa);
+						otroJugador.managePausa(pausa);
+						break;
+
+					case SDLK_r:
+						reset = true;
+						break;
+				}
 			}
 
 			if (!pausa){
@@ -87,6 +90,14 @@ bool reset = false;
 			}
 		}
 
+		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+		SDL_RenderClear( gRenderer );
+
+		gBGTexture.render( 0, scrollingOffset);
+		gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
+
+		renderBackgroundObjects(scrollingOffset);
+
 		if (!pausa){
 			jugador.move();
 			otroJugador.moverPelotas();
@@ -97,21 +108,13 @@ bool reset = false;
 			{
 				scrollingOffset = 0;
 			}
+		}else{
+			lpausa.render();
 		}
 
-		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-		SDL_RenderClear( gRenderer );
-
-		gBGTexture.render( 0, scrollingOffset);
-		gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
-		//---------------------
-		renderBackgroundObjects(scrollingOffset);
-
-		//pruebaOb.render(pruebaOb.x,scrollingOffset-pruebaOb.y);
 		otroJugador.render();
 		jugador.render();
 
-		//Update screen
 		SDL_RenderPresent( gRenderer );
 	}
 			
@@ -154,25 +157,21 @@ bool Escenario::init()
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
 	}else{
-		//Set texture filtering to linear
 		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) ){
 			printf( "Warning: Linear texture filtering not enabled!" );
 		}
 
-		//Create window
 		gWindow = SDL_CreateWindow( "1986", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->screen.width, this->screen.height, SDL_WINDOW_SHOWN );
 		if( gWindow == NULL ){
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
 			success = false;
 		}else{
-			//Create vsynced renderer for window
 			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 			if( gRenderer == NULL )
 			{
 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
 				success = false;
 			}else{
-				//Initialize renderer color
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				
 			}
