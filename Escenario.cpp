@@ -71,20 +71,27 @@ bool reset = false;
 				jugador.handleEvent(e);
 
 				//TODO ESTO SE REEMPLAZA POR LOS MENSAJES DEL SERVIDOR
-				if (e.key.keysym.sym == SDLK_0 && e.type == SDL_KEYUP && e.key.repeat == 0){
-					otroJugador.patear();
-				}
-				if (e.key.keysym.sym == SDLK_1 && e.type == SDL_KEYUP && e.key.repeat == 0){
-					otroJugador.forzarPosicion(15,70);
-				}
-				if (e.key.keysym.sym == SDLK_2 && e.type == SDL_KEYUP && e.key.repeat == 0){
-					otroJugador.forzarPosicion(230,400);
-				}
-				if (e.key.keysym.sym == SDLK_9 && e.type == SDL_KEYUP && e.key.repeat == 0){
-					otroJugador.manageDesconexion(true);
-				}
-				if (e.key.keysym.sym == SDLK_8 && e.type == SDL_KEYUP && e.key.repeat == 0){
-					otroJugador.manageDesconexion(false);
+				if (e.type == SDL_KEYUP && e.key.repeat == 0){
+					switch (e.key.keysym.sym){
+						case SDLK_0:
+							otroJugador.patear();
+							break;
+						case SDLK_9:
+							otroJugador.hacerTruco();
+							break;
+						case SDLK_1:
+							otroJugador.forzarPosicion(15,70);
+							break;
+						case SDLK_2:
+							otroJugador.forzarPosicion(230,400);
+							break;
+						case SDLK_q:
+							otroJugador.manageDesconexion(true);
+							break;
+						case SDLK_w:
+							otroJugador.manageDesconexion(false);
+							break;
+					}
 				}
 				//-------------------------------------------------------------
 			}

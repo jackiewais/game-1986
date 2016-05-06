@@ -1,6 +1,7 @@
 #include "LTexture.h"
 #include "Pelota.h"
 #include "PelotaHelper.h"
+#include "TrucoJugador.h"
 #include <iostream>
 #include <list>
 
@@ -19,6 +20,7 @@ class Jugador
 		~Jugador();
 
 		void patear();
+		void hacerTruco();
 		void moverPelotas();
 		void forzarPosicion(int x, int y);
 
@@ -38,6 +40,7 @@ class Jugador
 		SDL_Rect gSpriteClips[ JUGADOR_ANIMATION_FRAMES ];
 		list<Pelota *> lista_pelotas;
 		PelotaHelper pelotaHelper;
+		TrucoJugador truco;
 
 		int mPosX, mPosY;
 		int mVelX, mVelY;

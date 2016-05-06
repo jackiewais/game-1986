@@ -62,7 +62,7 @@ void Label::close()
 
 	//Quit SDL subsystems
 	TTF_Quit();
-	//IMG_Quit();
+	IMG_Quit();
 }
 
 void Label::render(){

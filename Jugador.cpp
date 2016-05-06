@@ -27,6 +27,7 @@ Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, double iWid
 	}
 
 	pelotaHelper.initTexture(gJugadorTexture.gRenderer);
+	truco.init(gJugadorTexture.gRenderer);
 }
 
 bool Jugador::loadMedia()
@@ -52,30 +53,36 @@ bool Jugador::loadMedia()
 }
 void Jugador::handleEvent( SDL_Event& e )
 {
-    //If a key was pressed
-	if( e.type == SDL_KEYDOWN && e.key.repeat == 0 ){
-        //Adjust the velocity
-        switch( e.key.keysym.sym ){
-            case SDLK_UP: mVelY -= JUG_VEL; break;
-            case SDLK_DOWN: mVelY += JUG_VEL; break;
-            case SDLK_LEFT: mVelX -= JUG_VEL; break;
-            case SDLK_RIGHT: mVelX += JUG_VEL; break;
+	//Si está haciendo el truco, no me puedo mover ni patear
+	if (!truco.active){
+			//If a key was pressed
+			if( e.type == SDL_KEYDOWN && e.key.repeat == 0){
+				//Adjust the velocity
+				switch( e.key.keysym.sym ){
+					case SDLK_UP: mVelY -= JUG_VEL; break;
+					case SDLK_DOWN: mVelY += JUG_VEL; break;
+					case SDLK_LEFT: mVelX -= JUG_VEL; break;
+					case SDLK_RIGHT: mVelX += JUG_VEL; break;
 
-        }
-    }
-    //If a key was released
-    else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){
-        //Adjust the velocity
-        switch( e.key.keysym.sym ){
-            case SDLK_UP: mVelY += JUG_VEL; break;
-            case SDLK_DOWN: mVelY -= JUG_VEL; break;
-            case SDLK_LEFT: mVelX += JUG_VEL; break;
-            case SDLK_RIGHT: mVelX -= JUG_VEL; break;
-            case SDLK_SPACE:
-            		patear();
-                 	break;
-        }
-    }
+				}
+			}
+			//If a key was released
+			else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){
+				//Adjust the velocity
+				switch( e.key.keysym.sym ){
+					case SDLK_UP: mVelY += JUG_VEL; break;
+					case SDLK_DOWN: mVelY -= JUG_VEL; break;
+					case SDLK_LEFT: mVelX += JUG_VEL; break;
+					case SDLK_RIGHT: mVelX -= JUG_VEL; break;
+					case SDLK_SPACE: patear(); break;
+					case SDLK_RETURN: hacerTruco(); break;
+				}
+			}
+	}
+}
+
+void Jugador::hacerTruco(){
+	truco.hacerTruco(mPosX,mPosY);
 }
 
 void Jugador::patear(){
@@ -117,23 +124,30 @@ void Jugador::forzarPosicion(int x, int y){
 
 void Jugador::render()
 {
-	if (!pausa){
-		++frame;
-		if( frame / 6 >= JUGADOR_ANIMATION_FRAMES ){
-			frame = 0;
-		}
-	}
 
 	for (list<Pelota *>::iterator it=lista_pelotas.begin(); it != lista_pelotas.end(); ++it)
 		(*it)->render();
 
-	SDL_Rect* currentClip = &gSpriteClips[ frame / 6 ];
-	gJugadorTexture.render( mPosX, mPosY, currentClip );
+
+	if (truco.active){
+		truco.render(pausa);
+	}else{
+		if (!pausa){
+			++frame;
+			if( frame / 6 >= JUGADOR_ANIMATION_FRAMES ){
+				frame = 0;
+			}
+		}
+
+		SDL_Rect* currentClip = &gSpriteClips[ frame / 6 ];
+		gJugadorTexture.render( mPosX, mPosY, currentClip );
+	}
 }
 
 void Jugador::manageAlpha(){
 	int alpha = (pausa || desconectado)?128:255;
-		gJugadorTexture.setAlpha(alpha);
+	gJugadorTexture.setAlpha(alpha);
+	truco.setAlpha(alpha);
 }
 
 void Jugador::managePausa(bool p){
