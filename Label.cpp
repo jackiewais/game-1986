@@ -1,11 +1,15 @@
 #include "Label.h"
 
 
-Label::Label(SDL_Renderer* gRend, string text, int posX, int posY){
+Label::Label(){};
+
+
+void Label::setData(SDL_Renderer* gRend, string text, int posX, int posY, int size){
 	gTextTexture.gRenderer = gRend;
 	ltext = text;
 	mPosX = posX;
 	mPosY = posY;
+	lsize = size;
 
 	//Initialize SDL_ttf
 	if( TTF_Init() == -1 )
@@ -24,7 +28,7 @@ bool Label::loadMedia()
 	bool success = true;
 
 	//Open the font
-	gFont = TTF_OpenFont( "munro_small.ttf", 72 );
+	gFont = TTF_OpenFont( "munro_small.ttf", lsize );
 	if( gFont == NULL )
 	{
 		printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -48,9 +52,7 @@ bool Label::loadMedia()
 	return success;
 }
 
-void Label::setText(string text){
-	ltext = text;
-}
+
 void Label::close()
 {
 	//Free loaded images

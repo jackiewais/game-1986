@@ -7,15 +7,18 @@ using namespace std;
 
 class Label {
 	public:
-		Label(SDL_Renderer* gRend, string text, int posX, int posY);
+		Label();
+		void setData(SDL_Renderer* gRend, string text, int posX, int posY, int size);
 		bool loadMedia();
 		void close();
 		void render();
-		void setText(string text);
 
 	private:
 		string ltext;
+		int lsize;
 		LTexture gTextTexture;
 		TTF_Font *gFont = NULL;
 		int mPosX, mPosY;
+
+
 };

@@ -2,6 +2,7 @@
 #include "Pelota.h"
 #include "PelotaHelper.h"
 #include "TrucoJugador.h"
+#include "Label.h"
 #include <iostream>
 #include <list>
 
@@ -16,7 +17,7 @@ class Jugador
 
 		static const int JUG_VEL = 5;
 
-		Jugador(SDL_Renderer* gRend , int scr_width, int scr_height, double iWidth);
+		Jugador(SDL_Renderer* gRend , int scr_width, int scr_height, int intJug, string nombre);
 		~Jugador();
 
 		void patear();
@@ -41,6 +42,7 @@ class Jugador
 		list<Pelota *> lista_pelotas;
 		PelotaHelper pelotaHelper;
 		TrucoJugador truco;
+		Label lDesconectado;
 
 		int mPosX, mPosY;
 		int mVelX, mVelY;
@@ -50,6 +52,9 @@ class Jugador
 
 		bool pausa = true;
 		bool desconectado = false;
+
+		int id;
+		string name;
 
 		void manageAlpha();
 };

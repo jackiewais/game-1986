@@ -1,14 +1,18 @@
 #include "Jugador.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
 
-Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, double iWidth)
+Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre)
 {
 	gJugadorTexture.gRenderer = gRend;
 
+	id = intJug;
+	name = nombre;
+
     //Initialize the offsets
-    mPosX = scr_width*iWidth;
+    mPosX = scr_width*intJug/3;
     mPosY = scr_height-JUG_HEIGHT;
 
     //Initialize the velocity
@@ -28,6 +32,10 @@ Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, double iWid
 
 	pelotaHelper.initTexture(gJugadorTexture.gRenderer);
 	truco.init(gJugadorTexture.gRenderer);
+
+
+	lDesconectado.setData(gJugadorTexture.gRenderer, string("Jugador " + name + " desconectado"),screen_width/2,(id-1)*24,24);
+
 }
 
 bool Jugador::loadMedia()
@@ -35,7 +43,10 @@ bool Jugador::loadMedia()
 	//Loading success flag
 	bool success = true;
 
-	if( !gJugadorTexture.loadFromFile  ( "sprites/spriteJugador.png" ) )
+	char path[1];
+	//sprintf(path,"sprites/spriteJugador%d.png",id);
+	sprintf(path,"sprites/spriteJugador%d.png",1);
+	if( !gJugadorTexture.loadFromFile  ( path ))
 	{
 		printf( "Failed to load player texture!\n" );
 		success = false;
@@ -141,6 +152,8 @@ void Jugador::render()
 
 		SDL_Rect* currentClip = &gSpriteClips[ frame / 6 ];
 		gJugadorTexture.render( mPosX, mPosY, currentClip );
+		if (desconectado)
+			lDesconectado.render();
 	}
 }
 
@@ -164,4 +177,5 @@ void Jugador::manageDesconexion(bool d){
 Jugador::~Jugador()
 {
 	gJugadorTexture.free();
+	lDesconectado.close();
 }

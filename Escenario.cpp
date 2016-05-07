@@ -34,12 +34,17 @@ Escenario::Escenario(int height, int width) {
 bool Escenario::lunchScreen(){
 
 bool quit = false;
+bool started = false;
+
 SDL_Event e;
 int scrollingOffset = 0;
-Jugador jugador (gRenderer,screen.width,screen.height, 0.3);
-Jugador otroJugador (gRenderer,screen.width,screen.height, 0.6);
+Jugador jugador (gRenderer,screen.width,screen.height, 1, string("Juan"));
+Jugador otroJugador (gRenderer,screen.width,screen.height,2,string("Roman"));
 
-Label lpausa (gRenderer, string("Pause"),screen.width/2,screen.height/2);
+Label lpausa;
+lpausa.setData(gRenderer, string("Pause"),screen.width/2,screen.height/2,72);
+Label lesperando;
+lesperando.setData(gRenderer, string("Esperando Jugadores"),screen.width/2,screen.height/2+36,24);
 
 bool reset = false;
 
@@ -56,9 +61,11 @@ bool reset = false;
 			if ( e.type == SDL_KEYUP && e.key.repeat == 0){
 				switch(e.key.keysym.sym){
 					case SDLK_p:
-						pausa = !pausa;
-						jugador.managePausa(pausa);
-						otroJugador.managePausa(pausa);
+						if (started){
+							pausa = !pausa;
+							jugador.managePausa(pausa);
+							otroJugador.managePausa(pausa);
+						}
 						break;
 
 					case SDLK_r:
@@ -69,41 +76,45 @@ bool reset = false;
 
 			if (!pausa){
 				jugador.handleEvent(e);
+			}
 
-				//TODO ESTO SE REEMPLAZA POR LOS MENSAJES DEL SERVIDOR
-				if (e.type == SDL_KEYUP && e.key.repeat == 0){
-					switch (e.key.keysym.sym){
-						case SDLK_0:
-							otroJugador.patear();
-							break;
-						case SDLK_9:
+			//TODO ESTO SE REEMPLAZA POR LOS MENSAJES DEL SERVIDOR
+			if (e.type == SDL_KEYUP && e.key.repeat == 0){
+				switch (e.key.keysym.sym){
+					case SDLK_0:
+						otroJugador.patear();
+						break;
+					case SDLK_9:
+						otroJugador.hacerTruco();
+						break;
+					case SDLK_1:
+						otroJugador.forzarPosicion(15,70);
+						break;
+					case SDLK_2:
+						otroJugador.forzarPosicion(230,400);
+						break;
+					case SDLK_q:
+						otroJugador.manageDesconexion(true);
+						break;
+					case SDLK_w:
+						otroJugador.manageDesconexion(false);
+						break;
+
+					case SDLK_a:
+						if (!started){
+							pausa = false;
+							started = true;
+							jugador.managePausa(pausa);
+							jugador.hacerTruco();
+							otroJugador.managePausa(pausa);
 							otroJugador.hacerTruco();
 							break;
-						case SDLK_1:
-							otroJugador.forzarPosicion(15,70);
-							break;
-						case SDLK_2:
-							otroJugador.forzarPosicion(230,400);
-							break;
-						case SDLK_q:
-							otroJugador.manageDesconexion(true);
-							break;
-						case SDLK_w:
-							otroJugador.manageDesconexion(false);
-							break;
-					}
+						}
 				}
-				//-------------------------------------------------------------
 			}
+			//-------------------------------------------------------------
 		}
 
-		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-		SDL_RenderClear( gRenderer );
-
-		gBGTexture.render( 0, scrollingOffset);
-		gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
-
-		renderBackgroundObjects(scrollingOffset);
 
 		if (!pausa){
 			jugador.move();
@@ -115,12 +126,23 @@ bool reset = false;
 			{
 				scrollingOffset = 0;
 			}
-		}else{
-			lpausa.render();
 		}
+
+
+		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+		SDL_RenderClear( gRenderer );
+
+		gBGTexture.render( 0, scrollingOffset);
+		gBGTexture.render(0,  scrollingOffset - gBGTexture.getHeight() );
+
+		renderBackgroundObjects(scrollingOffset);
 
 		otroJugador.render();
 		jugador.render();
+		if (pausa)
+			lpausa.render();
+		if (!started)
+			lesperando.render();
 
 		SDL_RenderPresent( gRenderer );
 	}

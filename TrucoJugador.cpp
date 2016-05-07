@@ -1,4 +1,4 @@
-#import "TrucoJugador.h"
+#include "TrucoJugador.h"
 
 void TrucoJugador::init(SDL_Renderer* gRend)
 {
@@ -53,7 +53,7 @@ bool TrucoJugador::render(bool pausa)
 			rep ++;
 		}
 
-		if (rep == 5){
+		if (rep == 15){
 			active = false;
 			rep = 0;
 		}
