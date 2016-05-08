@@ -24,7 +24,7 @@ Escenario::Escenario(int height, int width) {
 	{
 		this->gBGTexture.gRenderer=gRenderer;
 		//Load media
-			
+
 		if( !loadMedia() )
 		{
 		printf( "Failed to load media!\n" );
