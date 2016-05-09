@@ -316,11 +316,13 @@ int Escenario::receiveMsg(char* buffer){
 	return 0;
 }
 
-type_Escenario Escenario::parseMsg(string s){
+type_Elemento Escenario::parseMsg(string s){
 
 	// EJEMPLO: "ANCHOALTO,ANCHOALTOFONDO,POSXPOSYELEMENTO,POSXPOSYELEMENTO"
 	// string msg = "10002000,10002000agua,1000200030004000isla,1000200030004000isla,1000200030004000isla";
 	//std::string s = "10002000,10002000agua,1000200030004000isla,1000200030004000isla,1000200030004000isla";
+
+	//std::string s = "SPRITEID,LONGLONGLONGLONG,PATH";
 
 	std::string delimiter = ",";
 	// COUNT = nos indica la cantidad de iteraciones sobre el string en cuestion.
@@ -334,6 +336,7 @@ type_Escenario Escenario::parseMsg(string s){
 	// Los elementos que componen el escenario.
 	type_Escenario escenario;
 	type_Fondo fondo;
+	type_Elemento miElemento;
 
 	size_t pos = 0;
 	std::string token;
@@ -427,7 +430,7 @@ type_Escenario Escenario::parseMsg(string s){
 	    // Incrementamos COUNT siempre.-
 	    count++;
 	}
-	return escenario;
+	return miElemento;
 }
 
 void Escenario::processMessages(map<int,Elemento*> &elementos, struct gst** rcvMsgsQty, int msgsQty){

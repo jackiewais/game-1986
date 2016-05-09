@@ -41,6 +41,7 @@ struct type_Fondo{
 
 struct type_Elemento{
 	string spritePath;
+	string elementoId;
 	int posicionX;
 	int posicionY;
 	int ancho;
@@ -92,7 +93,7 @@ class Escenario{
 		int socketCliente;
 		void interchangeStatus(map<int,Elemento*> &elementos);
 		int receiveMsg(char* buffer);
-		type_Escenario parseMsg(string s);
+		type_Elemento parseMsg(string s);
 		void processMessages(map<int,Elemento*> &elementos, struct gst** rcvMsgsQty, int msgsQty);
 
 	public:
