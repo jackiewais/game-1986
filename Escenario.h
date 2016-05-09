@@ -43,6 +43,8 @@ struct type_Elemento{
 	string spritePath;
 	int posicionX;
 	int posicionY;
+	int ancho;
+	int alto;
 };
 
 struct type_Escenario{

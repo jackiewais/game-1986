@@ -24,6 +24,8 @@ type_Escenario miEscenario;
 
 Escenario::Escenario(int height, int width) {
 	this->setSize(width,height);
+	//this->setSize(miEscenario.ancho,miEscenario.alto);
+
 	if( !init() )
 	{
 		printf( "Failed to initialize!\n" );
@@ -31,7 +33,6 @@ Escenario::Escenario(int height, int width) {
 	else
 	{
 		this->gBGTexture.gRenderer=gRenderer;
-		//Load media
 
 		if( !loadMedia() )
 		{
@@ -236,12 +237,20 @@ bool Escenario::loadMedia()
 {
 	bool success = true;
 
+	// CARGAMOS LA IMAGEN DE FONDO.
+	//if( !gBGTexture.loadFromFile(miEscenario.fondo.spritePath) )
 	if( !gBGTexture.loadFromFile( "background.bmp") )
 	{
 		printf( "Failed to load background texture!\n" );
 		success = false;
 	}
 
+	// RECORREMOS TODOS LOS ELEMENTOS QUE SE OBTUVIERON RELACIONADOS CON EL ESCENARIO.-
+	/*
+	for(std::list<type_Elemento>::iterator it = miEscenario.elementos.begin(); it != miEscenario.elementos.end(); it++) {
+		insertBackgroundObject((it)->spritePath,(it)->posicionX,(it)->posicionY,(it)->alto,(it)->alto);
+	}
+	*/
 	return success;
 }
 void Escenario::close()
@@ -308,9 +317,11 @@ int Escenario::receiveMsg(char* buffer){
 }
 
 type_Escenario Escenario::parseMsg(string s){
+
 	// EJEMPLO: "ANCHOALTO,ANCHOALTOFONDO,POSXPOSYELEMENTO,POSXPOSYELEMENTO"
-	// string msg = "10002000,10002000agua,10002000isla,10002000isla,10002000isla";
-	//std::string s = "10002000,10002000agua,10002000isla,10002000isla,10002000isla";
+	// string msg = "10002000,10002000agua,1000200030004000isla,1000200030004000isla,1000200030004000isla";
+	//std::string s = "10002000,10002000agua,1000200030004000isla,1000200030004000isla,1000200030004000isla";
+
 	std::string delimiter = ",";
 	// COUNT = nos indica la cantidad de iteraciones sobre el string en cuestion.
 	// 0 = representa el ancho y el alto del escenario.
@@ -333,7 +344,7 @@ type_Escenario Escenario::parseMsg(string s){
 	    	// 0 = representa el ancho y el alto del escenario.
 	    	// Resguardamos la información obtenida del: ESCENARIO.
 	    	digitosAncho = new char[token.substr(0,4).length()+1];
-	    	digitosAlto = new char[token.substr(0,4).length()+1];
+	    	digitosAlto = new char[token.substr(4,4).length()+1];
 	    	if(myUtil.sonDigitos(digitosAncho) && myUtil.sonDigitos(digitosAlto)) {
 				escenario.ancho = std::stoi( token.substr (0,4) );
 				escenario.alto = std::stoi( token.substr (4,4) );
@@ -346,7 +357,7 @@ type_Escenario Escenario::parseMsg(string s){
 	    	// 1 = representa el ancho, el alto y el sprite del fondo.
 	    	// Resguardamos la información obtenida del: FONDO.
 	    	digitosAncho = new char[token.substr(0,4).length()+1];
-	    	digitosAlto = new char[token.substr(0,4).length()+1];
+	    	digitosAlto = new char[token.substr(4,4).length()+1];
 	    	if(myUtil.sonDigitos(digitosAncho) && myUtil.sonDigitos(digitosAlto)) {
 				fondo.ancho = std::stoi( token.substr (0,4) );
 				fondo.alto = std::stoi( token.substr (4,4) );
@@ -372,7 +383,7 @@ type_Escenario Escenario::parseMsg(string s){
 	    	// > 1 = representan todos los elementos que puede haber en el mapa.
 	    	// Resguardamos la información obtenida de un: ELEMENTO.
 	    	digitosAncho = new char[token.substr(0,4).length()+1];
-	    	digitosAlto = new char[token.substr(0,4).length()+1];
+	    	digitosAlto = new char[token.substr(4,4).length()+1];
 	    	if(myUtil.sonDigitos(digitosAncho) && myUtil.sonDigitos(digitosAlto)) {
 	    		// Ambos valores son numéricos, los podemos usar tranquilamente.
 	    		elemento.posicionX = std::stoi( token.substr (0,4) );
@@ -381,6 +392,17 @@ type_Escenario Escenario::parseMsg(string s){
 	    		// Usamos los valores por defecto.
 	    		elemento.posicionX = 10;
 				elemento.posicionY = 15;
+	    	}
+
+	    	digitosAncho = new char[token.substr(8,4).length()+1];
+	    	digitosAlto = new char[token.substr(12,4).length()+1];
+	    	if(myUtil.sonDigitos(digitosAncho) && myUtil.sonDigitos(digitosAlto)) {
+				elemento.ancho = std::stoi( token.substr (8,4) );
+				elemento.alto = std::stoi( token.substr (12,4) );
+	    	} else {
+	    		// Usamos los valores por defecto.
+	    		elemento.ancho = 25;
+				elemento.alto = 25;
 	    	}
 	    	// Validamos que en caso de ser numéricos, esten dentro del rango del fondo.
 	    	// Es decir, no puede estar ubicado en una posición ilógica.
@@ -391,7 +413,7 @@ type_Escenario Escenario::parseMsg(string s){
 			ifstream fondoSprite (token.substr( 8,longToken ).c_str());
 			if (!fondoSprite.good()) {
 				// El archivo imagen que queremos usar no existe, usamos el default.
-				elemento.spritePath = "background.bmp";
+				elemento.spritePath = "spriteJugador_chico.bmp";
 			}
 			else{
 				// El path de la imagen es correcto y la podemos recuperar.
