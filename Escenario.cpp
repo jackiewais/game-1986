@@ -51,6 +51,8 @@ Elemento elemento(1, 0,0);
 jugador.setElemento(&elemento);
 
 Jugador otroJugador (gRenderer,screen.width,screen.height,2,string("Roman"));
+Elemento otroElemento(2, 0,0);
+otroJugador.setElemento(&otroElemento);
 
 Label lpausa;
 lpausa.setData(gRenderer, string("Pause"),screen.width/2,screen.height/2,72);
@@ -160,7 +162,7 @@ bool reset = false;
 
 		SDL_RenderPresent( gRenderer );
 
-		interchangeStatus(elementos);
+		//interchangeStatus(elementos);
 	}
 			
 	close();

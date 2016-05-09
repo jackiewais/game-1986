@@ -309,7 +309,7 @@ int finish()
 }
 
 
-void interchangeStatus(map<int,Elemento*> &elementos){
+/*void interchangeStatus(map<int,Elemento*> &elementos){
 
 	char *bufferSnd, bufferRcv[BUFLEN];
 	struct gst* sndMsg, ** rcvMsgs;
@@ -330,7 +330,7 @@ void interchangeStatus(map<int,Elemento*> &elementos){
 	}
 
 }
-
+*/
 
 void mostrarLogin() {
 
