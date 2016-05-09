@@ -14,7 +14,10 @@ enum status:char{
 	VIVO = 'a',
 	DESTRUIDO = 'b',
 	DISPARANDO = 'c',
-	DESCONECTADO = 'd'
+	DESCONECTADO = 'd',
+	TRUCO = 'e',
+	PAUSA = 'f',
+	RESET = 'g'
 	};
 
 class Elemento {

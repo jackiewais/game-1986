@@ -38,6 +38,10 @@ Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug,
 
 }
 
+void Jugador::setElemento(Elemento* elem){
+	elemento = elem;
+}
+
 bool Jugador::loadMedia()
 {
 	//Loading success flag
@@ -59,7 +63,6 @@ bool Jugador::loadMedia()
 			gSpriteClips[ i ].h =  JUG_HEIGHT;
 		}
 	}
-
 	return success;
 }
 void Jugador::handleEvent( SDL_Event& e )
@@ -94,11 +97,13 @@ void Jugador::handleEvent( SDL_Event& e )
 
 void Jugador::hacerTruco(){
 	truco.hacerTruco(mPosX,mPosY);
+	elemento->update(mPosX,mPosY,TRUCO);
 }
 
 void Jugador::patear(){
 	Pelota* pelota = new Pelota(&pelotaHelper.gPelotaTexture,mPosX+(JUG_WIDTH/2),mPosY);
 	lista_pelotas.push_back(pelota);
+	elemento->update(mPosX,mPosY,DISPARANDO);
 }
 
 void Jugador::moverPelotas(){
@@ -126,6 +131,8 @@ void Jugador::move()
     }
 
     moverPelotas();
+
+    elemento->update(mPosX,mPosY,elemento->getEstado());
 }
 
 void Jugador::forzarPosicion(int x, int y){

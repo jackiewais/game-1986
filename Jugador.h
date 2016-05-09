@@ -2,6 +2,7 @@
 #include "Pelota.h"
 #include "PelotaHelper.h"
 #include "TrucoJugador.h"
+#include "Elemento/Elemento.h"
 #include "Label.h"
 #include <iostream>
 #include <list>
@@ -33,10 +34,13 @@ class Jugador
 
 		bool loadMedia();
 
+		void setElemento(Elemento* elem);
+
 		void managePausa(bool pausa);
 		void manageDesconexion(bool d);
 
     private:
+		Elemento* elemento;
 		LTexture gJugadorTexture;
 		SDL_Rect gSpriteClips[ JUGADOR_ANIMATION_FRAMES ];
 		list<Pelota *> lista_pelotas;

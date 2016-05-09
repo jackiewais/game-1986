@@ -13,6 +13,7 @@
 #include <list>
 #include "LTexture.h"
 #include "Jugador.h"
+#include "Elemento/Elemento.h"
 #include <SDL2/SDL.h>
 #include <map>
 #include "BackgroundTemplate.h"	
@@ -63,6 +64,14 @@ class Escenario{
 
 		//Frees media and shuts down SDL
 		void close();
+		int clientId;
+
+
+		//SOCKET
+		int socketCliente;
+		void interchangeStatus(map<int,Elemento*> &elementos);
+		int receiveMsg(char* buffer);
+		void processMessages(map<int,Elemento*> &elementos, struct gst** rcvMsgsQty, int msgsQty);
 
 	public:
 

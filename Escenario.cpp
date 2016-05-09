@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include <map>
 
+#include <sys/socket.h>
+#include "Utils/messages.h"
+
+#define BUFLEN 1000
 
 using namespace std;
 SDL_Renderer* gRenderer = NULL;
@@ -30,15 +34,22 @@ Escenario::Escenario(int height, int width) {
 		printf( "Failed to load media!\n" );
 		}
 	}
+
 }
 bool Escenario::lunchScreen(){
 
 bool quit = false;
 bool started = false;
 
+
+map<int,Elemento*> elementos;
+
 SDL_Event e;
 int scrollingOffset = 0;
 Jugador jugador (gRenderer,screen.width,screen.height, 1, string("Juan"));
+Elemento elemento(1, 0,0);
+jugador.setElemento(&elemento);
+
 Jugador otroJugador (gRenderer,screen.width,screen.height,2,string("Roman"));
 
 Label lpausa;
@@ -65,11 +76,13 @@ bool reset = false;
 							pausa = !pausa;
 							jugador.managePausa(pausa);
 							otroJugador.managePausa(pausa);
+							elemento.update(elemento.getPosX(),elemento.getPosY(),PAUSA);
 						}
 						break;
 
 					case SDLK_r:
 						reset = true;
+						elemento.update(elemento.getPosX(),elemento.getPosY(),RESET);
 						break;
 				}
 			}
@@ -138,6 +151,7 @@ bool reset = false;
 		renderBackgroundObjects(scrollingOffset);
 
 		otroJugador.render();
+
 		jugador.render();
 		if (pausa)
 			lpausa.render();
@@ -145,6 +159,8 @@ bool reset = false;
 			lesperando.render();
 
 		SDL_RenderPresent( gRenderer );
+
+		interchangeStatus(elementos);
 	}
 			
 	close();
@@ -234,6 +250,62 @@ void Escenario::close()
 
 }
 
+
+void Escenario::interchangeStatus(map<int,Elemento*> &elementos){
+
+	char *bufferSnd, bufferRcv[BUFLEN];
+	struct gst* sndMsg, ** rcvMsgs;
+	int bufferSndLen, rcvMsgsQty;
+
+	sndMsg = genUpdateGstFromElemento(elementos[clientId]);
+	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
+
+	send(socketCliente,bufferSnd,bufferSndLen,0);
+	memset(bufferRcv,0,BUFLEN);
+	if (receiveMsg(bufferRcv) == 0){
+		rcvMsgsQty = decodeMessages(&rcvMsgs, bufferRcv);
+
+		if (rcvMsgsQty != -1){
+			processMessages(elementos, rcvMsgs, rcvMsgsQty);
+		}
+	}
+
+}
+
+int Escenario::receiveMsg(char* buffer){
+
+	char msgLenChar[3];
+	int msgLen, rcvLen;
+
+	rcvLen = recv(socketCliente, buffer, BUFLEN -1 , 0);
+	if( rcvLen < 0){
+		//glog.writeErrorLine("ERROR al recibir la respuesta. El servidor no responde");
+		return 1;
+	}
+
+
+	memcpy(msgLenChar, buffer, 3);
+	msgLen = stoi(msgLenChar, nullptr);
+
+	if (rcvLen == msgLen){//full message received.
+		return 0;
+	}else{//message incomplete.
+		int readed = rcvLen;
+		while ( readed != msgLen){
+			rcvLen = recv(socketCliente, buffer+readed, msgLen-readed, 0);
+			readed += rcvLen;
+		}
+
+	}
+
+	return 0;
+}
+
+void Escenario::processMessages(map<int,Elemento*> &elementos, struct gst** rcvMsgsQty, int msgsQty){
+
+	//TODO
+
+}
 
 
 
