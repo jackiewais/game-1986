@@ -8,15 +8,19 @@
 #include "Escenario.h"	
 #include <stdio.h>
 #include <map>
+#include <fstream>
 
 #include <sys/socket.h>
 #include "Utils/messages.h"
+#include "Utils/Util.h"
 
 #define BUFLEN 1000
 
 using namespace std;
 SDL_Renderer* gRenderer = NULL;
 SDL_Window* gWindow = NULL;
+Util myUtil;
+type_Escenario miEscenario;
 
 Escenario::Escenario(int height, int width) {
 	this->setSize(width,height);
@@ -31,7 +35,7 @@ Escenario::Escenario(int height, int width) {
 
 		if( !loadMedia() )
 		{
-		printf( "Failed to load media!\n" );
+			printf( "Failed to load media!\n" );
 		}
 	}
 
@@ -301,6 +305,107 @@ int Escenario::receiveMsg(char* buffer){
 	}
 
 	return 0;
+}
+
+type_Escenario Escenario::parseMsg(string s){
+	// EJEMPLO: "ANCHOALTO,ANCHOALTOFONDO,POSXPOSYELEMENTO,POSXPOSYELEMENTO"
+	// string msg = "10002000,10002000agua,10002000isla,10002000isla,10002000isla";
+	//std::string s = "10002000,10002000agua,10002000isla,10002000isla,10002000isla";
+	std::string delimiter = ",";
+	// COUNT = nos indica la cantidad de iteraciones sobre el string en cuestion.
+	// 0 = representa el ancho y el alto del escenario.
+	// 1 = representa el ancho, el alto y el sprite del fondo.
+	// > 1 = representan todos los elementos que puede haber en el mapa.
+	int count = 0;
+	int longToken = 0;
+	char* digitosAlto;
+	char* digitosAncho;
+	// Los elementos que componen el escenario.
+	type_Escenario escenario;
+	type_Fondo fondo;
+
+	size_t pos = 0;
+	std::string token;
+	while ((pos = s.find(delimiter)) != std::string::npos) {
+		type_Elemento elemento;
+	    token = s.substr(0, pos);
+	    if(count == 0){
+	    	// 0 = representa el ancho y el alto del escenario.
+	    	// Resguardamos la información obtenida del: ESCENARIO.
+	    	digitosAncho = new char[token.substr(0,4).length()+1];
+	    	digitosAlto = new char[token.substr(0,4).length()+1];
+	    	if(myUtil.sonDigitos(digitosAncho) && myUtil.sonDigitos(digitosAlto)) {
+				escenario.ancho = std::stoi( token.substr (0,4) );
+				escenario.alto = std::stoi( token.substr (4,4) );
+	    	} else {
+				escenario.ancho = 100;
+				escenario.alto = 1000;
+	    	}
+	    }
+	    else if (count == 1){
+	    	// 1 = representa el ancho, el alto y el sprite del fondo.
+	    	// Resguardamos la información obtenida del: FONDO.
+	    	digitosAncho = new char[token.substr(0,4).length()+1];
+	    	digitosAlto = new char[token.substr(0,4).length()+1];
+	    	if(myUtil.sonDigitos(digitosAncho) && myUtil.sonDigitos(digitosAlto)) {
+				fondo.ancho = std::stoi( token.substr (0,4) );
+				fondo.alto = std::stoi( token.substr (4,4) );
+	    	} else {
+				fondo.ancho = 10;
+				fondo.alto = 10;
+	    	}
+
+			// Chequeamos la existencia del archivo imagen en cuestión.
+	    	longToken = token.length() - 8;
+			ifstream fondoSprite (token.substr( 8,longToken ).c_str());
+			if (!fondoSprite.good()) {
+				// El archivo imagen que queremos usar no existe, usamos el default.
+				fondo.spritePath = "background.bmp";
+			}
+			else{
+				// El path de la imagen es correcto y la podemos recuperar.
+				fondo.spritePath = token.substr ( 8,longToken );
+			}
+	    	escenario.fondo = fondo;
+	    }
+	    else if (count > 1){
+	    	// > 1 = representan todos los elementos que puede haber en el mapa.
+	    	// Resguardamos la información obtenida de un: ELEMENTO.
+	    	digitosAncho = new char[token.substr(0,4).length()+1];
+	    	digitosAlto = new char[token.substr(0,4).length()+1];
+	    	if(myUtil.sonDigitos(digitosAncho) && myUtil.sonDigitos(digitosAlto)) {
+	    		// Ambos valores son numéricos, los podemos usar tranquilamente.
+	    		elemento.posicionX = std::stoi( token.substr (0,4) );
+				elemento.posicionY = std::stoi( token.substr (4,4) );
+	    	} else {
+	    		// Usamos los valores por defecto.
+	    		elemento.posicionX = 10;
+				elemento.posicionY = 15;
+	    	}
+	    	// Validamos que en caso de ser numéricos, esten dentro del rango del fondo.
+	    	// Es decir, no puede estar ubicado en una posición ilógica.
+	    	if (!(elemento.posicionX > 0 && elemento.posicionX <= fondo.ancho)) elemento.posicionX = 0;
+	    	if (!(elemento.posicionY > 0 && elemento.posicionY <= fondo.alto)) 	elemento.posicionY = 0;
+			// Chequeamos la existencia del archivo imagen en cuestión.
+	    	longToken = token.length() - 8;
+			ifstream fondoSprite (token.substr( 8,longToken ).c_str());
+			if (!fondoSprite.good()) {
+				// El archivo imagen que queremos usar no existe, usamos el default.
+				elemento.spritePath = "background.bmp";
+			}
+			else{
+				// El path de la imagen es correcto y la podemos recuperar.
+				elemento.spritePath = token.substr ( 8,longToken );
+			}
+			escenario.elementos.push_back(elemento);
+	    }
+	    std::cout << token << std::endl;
+	    s.erase(0, pos + delimiter.length());
+
+	    // Incrementamos COUNT siempre.-
+	    count++;
+	}
+	return escenario;
 }
 
 void Escenario::processMessages(map<int,Elemento*> &elementos, struct gst** rcvMsgsQty, int msgsQty){

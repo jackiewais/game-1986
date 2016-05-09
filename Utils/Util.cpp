@@ -1,8 +1,8 @@
 #include <time.h>
+#include "Util.h"
+#include <cstring>
 
 using namespace std;
-
-#include "Util.h"
 
 // Obtenemos la fecha con el siguiente formato -> YYYY-MM-DD.HH:mm:ss
 string Util::currentDateTime() {
@@ -14,5 +14,15 @@ string Util::currentDateTime() {
     strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
 
     return buf;
+}
+
+
+bool Util::sonDigitos(char* str){
+	for (unsigned int i = 0; i < strlen (str); i++) {
+		if (! isdigit (str[i])) {
+			return false;
+		}
+	}
+	return true;
 }
 

@@ -33,6 +33,25 @@ struct resolution
 	int width;
 };
 
+struct type_Fondo{
+	string spritePath;
+	int ancho;
+	int alto;
+};
+
+struct type_Elemento{
+	string spritePath;
+	int posicionX;
+	int posicionY;
+};
+
+struct type_Escenario{
+	int ancho;
+	int alto;
+	type_Fondo fondo;
+	list<type_Elemento> elementos;
+};
+
 class Escenario{
 
 	private:
@@ -71,6 +90,7 @@ class Escenario{
 		int socketCliente;
 		void interchangeStatus(map<int,Elemento*> &elementos);
 		int receiveMsg(char* buffer);
+		type_Escenario parseMsg(string s);
 		void processMessages(map<int,Elemento*> &elementos, struct gst** rcvMsgsQty, int msgsQty);
 
 	public:

@@ -10,6 +10,7 @@ class Util
 {
 	public:
 		string currentDateTime();
+		bool sonDigitos(char* str);
 };
 
 
