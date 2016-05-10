@@ -14,6 +14,7 @@
 #include "LTexture.h"
 #include "Jugador.h"
 #include "Elemento/Elemento.h"
+#include "connectionManager/ConnectionManager.h"
 #include <SDL2/SDL.h>
 #include <map>
 #include "BackgroundTemplate.h"	
@@ -96,16 +97,18 @@ class Escenario{
 		void updateJugadores();
 
 		//SOCKET
-		int socketCliente;
-		void interchangeStatus(map<int,Elemento*> &elementos);
+		ConnectionManager* conManager;
+		//void interchangeStatus(map<int,Elemento*> &elementos);
+		void sendStatus();
+		void receiveStatus();
 		int receiveMsg(char* buffer);
-		void processMessages(map<int,Elemento*> &elementos, struct gst** rcvMsgsQty, int msgsQty);
+		void processMessages(struct gst** rcvMsgsQty, int msgsQty);
 
 	public:
 
 	Escenario();
-	Escenario(int widht, int height);
-    bool lunchScreen();
+	Escenario(int widht, int height, ConnectionManager* connectionManager);
+    bool lunchScreen(struct gst* position);
 	void insertBackgroundObject(string path, int x, int y, int height, int scrH  );
 	void setSize(int width, int height );
 	void mostrarVariables();

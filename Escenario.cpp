@@ -5,7 +5,8 @@
  *      Author: nahue
  */
 #include <SDL2/SDL.h>
-#include "Escenario.h"	
+#include "Escenario.h"
+#include "connectionManager/ConnectionManager.h"
 #include <stdio.h>
 #include <map>
 #include <fstream>
@@ -25,9 +26,10 @@ type_Elemento miEscenario;
 list<type_Elemento> obstaculos;
 list<type_Elemento> jugadores;
 
-Escenario::Escenario(int height, int width) {
+Escenario::Escenario(int height, int width, ConnectionManager* connectionManager) {
 	this->setSize(width,height);
-	clientId = 1;
+	conManager = connectionManager;
+	clientId = connectionManager -> getId();
 
 	if( !init() )
 	{
@@ -52,29 +54,31 @@ void Escenario::crearJugador(int jugId, string nombre, int posXIni){
 	jugadores[jugId] = otroJugador;
 }
 
-bool Escenario::lunchScreen(){
+bool Escenario::lunchScreen(struct gst* position){
 
-bool quit = false;
-bool started = false;
+	bool quit = false;
+	bool started = false;
 
 
-SDL_Event e;
-int scrollingOffset = 0;
+	SDL_Event e;
+	int scrollingOffset = 0;
 
-crearJugador(1,"Juan",screen.height/3);
-crearJugador(2,"Roman",screen.height*2/3);
+	crearJugador(atoi(position -> id),"Juan",atoi(position -> posx));
+	//crearJugador(2,"Roman",screen.height*2/3);
 
-Jugador* jugador = jugadores[clientId];
+	Jugador* jugador = jugadores[clientId];
 
-Label lpausa;
-lpausa.setData(gRenderer, string("Pause"),screen.width/2,screen.height/2,72);
-Label lesperando;
-lesperando.setData(gRenderer, string("Esperando Jugadores"),screen.width/2,screen.height/2+36,24);
+	Label lpausa;
+	lpausa.setData(gRenderer, string("Pause"),screen.width/2,screen.height/2,72);
+	Label lesperando;
+	lesperando.setData(gRenderer, string("Esperando Jugadores"),screen.width/2,screen.height/2+36,24);
 
-bool reset = false;
+	bool reset = false;
 
 	while( !quit && !reset)
 	{
+
+		sendStatus();
 		//Handle events on queue
 		while( SDL_PollEvent( &e ) != 0 )
 		{
@@ -106,41 +110,6 @@ bool reset = false;
 				jugador->handleEvent(e);
 			}
 
-			//TODO ESTO SE REEMPLAZA POR LOS MENSAJES DEL SERVIDOR
-			if (e.type == SDL_KEYUP && e.key.repeat == 0){
-				switch (e.key.keysym.sym){
-					case SDLK_0:
-						jugadores[2]->elemento->updateStatus(DISPARANDO);
-						break;
-					case SDLK_9:
-						jugadores[2]->elemento->updateStatus(TRUCO);
-						break;
-					case SDLK_1:
-						jugadores[2]->elemento->updatePos(15,70);
-						break;
-					case SDLK_2:
-						jugadores[2]->elemento->updatePos(230,400);
-						break;
-					case SDLK_q:
-						jugadores[2]->elemento->updateStatus(DESCONECTADO);
-						break;
-					case SDLK_w:
-						jugadores[2]->elemento->updateStatus(VIVO);
-						break;
-
-					case SDLK_a:
-						if (!started){
-							pausa = false;
-							started = true;
-							for(auto const &it : jugadores) {
-								it.second->managePausa(pausa);
-								it.second ->hacerTruco();
-							}
-							break;
-						}
-				}
-			}
-			//-------------------------------------------------------------
 		}
 
 		if (!pausa){
@@ -181,9 +150,11 @@ bool reset = false;
 
 		SDL_RenderPresent( gRenderer );
 
+		receiveStatus();
 		//interchangeStatus(elementos);
 		updateJugadores();
 		jugador->cleanStatus();
+
 	}
 			
 	close();
@@ -282,54 +253,32 @@ void Escenario::close()
 }
 
 
-void Escenario::interchangeStatus(map<int,Elemento*> &elementos){
+void Escenario::sendStatus(){
 
-	char *bufferSnd, bufferRcv[BUFLEN];
-	struct gst* sndMsg, ** rcvMsgs;
-	int bufferSndLen, rcvMsgsQty;
+	char *bufferSnd;
+	struct gst* sndMsg;
+	int bufferSndLen;
 
-	sndMsg = genUpdateGstFromElemento(elementos[clientId]);
+	sndMsg = genUpdateGstFromElemento(jugadores[clientId] -> elemento);
 	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
+	conManager->sendMsg(bufferSnd,bufferSndLen);
+	delete bufferSnd;
+}
 
-	send(socketCliente,bufferSnd,bufferSndLen,0);
+void Escenario::receiveStatus(){
+
+	char bufferRcv[BUFLEN];
+	struct gst** rcvMsgs;
+	int rcvMsgsQty;
 	memset(bufferRcv,0,BUFLEN);
-	if (receiveMsg(bufferRcv) == 0){
+	if (conManager->receive(bufferRcv) == 0){
 		rcvMsgsQty = decodeMessages(&rcvMsgs, bufferRcv);
 
 		if (rcvMsgsQty != -1){
-			processMessages(elementos, rcvMsgs, rcvMsgsQty);
+			processMessages(rcvMsgs, rcvMsgsQty);
 		}
 	}
 
-}
-
-int Escenario::receiveMsg(char* buffer){
-
-	char msgLenChar[3];
-	int msgLen, rcvLen;
-
-	rcvLen = recv(socketCliente, buffer, BUFLEN -1 , 0);
-	if( rcvLen < 0){
-		//glog.writeErrorLine("ERROR al recibir la respuesta. El servidor no responde");
-		return 1;
-	}
-
-
-	memcpy(msgLenChar, buffer, 3);
-	msgLen = stoi(msgLenChar, nullptr);
-
-	if (rcvLen == msgLen){//full message received.
-		return 0;
-	}else{//message incomplete.
-		int readed = rcvLen;
-		while ( readed != msgLen){
-			rcvLen = recv(socketCliente, buffer+readed, msgLen-readed, 0);
-			readed += rcvLen;
-		}
-
-	}
-
-	return 0;
 }
 
 type_Elemento Escenario::parseMsg(string s)
@@ -405,9 +354,30 @@ type_Elemento Escenario::parseMsg(string s)
 	return miElemento;
 }
 
-void Escenario::processMessages(map<int,Elemento*> &elementos, struct gst** rcvMsgsQty, int msgsQty){
+void Escenario::processMessages(struct gst** msgs, int msgQty){
+	int tempId;
+	Jugador* tempJu;
 
-	//TODO
+	for (int i = 0; i < msgQty; i++){
+
+		if (msgs[i] -> type[0] == '2'){
+			tempId = atoi(msgs[i]-> id);
+			tempJu = jugadores[tempId];
+			if (tempJu == NULL){
+				//agregar Jugador
+				crearJugador(atoi(msgs[i] -> id),"Juan",atoi(msgs[i] -> posx));
+			}
+			if (tempId != clientId)
+				jugadores[tempId]-> elemento -> update(msgs[i]);
+		}
+		else if (msgs[i] -> type[0] == '8'){
+			if (msgs[i] -> info[0] == (char) command::DISCONNECT){
+				conManager -> disconnect();
+			}
+		}
+
+		delete msgs[i];
+	}
 
 }
 
