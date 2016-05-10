@@ -31,8 +31,10 @@ unsigned short clientId;
 string ipChar;
 bool isConnected, isRunning;
 Log glog;
-int socketCliente;
+int socketCliente, msgsQty;
 char userName[50];
+map<tipoELemento, type_Elemento> elements;
+
 
 enum messageType {CHAR, INT, DOUBLE, STRING, ERROR};
 
@@ -40,8 +42,25 @@ bool mockConnection = false;
 
 void playGame(){
 	bool quit = false;
+	type_Elemento elem;
+	/*descomentar esto cuando este el srv listo
+	int height;
+	Escenario* mapa = new Escenario(0,0);
 	while (!quit){
 
+		for (map<tipoELemento,type_Elemento>::iterator it=elements.begin(); it!=elements.end(); ++it) {
+			elem = it->second;
+			if (it->first == FONDO){
+				height = elem.alto;
+		    	mapa->setSize(elem.ancho, height);
+		    } else {
+		    	elem = it->second;
+		    	mapa->insertBackgroundObject(elem.elementoId, elem.posicionX, elem.posicionY,
+		    			elem.alto, height);
+		    }
+
+		}*/
+	while (!quit){ // borrar esta linea cuando se descomente lo de arriba
 		int width= 500;
 		int height = 500;
 
@@ -58,16 +77,6 @@ void playGame(){
 		mapa->insertBackgroundObject("sprites/pelota.png", 100,100,40,height);
 		mapa->insertBackgroundObject("sprites/pelota.png", 450,657,40,height);
 		mapa->insertBackgroundObject("sprites/pelota.png", 300,500,40,height);
-
-		/*mapa->insertBackgroundObject("sprites/pelota.png", 100,100);
-		mapa->insertBackgroundObject("sprites/pelota.png", 150,100);
-		mapa->insertBackgroundObject("sprites/pelota.png", 200,100);
-		mapa->insertBackgroundObject("sprites/pelota.png", 250,100);
-		mapa->insertBackgroundObject("sprites/pelota.png", 300,100);
-		mapa->insertBackgroundObject("sprites/pelota.png", 350,100);
-		mapa->insertBackgroundObject("sprites/pelota.png", 400,100);
-		mapa->insertBackgroundObject("sprites/pelota.png", 450,100);
-		mapa->insertBackgroundObject("sprites/pelota.png", 500,100);*/
 
 		quit = mapa->lunchScreen();
 	}
@@ -352,6 +361,55 @@ void mostrarLogin() {
 	}
 }
 
+string toUpercase(string id){
+	string upId;
+	for (int i=0; i<id.length(); ++i)
+		upId[i] = toupper(id[i]);
+	return upId;
+}
+
+tipoELemento getId(string id) {
+	if (id == "FONDO")
+		return FONDO;
+	else if (id == "ELEMENTO")
+		return ELEMENTO;
+	else if (id == "JUGADOR1")
+		return JUGADOR1;
+	else if (id == "JUGADOR2")
+		return JUGADOR2;
+	else if (id == "JUGADOR3")
+		return JUGADOR3;
+	else if (id == "JUGADOR4")
+		return JUGADOR4;
+	else if (id == "JUGADOR5")
+		return JUGADOR5;
+	else return NO_ELEM;
+}
+
+void loadScenario() {
+	char *bufferSnd, bufferRcv[BUFLEN];
+	struct gst* sndMsg;
+	int bufferSndLen;
+	Escenario* mapa = new Escenario(0,0);
+
+	sndMsg = genAdminGst(0,command::REQ_SCENARIO);
+	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
+
+	send(socketCliente,bufferSnd,bufferSndLen,0);
+	memset(bufferRcv,0,BUFLEN);
+	if (receiveMsg(bufferRcv) == 0) {
+		msgsQty = atoi(bufferRcv);
+		for (int i = 0; i < msgsQty; i++) {
+			memset(bufferRcv,0,BUFLEN);
+			if (receiveMsg(bufferRcv) == 0){
+				type_Elemento element = mapa->parseMsg(bufferRcv);
+				tipoELemento id = getId(toUpercase(element.elementoId));
+				elements.insert(pair<tipoELemento,type_Elemento>(id,element));
+			}
+		}
+	}
+}
+
 int main( int argc, char* args[] )
 {
 
@@ -369,6 +427,7 @@ int main( int argc, char* args[] )
 
 	//elementos[clientId] es el elemento controlado por el cliente
 	//dettachGraphicsThread(elementos, elementos[clientId]);
+//	loadScenario(); descomentar esto cuando este listo el server
 	isRunning = true;
 	while(isRunning)
 	{

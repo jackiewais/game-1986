@@ -55,7 +55,7 @@ struct type_Escenario{
 	list<type_Elemento> elementos;
 };
 
-enum tipoELemento {FONDO, ELEMENTO, JUGADOR1, JUGADOR2, JUGADOR3, JUGADOR4, JUGADOR5};
+enum tipoELemento {FONDO, ELEMENTO, JUGADOR1, JUGADOR2, JUGADOR3, JUGADOR4, JUGADOR5, NO_ELEM};
 
 class Escenario{
 
@@ -95,17 +95,18 @@ class Escenario{
 		int socketCliente;
 		void interchangeStatus(map<int,Elemento*> &elementos);
 		int receiveMsg(char* buffer);
-		type_Elemento parseMsg(string s);
 		void processMessages(map<int,Elemento*> &elementos, struct gst** rcvMsgsQty, int msgsQty);
 
 	public:
 
+	Escenario();
 	Escenario(int widht, int height);
     bool lunchScreen();
 	void insertBackgroundObject(string path, int x, int y, int height, int scrH  );
 	void setSize(int width, int height );
 	void mostrarVariables();
 	void renderBackgroundObjects(int scrollingOffset);	
+	type_Elemento parseMsg(string s);
 
 
 };

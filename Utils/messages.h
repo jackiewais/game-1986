@@ -77,7 +77,8 @@ enum command:char{
 	PAUSE = 'p',
 	CON_SUCCESS = 's',
 	CON_FAIL = 'f',
-	DISCONNECT = 'q'
+	DISCONNECT = 'q',
+	REQ_SCENARIO = 'e'
 };
 
 /* En *msgs crea un array de punteros a gst's. Se accede a los gst como *((*msgs)[n])
