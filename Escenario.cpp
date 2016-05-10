@@ -20,7 +20,10 @@ using namespace std;
 SDL_Renderer* gRenderer = NULL;
 SDL_Window* gWindow = NULL;
 Util myUtil;
-type_Escenario miEscenario;
+
+type_Elemento miEscenario;
+list<type_Elemento> obstaculos;
+list<type_Elemento> jugadores;
 
 Escenario::Escenario(int height, int width) {
 	this->setSize(width,height);
@@ -238,7 +241,7 @@ bool Escenario::loadMedia()
 	bool success = true;
 
 	// CARGAMOS LA IMAGEN DE FONDO.
-	//if( !gBGTexture.loadFromFile(miEscenario.fondo.spritePath) )
+	//if( !gBGTexture.loadFromFile(miEscenario.spritePath) )
 	if( !gBGTexture.loadFromFile( "background.bmp") )
 	{
 		printf( "Failed to load background texture!\n" );
@@ -247,7 +250,7 @@ bool Escenario::loadMedia()
 
 	// RECORREMOS TODOS LOS ELEMENTOS QUE SE OBTUVIERON RELACIONADOS CON EL ESCENARIO.-
 	/*
-	for(std::list<type_Elemento>::iterator it = miEscenario.elementos.begin(); it != miEscenario.elementos.end(); it++) {
+	for(std::list<type_Elemento>::iterator it = obstaculos.begin(); it != obstaculos.end(); it++) {
 		insertBackgroundObject((it)->spritePath,(it)->posicionX,(it)->posicionY,(it)->alto,(it)->alto);
 	}
 	*/
