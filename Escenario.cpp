@@ -23,8 +23,13 @@ Util myUtil;
 
 type_Elemento miEscenario;
 list<type_Elemento> obstaculos;
-list<type_Elemento> jugadores;
+list<type_Elemento> spriteJugadores;
 
+Escenario::Escenario() {
+	clientId = 1;
+}
+
+//Deprecado.
 Escenario::Escenario(int height, int width) {
 	this->setSize(width,height);
 	clientId = 1;
@@ -402,13 +407,47 @@ type_Elemento Escenario::parseMsg(string s)
 	    // Incrementamos COUNT siempre.-
 	    count++;
 	}
+
+	// ==============================================
+	// Lógica para setear las variables dentro de
+	// la propia instancia del mapa.
+	/*
+		type_Elemento miEscenario;
+		list<type_Elemento> obstaculos;
+		list<type_Elemento> jugadores;
+	*/
+	// ==============================================
+	if (miElemento.elementoId == "FONDO") miEscenario = miElemento;
+	else if (miElemento.elementoId == "ELEMENTO") obstaculos.push_back(miElemento);
+	else if (miElemento.elementoId == "JUGADOR1") spriteJugadores.push_back(miElemento);
+	else if (miElemento.elementoId == "JUGADOR2") spriteJugadores.push_back(miElemento);
+	else if (miElemento.elementoId == "JUGADOR3") spriteJugadores.push_back(miElemento);
+	else if (miElemento.elementoId == "JUGADOR4") spriteJugadores.push_back(miElemento);
+	else if (miElemento.elementoId == "JUGADOR5") spriteJugadores.push_back(miElemento);
+	// ==============================================
 	return miElemento;
 }
 
 void Escenario::processMessages(map<int,Elemento*> &elementos, struct gst** rcvMsgsQty, int msgsQty){
-
 	//TODO
+}
 
+void Escenario::generarEscenario()
+{
+	this->setSize(miEscenario.ancho,miEscenario.alto);
+	if( !init() )
+	{
+		printf( "Failed to initialize!\n" );
+	}
+	else
+	{
+		this->gBGTexture.gRenderer=gRenderer;
+
+		if( !loadMedia() )
+		{
+			printf( "Failed to load media!\n" );
+		}
+	}
 }
 
 

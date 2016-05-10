@@ -111,6 +111,7 @@ class Escenario{
 	void mostrarVariables();
 	void renderBackgroundObjects(int scrollingOffset);	
 	type_Elemento parseMsg(string s);
+	void generarEscenario();
 
 
 };
