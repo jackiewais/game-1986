@@ -27,7 +27,7 @@ list<type_Elemento> jugadores;
 
 Escenario::Escenario(int height, int width) {
 	this->setSize(width,height);
-	//this->setSize(miEscenario.ancho,miEscenario.alto);
+	clientId = 1;
 
 	if( !init() )
 	{
@@ -44,23 +44,27 @@ Escenario::Escenario(int height, int width) {
 	}
 
 }
+
+void Escenario::crearJugador(int jugId, string nombre, int posXIni){
+	Jugador* otroJugador = new Jugador(gRenderer,screen.width,screen.height, jugId, nombre);
+	Elemento* elemento = new Elemento(jugId,posXIni,screen.height-68);
+	otroJugador->setElemento(elemento);
+	jugadores[jugId] = otroJugador;
+}
+
 bool Escenario::lunchScreen(){
 
 bool quit = false;
 bool started = false;
 
 
-map<int,Elemento*> elementos;
-
 SDL_Event e;
 int scrollingOffset = 0;
-Jugador jugador (gRenderer,screen.width,screen.height, 1, string("Juan"));
-Elemento elemento(1, 0,0);
-jugador.setElemento(&elemento);
 
-Jugador otroJugador (gRenderer,screen.width,screen.height,2,string("Roman"));
-Elemento otroElemento(2, 0,0);
-otroJugador.setElemento(&otroElemento);
+crearJugador(1,"Juan",screen.height/3);
+crearJugador(2,"Roman",screen.height*2/3);
+
+Jugador* jugador = jugadores[clientId];
 
 Label lpausa;
 lpausa.setData(gRenderer, string("Pause"),screen.width/2,screen.height/2,72);
@@ -84,53 +88,54 @@ bool reset = false;
 					case SDLK_p:
 						if (started){
 							pausa = !pausa;
-							jugador.managePausa(pausa);
-							otroJugador.managePausa(pausa);
-							elemento.update(elemento.getPosX(),elemento.getPosY(),PAUSA);
+							for(auto const &it : jugadores) {
+								it.second->managePausa(pausa);
+							}
+							jugador->elemento->update(jugador->elemento->getPosX(),jugador->elemento->getPosY(),PAUSA);
 						}
 						break;
 
 					case SDLK_r:
 						reset = true;
-						elemento.update(elemento.getPosX(),elemento.getPosY(),RESET);
+						jugador->elemento->update(jugador->elemento->getPosX(),jugador->elemento->getPosY(),RESET);
 						break;
 				}
 			}
 
 			if (!pausa){
-				jugador.handleEvent(e);
+				jugador->handleEvent(e);
 			}
 
 			//TODO ESTO SE REEMPLAZA POR LOS MENSAJES DEL SERVIDOR
 			if (e.type == SDL_KEYUP && e.key.repeat == 0){
 				switch (e.key.keysym.sym){
 					case SDLK_0:
-						otroJugador.patear();
+						jugadores[2]->elemento->updateStatus(DISPARANDO);
 						break;
 					case SDLK_9:
-						otroJugador.hacerTruco();
+						jugadores[2]->elemento->updateStatus(TRUCO);
 						break;
 					case SDLK_1:
-						otroJugador.forzarPosicion(15,70);
+						jugadores[2]->elemento->updatePos(15,70);
 						break;
 					case SDLK_2:
-						otroJugador.forzarPosicion(230,400);
+						jugadores[2]->elemento->updatePos(230,400);
 						break;
 					case SDLK_q:
-						otroJugador.manageDesconexion(true);
+						jugadores[2]->elemento->updateStatus(DESCONECTADO);
 						break;
 					case SDLK_w:
-						otroJugador.manageDesconexion(false);
+						jugadores[2]->elemento->updateStatus(VIVO);
 						break;
 
 					case SDLK_a:
 						if (!started){
 							pausa = false;
 							started = true;
-							jugador.managePausa(pausa);
-							jugador.hacerTruco();
-							otroJugador.managePausa(pausa);
-							otroJugador.hacerTruco();
+							for(auto const &it : jugadores) {
+								it.second->managePausa(pausa);
+								it.second ->hacerTruco();
+							}
 							break;
 						}
 				}
@@ -138,11 +143,11 @@ bool reset = false;
 			//-------------------------------------------------------------
 		}
 
-
 		if (!pausa){
-			jugador.move();
-			otroJugador.moverPelotas();
-
+			jugador->move();
+			for(auto const &it : jugadores) {
+				it.second ->moverPelotas();
+			}
 			//Scroll background
 			++scrollingOffset;
 			if( scrollingOffset >gBGTexture.getHeight() )
@@ -160,9 +165,15 @@ bool reset = false;
 
 		renderBackgroundObjects(scrollingOffset);
 
-		otroJugador.render();
+		//Renderizo el resto de los jugadores
+		for(auto const &it : jugadores) {
+			if (it.first != clientId){
+				it.second ->render();
+			}
+		}
 
-		jugador.render();
+		//Renderizo mi jugador para que esté adelante
+		jugador->render();
 		if (pausa)
 			lpausa.render();
 		if (!started)
@@ -171,6 +182,8 @@ bool reset = false;
 		SDL_RenderPresent( gRenderer );
 
 		//interchangeStatus(elementos);
+		updateJugadores();
+		jugador->cleanStatus();
 	}
 			
 	close();
@@ -396,6 +409,16 @@ void Escenario::processMessages(map<int,Elemento*> &elementos, struct gst** rcvM
 
 	//TODO
 
+}
+
+
+void Escenario::updateJugadores(){
+	for(auto const &it : jugadores) {
+		if (it.first != clientId){
+			it.second->updateFromElemento();
+			//MANEJAR PAUSA Y RESET
+		}
+	}
 }
 
 

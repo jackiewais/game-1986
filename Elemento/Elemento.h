@@ -32,6 +32,8 @@ public:
 //	virtual ~Elemento();
 	void update(int x, int y, status estado);
 	void update(struct gst*);
+	void updateStatus(status estado);
+	void updatePos(int x, int y);
 	int getId();
 	int getPosX();
 	int getPosY();
