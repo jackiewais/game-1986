@@ -26,6 +26,7 @@ class Jugador
 		void moverPelotas();
 		void forzarPosicion(int x, int y);
 
+		void updateFromElemento();
 		void handleEvent( SDL_Event& e);
 
 		void move();
@@ -38,9 +39,9 @@ class Jugador
 
 		void managePausa(bool pausa);
 		void manageDesconexion(bool d);
-
-    private:
+		void cleanStatus();
 		Elemento* elemento;
+    private:
 		LTexture gJugadorTexture;
 		SDL_Rect gSpriteClips[ JUGADOR_ANIMATION_FRAMES ];
 		list<Pelota *> lista_pelotas;

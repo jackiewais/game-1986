@@ -33,9 +33,7 @@ Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug,
 	pelotaHelper.initTexture(gJugadorTexture.gRenderer);
 	truco.init(gJugadorTexture.gRenderer);
 
-
-	lDesconectado.setData(gJugadorTexture.gRenderer, string("Jugador " + name + " desconectado"),screen_width/2,(id-1)*24,24);
-
+	lDesconectado.setData(gJugadorTexture.gRenderer, "Jugador " + to_string(id) + " desconectado",screen_width/2,(id-1)*24,24);
 }
 
 void Jugador::setElemento(Elemento* elem){
@@ -47,10 +45,7 @@ bool Jugador::loadMedia()
 	//Loading success flag
 	bool success = true;
 
-	char path[1];
-	//sprintf(path,"sprites/spriteJugador%d.png",id);
-	sprintf(path,"sprites/spriteJugador%d.png",1);
-	if( !gJugadorTexture.loadFromFile  ( path ))
+	if( !gJugadorTexture.loadFromFile  ( "sprites/spriteJugador" + to_string(id) + ".png" ))
 	{
 		printf( "Failed to load player texture!\n" );
 		success = false;
@@ -130,9 +125,8 @@ void Jugador::move()
         mPosY -= mVelY;
     }
 
-    moverPelotas();
+    elemento->updatePos(mPosX,mPosY);
 
-    elemento->update(mPosX,mPosY,elemento->getEstado());
 }
 
 void Jugador::forzarPosicion(int x, int y){
@@ -140,12 +134,37 @@ void Jugador::forzarPosicion(int x, int y){
 	mPosY = y;
 }
 
+
+void Jugador::updateFromElemento(){
+	forzarPosicion(elemento->getPosX(),elemento->getPosY());
+
+	switch (elemento->getEstado()){
+		case DISPARANDO:
+			patear();
+			cleanStatus();
+			break;
+		case TRUCO:
+			hacerTruco();
+			cleanStatus();
+			break;
+		case DESCONECTADO:
+			manageDesconexion(true);
+			break;
+		case VIVO:
+			if (desconectado)
+				manageDesconexion(false);
+			break;
+	}
+
+}
+
+void Jugador::cleanStatus(){
+	elemento->updateStatus((desconectado)?DESCONECTADO:VIVO);
+}
 void Jugador::render()
 {
-
 	for (list<Pelota *>::iterator it=lista_pelotas.begin(); it != lista_pelotas.end(); ++it)
 		(*it)->render();
-
 
 	if (truco.active){
 		truco.render(pausa);

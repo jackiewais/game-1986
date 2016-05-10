@@ -91,6 +91,10 @@ class Escenario{
 		int clientId;
 
 
+		map<int,Jugador*> jugadores;
+		void crearJugador(int id, string nombre, int posXIni);
+		void updateJugadores();
+
 		//SOCKET
 		int socketCliente;
 		void interchangeStatus(map<int,Elemento*> &elementos);
