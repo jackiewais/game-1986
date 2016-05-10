@@ -3,9 +3,9 @@
 class TrucoJugador{
 
 public:
-	static const int T_WIDTH = 66.5;
+	static const int T_WIDTH = 70;
 	static const int T_HEIGHT = 68;
-	static const int TRUCO_ANIMATION_FRAMES = 4;
+	static const int TRUCO_ANIMATION_FRAMES = 15;
 
 	void init(SDL_Renderer* gRend);
 

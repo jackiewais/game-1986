@@ -18,7 +18,7 @@ bool TrucoJugador::loadMedia()
 {
 	bool success = true;
 
-	if( !gTrucoTexture.loadFromFile  ( "sprites/jugadorColision.png" ) )
+	if( !gTrucoTexture.loadFromFile  ( "sprites/truco.png" ) )
 	{
 		printf( "Failed to load move texture!\n" );
 		success = false;
@@ -43,17 +43,17 @@ void TrucoJugador::hacerTruco(int posX, int posY){
 }
 bool TrucoJugador::render(bool pausa)
 {
-	SDL_Rect* currentClip = &gSpriteClips[ frame / 4 ];
+	SDL_Rect* currentClip = &gSpriteClips[ frame / 15 ];
 	gTrucoTexture.render( mPosX, mPosY, currentClip );
 
 	if (!pausa){
 		++frame;
-		if( frame / 4 >= TRUCO_ANIMATION_FRAMES ){
+		if( frame / 15 >= TRUCO_ANIMATION_FRAMES ){
 			frame = 0;
 			rep ++;
 		}
 
-		if (rep == 15){
+		if (rep == 1){
 			active = false;
 			rep = 0;
 		}
