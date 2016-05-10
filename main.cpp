@@ -43,7 +43,7 @@ bool mockConnection = false;
 void playGame(){
 	bool quit = false;
 	type_Elemento elem;
-	/*descomentar esto cuando este el srv listo
+	/*descomentar esto cuando este listo el server
 	int height;
 	Escenario* mapa = new Escenario(0,0);
 	while (!quit){
