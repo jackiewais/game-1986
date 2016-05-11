@@ -54,6 +54,11 @@ Escenario::Escenario(int height, int width, ConnectionManager* connectionManager
 
 }
 
+void Escenario::setEscenarioSize(int width, int height){
+this->escenarioSize.width=width;
+this->escenarioSize.height=height;
+}
+
 void Escenario::crearJugador(int jugId, string nombre, int posXIni){
 	Jugador* otroJugador = new Jugador(gRenderer,screen.width,screen.height, jugId, nombre);
 	Elemento* elemento = new Elemento(jugId,posXIni,screen.height-68);

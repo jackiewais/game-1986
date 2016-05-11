@@ -63,9 +63,10 @@ class Escenario{
 	private:
 
 		char *spriteBackground;
-
+		//WindowSize
 		resolution screen;
-
+		//EscenarioSize = tamaño del nivel
+		resolution escenarioSize;
 		// fps
 		int scroll ;
 
@@ -115,6 +116,7 @@ class Escenario{
 	void renderBackgroundObjects(int scrollingOffset);	
 	type_Elemento parseMsg(string s);
 	void generarEscenario();
+	void setEscenarioSize(int width, int height);
 
 
 };
