@@ -326,7 +326,7 @@ void Escenario::receiveStatus(){
 type_Elemento Escenario::parseMsg(string s)
 {
 	//std::string s = "SPRITEID,LONGLONGLONGLONG,PATH";
-
+	string cleanS = trim(s);
 	std::string delimiter = ",";
 	// COUNT = nos indica la cantidad de iteraciones sobre el string en cuestion.
 	// 0 = representa el ID del elemento.
@@ -342,9 +342,9 @@ type_Elemento Escenario::parseMsg(string s)
 
 	size_t pos = 0;
 	std::string token;
-	while ((pos = s.find(delimiter)) != std::string::npos)
+	while ((pos = cleanS.find(delimiter)) != std::string::npos)
 	{
-	    token = s.substr(0, pos);
+	    token = cleanS.substr(0, pos);
 	    if(count == 0)
 	    {
 	    	// 0 = representa el ID del elemento con el que estamos trabajando.
@@ -418,6 +418,13 @@ type_Elemento Escenario::parseMsg(string s)
 	else if (miElemento.elementoId == "JUGADOR5") spriteJugadores.push_back(miElemento);
 	// ==============================================
 	return miElemento;
+}
+
+string Escenario::trim(string& str)
+{
+    size_t first = str.find_first_not_of(' ');
+    size_t last = str.find_last_not_of(' ');
+    return str.substr(first, (last-first+1));
 }
 
 void Escenario::processMessages(struct gst** msgs, int msgQty){

@@ -98,7 +98,7 @@ class Escenario{
 		map<int,Jugador*> jugadores;
 		void crearJugador(int id, string nombre, int posXIni);
 		void updateJugadores();
-
+		string trim(string& str);
 		//SOCKET
 		ConnectionManager* conManager;
 		//void interchangeStatus(map<int,Elemento*> &elementos);
@@ -120,7 +120,6 @@ class Escenario{
 	type_Elemento parseMsg(string s);
 	void generarEscenario();
 	void setEscenarioSize(int height);
-
 	int cantJugadores;
 
 };
