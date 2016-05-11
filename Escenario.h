@@ -116,7 +116,7 @@ class Escenario{
 	void renderBackgroundObjects(int scrollingOffset);	
 	type_Elemento parseMsg(string s);
 	void generarEscenario();
-	void setEscenarioSize(int width, int height);
+	void setEscenarioSize(int height);
 
 
 };

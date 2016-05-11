@@ -52,14 +52,15 @@ void playGame(ConnectionManager* connectionManager, struct gst* position){
 
 		}*/
 	while (!quit){ // borrar esta linea cuando se descomente lo de arriba
-		int width= 500;
-		int height = 500;
+		int width= 500;	// tiene que ser el valor de ancho del escenario. Entonces el escenario es igual de ancho que la ventana (se levanta del xml)
+		int height = 500; // puede ser cualquiera (es el alto de la ventana)
 
 		//crea una ventana y muestra una imagen
 		Escenario* mapa = new Escenario(width,height,connectionManager,4);
 		int x = 200;
 		int y = 500;
 		//cargo varios backround
+		mapa->setEscenarioSize(1000); //setea el alto del escenario. Esto se levanta del xml
 
 		mapa->insertBackgroundObject("enfermera", 0,0,84,height);
 		mapa->insertBackgroundObject("sprites/pelota.png", x,y,40,height);

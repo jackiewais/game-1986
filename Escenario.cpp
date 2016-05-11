@@ -54,8 +54,7 @@ Escenario::Escenario(int height, int width, ConnectionManager* connectionManager
 
 }
 
-void Escenario::setEscenarioSize(int width, int height){
-this->escenarioSize.width=width;
+void Escenario::setEscenarioSize( int height){
 this->escenarioSize.height=height;
 }
 
