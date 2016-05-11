@@ -56,7 +56,7 @@ struct type_Escenario{
 	list<type_Elemento> elementos;
 };
 
-enum tipoELemento {FONDO, ELEMENTO, JUGADOR1, JUGADOR2, JUGADOR3, JUGADOR4, JUGADOR5, NO_ELEM};
+enum tipoELemento {FONDO, VENTANA, ELEMENTO, JUGADOR1, JUGADOR2, JUGADOR3, JUGADOR4, JUGADOR5, NO_ELEM};
 
 class Escenario{
 
@@ -120,8 +120,5 @@ class Escenario{
 
 
 };
-
-
-
 
 #endif /* ESCENARIO_H_ */

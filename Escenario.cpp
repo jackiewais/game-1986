@@ -22,6 +22,7 @@ SDL_Renderer* gRenderer = NULL;
 SDL_Window* gWindow = NULL;
 Util myUtil;
 
+type_Elemento miVentana;
 type_Elemento miEscenario;
 list<type_Elemento> obstaculos;
 list<type_Elemento> spriteJugadores;
@@ -328,8 +329,10 @@ type_Elemento Escenario::parseMsg(string s)
 	    		miElemento.ancho = std::stoi( token.substr (0,4) );
 	    		miElemento.alto = std::stoi( token.substr (4,4) );
 	    	} else {
-	    		miElemento.ancho = 10;
-	    		miElemento.alto = 10;
+	    		miElemento.ancho = 10; miElemento.alto = 10;
+				if (miElemento.elementoId == "FONDO") {miElemento.ancho = 100; miElemento.alto = 1000;}
+				else if (miElemento.elementoId == "VENTANA") {miElemento.ancho = 800; miElemento.alto = 600;}
+				else if (miElemento.elementoId == "ELEMENTO") {miElemento.ancho = 10; miElemento.alto = 10;}
 	    	}
 	    	// Resguardamos la información obtenida referente a las posiciones.
 	    	digitosAncho = new char[token.substr(8,4).length()+1];
@@ -339,8 +342,8 @@ type_Elemento Escenario::parseMsg(string s)
 	    		miElemento.posicionY = std::stoi( token.substr (12,4) );
 	    	} else {
 	    		// Usamos los valores por defecto.
-	    		miElemento.posicionX = 25;
-	    		miElemento.posicionY = 25;
+	    		miElemento.posicionX = 10;
+	    		miElemento.posicionY = 15;
 	    	}
 	    }
 	    else if (count == 2)
@@ -349,7 +352,9 @@ type_Elemento Escenario::parseMsg(string s)
 			ifstream fondoSprite (token.c_str());
 			if (!fondoSprite.good()) {
 				// El archivo imagen que queremos usar no existe, usamos el default.
-				miElemento.spritePath = "background.bmp";
+				if (miElemento.elementoId == "FONDO") miElemento.spritePath = "background.bmp";
+				else if (miElemento.elementoId == "VENTANA") miElemento.spritePath = "background.bmp";
+				else if (miElemento.elementoId == "ELEMENTO") miElemento.spritePath = "sprites/pelota.png";
 			}
 			else{
 				// El path de la imagen es correcto y la podemos recuperar.
@@ -373,6 +378,7 @@ type_Elemento Escenario::parseMsg(string s)
 	*/
 	// ==============================================
 	if (miElemento.elementoId == "FONDO") miEscenario = miElemento;
+	else if (miElemento.elementoId == "VENTANA") miVentana = miElemento;
 	else if (miElemento.elementoId == "ELEMENTO") obstaculos.push_back(miElemento);
 	else if (miElemento.elementoId == "JUGADOR1") spriteJugadores.push_back(miElemento);
 	else if (miElemento.elementoId == "JUGADOR2") spriteJugadores.push_back(miElemento);
