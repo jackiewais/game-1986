@@ -72,6 +72,7 @@ class Escenario{
 		int scroll ;
 
 		bool pausa = true;
+		bool reset = false;
 
 		//list<backgroundObjects> objects;
 		list<BackgroundTemplate*> backgroundObjetcs;
@@ -119,6 +120,7 @@ class Escenario{
 	void generarEscenario();
 	void setEscenarioSize(int height);
 
+	int cantJugadores;
 
 };
 

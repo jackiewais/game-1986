@@ -38,6 +38,7 @@ Escenario::Escenario(int height, int width, ConnectionManager* connectionManager
 	this->setSize(width,height);
 	conManager = connectionManager;
 	clientId = connectionManager -> getId();
+	cantJugadores = 2;
 
 	if( !init() )
 	{
@@ -69,15 +70,19 @@ void Escenario::crearJugador(int jugId, string nombre, int posXIni){
 bool Escenario::lunchScreen(struct gst* position){
 
 	bool quit = false;
-	bool started = true;
+	bool started = false;
 	int escenarioHeight=0;
 
 	SDL_Event e;
 	int scrollingOffset = 0;
 
-	crearJugador(atoi(position -> id),"Juan",atoi(position -> posx));
+	//crearJugador(atoi(position -> id),"Juan",atoi(position -> posx));
 	//crearJugador(2,"Roman",screen.height*2/3);
+	for(int i = 1; i <= cantJugadores; i++){
+		//if (i != clientId)
+			crearJugador(i,"Pepe",screen.height*i/(cantJugadores+1));
 
+	}
 	Jugador* jugador = jugadores[clientId];
 
 	Label lpausa;
@@ -85,7 +90,7 @@ bool Escenario::lunchScreen(struct gst* position){
 	Label lesperando;
 	lesperando.setData(gRenderer, string("Esperando Jugadores"),screen.width/2,screen.height/2+36,24);
 
-	bool reset = false;
+	reset = false;
 
 	while( !quit && !reset)
 	{
@@ -107,7 +112,7 @@ bool Escenario::lunchScreen(struct gst* position){
 							for(auto const &it : jugadores) {
 								it.second->managePausa(pausa);
 							}
-							jugador->elemento->update(jugador->elemento->getPosX(),jugador->elemento->getPosY(),PAUSA);
+							jugador->elemento->updateStatus((pausa)?PAUSA:NO_PAUSA);
 						}
 						break;
 
@@ -115,6 +120,18 @@ bool Escenario::lunchScreen(struct gst* position){
 						reset = true;
 						jugador->elemento->update(jugador->elemento->getPosX(),jugador->elemento->getPosY(),RESET);
 						break;
+
+					case SDLK_a:
+						if (!started){
+							pausa = false;
+							started = true;
+
+							for(auto const &it : jugadores) {
+								it.second->managePausa(pausa);
+								it.second ->hacerTruco();
+							}
+							break;
+						}
 				}
 			}
 
@@ -446,7 +463,28 @@ void Escenario::updateJugadores(){
 	for(auto const &it : jugadores) {
 		if (it.first != clientId){
 			it.second->updateFromElemento();
-			//MANEJAR PAUSA Y RESET
+			switch (it.second->elemento->getEstado()){
+				case PAUSA:
+					if (!pausa){
+						pausa = true;
+						for(auto const &j : jugadores) {
+							j.second->managePausa(pausa);
+						}
+					}
+					break;
+				case NO_PAUSA:
+					if (pausa){
+						pausa = false;
+						for(auto const &j : jugadores) {
+							j.second->managePausa(pausa);
+						}
+					}
+					break;
+				case RESET:
+					reset = true;
+					break;
+				default: break;
+			}
 		}
 	}
 }
