@@ -56,7 +56,7 @@ void playGame(ConnectionManager* connectionManager, struct gst* position){
 		int height = 500; // puede ser cualquiera (es el alto de la ventana)
 
 		//crea una ventana y muestra una imagen
-		Escenario* mapa = new Escenario(width,height,connectionManager,4);
+		Escenario* mapa = new Escenario(width,height,connectionManager,1);
 		int x = 200;
 		int y = 500;
 		//cargo varios backround
