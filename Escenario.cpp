@@ -157,9 +157,9 @@ bool Escenario::lunchScreen(struct gst* position){
 			escenarioHeight+=scroll;
 			cout << escenarioHeight << endl;
 			if (escenarioHeight>escenarioSize.height)
-			quit=true;
 			{ 
-			
+			reset = true;
+			jugador->elemento->update(jugador->elemento->getPosX(),jugador->elemento->getPosY(),RESET);
 			}
 			if( scrollingOffset >gBGTexture.getHeight() )
 			{
