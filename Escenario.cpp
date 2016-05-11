@@ -361,9 +361,9 @@ type_Elemento Escenario::parseMsg(string s)
 	    		miElemento.alto = std::stoi( token.substr (4,4) );
 	    	} else {
 	    		miElemento.ancho = 10; miElemento.alto = 10;
-				if (miElemento.elementoId == "FONDO") {miElemento.ancho = 100; miElemento.alto = 1000;}
-				else if (miElemento.elementoId == "VENTANA") {miElemento.ancho = 800; miElemento.alto = 600;}
-				else if (miElemento.elementoId == "ELEMENTO") {miElemento.ancho = 10; miElemento.alto = 10;}
+				if (miElemento.elementoId == "FO") {miElemento.ancho = 100; miElemento.alto = 1000;}
+				else if (miElemento.elementoId == "VE") {miElemento.ancho = 800; miElemento.alto = 600;}
+				else if (miElemento.elementoId == "EL") {miElemento.ancho = 10; miElemento.alto = 10;}
 	    	}
 	    	// Resguardamos la información obtenida referente a las posiciones.
 	    	digitosAncho = new char[token.substr(8,4).length()+1];
@@ -383,9 +383,9 @@ type_Elemento Escenario::parseMsg(string s)
 			ifstream fondoSprite (token.c_str());
 			if (!fondoSprite.good()) {
 				// El archivo imagen que queremos usar no existe, usamos el default.
-				if (miElemento.elementoId == "FONDO") miElemento.spritePath = "background.bmp";
-				else if (miElemento.elementoId == "VENTANA") miElemento.spritePath = "background.bmp";
-				else if (miElemento.elementoId == "ELEMENTO") miElemento.spritePath = "sprites/pelota.png";
+				if (miElemento.elementoId == "FO") miElemento.spritePath = "background.bmp";
+				else if (miElemento.elementoId == "VE") miElemento.spritePath = "background.bmp";
+				else if (miElemento.elementoId == "EL") miElemento.spritePath = "sprites/pelota.png";
 			}
 			else{
 				// El path de la imagen es correcto y la podemos recuperar.
@@ -408,22 +408,22 @@ type_Elemento Escenario::parseMsg(string s)
 		list<type_Elemento> jugadores;
 	*/
 	// ==============================================
-	if (miElemento.elementoId == "FONDO") miEscenario = miElemento;
-	else if (miElemento.elementoId == "VENTANA") miVentana = miElemento;
-	else if (miElemento.elementoId == "ELEMENTO") obstaculos.push_back(miElemento);
-	else if (miElemento.elementoId == "JUGADOR1") spriteJugadores.push_back(miElemento);
-	else if (miElemento.elementoId == "JUGADOR2") spriteJugadores.push_back(miElemento);
-	else if (miElemento.elementoId == "JUGADOR3") spriteJugadores.push_back(miElemento);
-	else if (miElemento.elementoId == "JUGADOR4") spriteJugadores.push_back(miElemento);
-	else if (miElemento.elementoId == "JUGADOR5") spriteJugadores.push_back(miElemento);
+	if (miElemento.elementoId == "FO") miEscenario = miElemento;
+	else if (miElemento.elementoId == "VE") miVentana = miElemento;
+	else if (miElemento.elementoId == "EL") obstaculos.push_back(miElemento);
+	else if (miElemento.elementoId == "J1") spriteJugadores.push_back(miElemento);
+	else if (miElemento.elementoId == "J2") spriteJugadores.push_back(miElemento);
+	else if (miElemento.elementoId == "J3") spriteJugadores.push_back(miElemento);
+	else if (miElemento.elementoId == "J4") spriteJugadores.push_back(miElemento);
+	else if (miElemento.elementoId == "J5") spriteJugadores.push_back(miElemento);
 	// ==============================================
 	return miElemento;
 }
 
 string Escenario::trim(string& str)
 {
-    size_t first = str.find_first_not_of(' ');
-    size_t last = str.find_last_not_of(' ');
+    size_t first = str.find_first_not_of('-');
+    size_t last = str.find_last_not_of('-');
     return str.substr(first, (last-first+1));
 }
 
