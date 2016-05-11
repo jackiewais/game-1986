@@ -313,6 +313,7 @@ type_Elemento Escenario::parseMsg(string s)
 	int longToken = 0;
 	char* digitosAlto;
 	char* digitosAncho;
+
 	// Los elementos que componen el escenario.
 	type_Elemento miElemento;
 
