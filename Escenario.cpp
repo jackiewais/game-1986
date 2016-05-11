@@ -69,7 +69,7 @@ bool Escenario::lunchScreen(struct gst* position){
 
 	bool quit = false;
 	bool started = true;
-
+	int escenarioHeight=0;
 
 	SDL_Event e;
 	int scrollingOffset = 0;
@@ -130,6 +130,13 @@ bool Escenario::lunchScreen(struct gst* position){
 			}
 			//Scroll background
 			scrollingOffset+=scroll;
+			escenarioHeight+=scroll;
+			cout << escenarioHeight << endl;
+			if (escenarioHeight>escenarioSize.height)
+			quit=true;
+			{ 
+			
+			}
 			if( scrollingOffset >gBGTexture.getHeight() )
 			{
 				scrollingOffset = 0;
