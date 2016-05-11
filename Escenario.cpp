@@ -32,8 +32,8 @@ Escenario::Escenario() {
 }
 
 //Deprecado.
-Escenario::Escenario(int height, int width, ConnectionManager* connectionManager) {
-
+Escenario::Escenario(int height, int width, ConnectionManager* connectionManager,int scroll) {
+ 	this->scroll=scroll;
 	this->setSize(width,height);
 	conManager = connectionManager;
 	clientId = connectionManager -> getId();
@@ -64,7 +64,7 @@ void Escenario::crearJugador(int jugId, string nombre, int posXIni){
 bool Escenario::lunchScreen(struct gst* position){
 
 	bool quit = false;
-	bool started = false;
+	bool started = true;
 
 
 	SDL_Event e;
@@ -125,7 +125,7 @@ bool Escenario::lunchScreen(struct gst* position){
 				it.second ->moverPelotas();
 			}
 			//Scroll background
-			++scrollingOffset;
+			scrollingOffset+=scroll;
 			if( scrollingOffset >gBGTexture.getHeight() )
 			{
 				scrollingOffset = 0;

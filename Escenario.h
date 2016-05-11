@@ -107,7 +107,7 @@ class Escenario{
 	public:
 
 	Escenario();
-	Escenario(int widht, int height, ConnectionManager* connectionManager);
+	Escenario(int widht, int height, ConnectionManager* connectionManager, int scroll);
     bool lunchScreen(struct gst* position);
 	void insertBackgroundObject(string path, int x, int y, int height, int scrH  );
 	void setSize(int width, int height );
