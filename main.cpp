@@ -26,6 +26,8 @@ Log glog;
 int msgsQty;
 char userName[50];
 
+map<tipoELemento, type_Elemento> elements;
+Escenario* mapa;
 
 enum messageType {CHAR, INT, DOUBLE, STRING, ERROR};
 
@@ -34,10 +36,9 @@ void playGame(ConnectionManager* connectionManager, struct gst* position){
 	bool quit = false;
 	type_Elemento elem;
 	/*descomentar esto cuando este listo el server
+	 * ya no sería necesaria la parte del for con los elementos del escenario (si con los jugadores)
 	int height;
-	Escenario* mapa = new Escenario(0,0);
 	while (!quit){
-
 		for (map<tipoELemento,type_Elemento>::iterator it=elements.begin(); it!=elements.end(); ++it) {
 			elem = it->second;
 			if (it->first == FONDO){
@@ -163,7 +164,7 @@ void loadScenario(ConnectionManager* connectionManager) {
 	char *bufferSnd, bufferRcv[BUFLEN];
 	struct gst* sndMsg;
 	int bufferSndLen;
-	Escenario* mapa = new Escenario(0, 0, connectionManager);
+	mapa = new Escenario();
 
 	sndMsg = genAdminGst(0,command::REQ_SCENARIO);
 	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
@@ -181,6 +182,7 @@ void loadScenario(ConnectionManager* connectionManager) {
 			}
 		}
 	}
+	mapa->generarEscenario();
 }
 
 int main( int argc, char* args[] )
