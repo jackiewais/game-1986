@@ -27,9 +27,15 @@ type_Elemento miEscenario;
 list<type_Elemento> obstaculos;
 list<type_Elemento> spriteJugadores;
 
-
-Escenario::Escenario() {
-	clientId = 1;
+// En el MAIN se debería llamar a este constructor inicialmente.
+// Luego se le pide al servidor los datos del Escenario.
+// Para luego invocar al método: generarEscenario() que se encarga
+// de completar todos los datos relacionados al escenario.-
+Escenario::Escenario(ConnectionManager* connectionManager,int scroll) {
+ 	this->scroll=scroll;
+	conManager = connectionManager;
+	clientId = connectionManager -> getId();
+	cantJugadores = 2;
 }
 
 //Deprecado.
@@ -442,7 +448,7 @@ void Escenario::processMessages(struct gst** msgs, int msgQty){
 
 void Escenario::generarEscenario()
 {
-	this->setSize(miEscenario.ancho,miEscenario.alto);
+	this->setSize(miVentana.ancho,miVentana.alto);
 	if( !init() )
 	{
 		printf( "Failed to initialize!\n" );
