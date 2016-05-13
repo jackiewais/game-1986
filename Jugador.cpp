@@ -63,7 +63,7 @@ bool Jugador::loadMedia()
 void Jugador::handleEvent( SDL_Event& e )
 {
 	//Si está haciendo el truco, no me puedo mover ni patear
-	if (!truco.active){
+
 			//If a key was pressed
 			if( e.type == SDL_KEYDOWN && e.key.repeat == 0){
 				//Adjust the velocity
@@ -72,8 +72,10 @@ void Jugador::handleEvent( SDL_Event& e )
 					case SDLK_DOWN: mVelY += JUG_VEL; break;
 					case SDLK_LEFT: mVelX -= JUG_VEL; break;
 					case SDLK_RIGHT: mVelX += JUG_VEL; break;
-
+					case SDLK_SPACE: if (!truco.active) patear(); break;
+					case SDLK_RETURN: if (!truco.active) hacerTruco(); break;
 				}
+				cout << "PRESS PosY: " + to_string(mPosY) + " - velY: " + to_string(mVelY) << endl;
 			}
 			//If a key was released
 			else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){
@@ -83,11 +85,11 @@ void Jugador::handleEvent( SDL_Event& e )
 					case SDLK_DOWN: mVelY -= JUG_VEL; break;
 					case SDLK_LEFT: mVelX += JUG_VEL; break;
 					case SDLK_RIGHT: mVelX -= JUG_VEL; break;
-					case SDLK_SPACE: patear(); break;
-					case SDLK_RETURN: hacerTruco(); break;
+
 				}
+				cout << "SUELYPosY: " + to_string(mPosY) + " - velY: " + to_string(mVelY) << endl;
 			}
-	}
+
 }
 
 void Jugador::hacerTruco(){
@@ -114,18 +116,20 @@ void Jugador::moverPelotas(){
 
 void Jugador::move()
 {
-    mPosX += mVelX;
-    if( ( mPosX < 0 ) || ( mPosX + JUG_WIDTH > screen_width ) ){
-        //Move back
-        mPosX -= mVelX;
-    }
+	if (!truco.active){
+		mPosX += mVelX;
+		if( ( mPosX < 0 ) || ( mPosX + JUG_WIDTH > screen_width ) ){
+			//Move back
+			mPosX -= mVelX;
+		}
 
-    mPosY += mVelY;
-    if( ( mPosY < 0 ) || ( mPosY + JUG_HEIGHT > screen_height ) ){
-        mPosY -= mVelY;
-    }
-
-    elemento->updatePos(mPosX,mPosY);
+		cout << "PosY: " + to_string(mPosY) + " - velY: " + to_string(mVelY) << endl;
+		mPosY += mVelY;
+		if( ( mPosY < 0 ) || ( mPosY + JUG_HEIGHT > screen_height ) ){
+			mPosY -= mVelY;
+		}
+	}
+	elemento->updatePos(mPosX,mPosY);
 
 }
 

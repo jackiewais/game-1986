@@ -159,7 +159,6 @@ for(auto const &it : jugadores) {
 			//Scroll background
 			scrollingOffset+=scroll;
 			escenarioHeight+=scroll;
-			cout << escenarioHeight << endl;
 			if (escenarioHeight>escenarioSize.height)
 			
 			{ 
@@ -368,7 +367,6 @@ type_Elemento Escenario::parseMsg(struct gst* msg)
 		else if (miElemento.elementoId == "EL") {miElemento.ancho = 10; miElemento.alto = 10;}
 	}
 
-
 	if (miElemento.elementoId == "VE") miElemento.spritePath = "background.bmp";
 	else {
 	// Chequeamos la existencia del archivo imagen en cuestión.
@@ -426,7 +424,7 @@ void Escenario::processMessages(struct gst** msgs, int msgQty){
 				jugadores[tempId]-> elemento -> update(msgs[i]);
 			else{
 				if (msgs[i]->info[0] == (char) status::START) {
-					cout << "DEBUG processMessages recibi start" << endl;
+					//cout << "DEBUG processMessages recibi start" << endl;
 					pausa = false;
 					started = true;
 
