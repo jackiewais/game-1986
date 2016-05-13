@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
 #include "messages.h"
 #include "../Elemento/Elemento.h"
+
+using namespace std;
 
 int msg1len = typel + idl + posl + posl,
 	msg2len = typel + idl + posl + posl + infol,
@@ -64,8 +67,12 @@ int decodeMessages(struct gst*** msgs, char* msgsChar){
 			memcpy((*msgIdx) -> info, charIdx, infol);
 			charIdx += infol;
 		}
-		else if ((*msgIdx) -> type[0] != '3')
+		else if ((*msgIdx) -> type[0] != '3'){
+			cout << "DEBUG decodeMessages msgIdx -> type = " << (*msgIdx) -> type[0] << endl;
+			cout << "DEBUG decodeMessages msgQty = " << i << endl;
+			cout << "DEBUG decodeMessages charIdx = " << charIdx << endl;
 			return -1;
+		}
 
 		msgIdx++;
 	}

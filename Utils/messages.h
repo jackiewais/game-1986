@@ -72,9 +72,6 @@ enum msgType:char{
 };
 
 enum command:char{
-	START = 's',
-	RESTART = 'r',
-	PAUSE = 'p',
 	CON_SUCCESS = 's',
 	CON_FAIL = 'f',
 	DISCONNECT = 'q',

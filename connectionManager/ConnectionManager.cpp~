@@ -24,7 +24,7 @@ using namespace std;
 
 ConnectionManager::ConnectionManager(Log &log) {
 	connected = false;
-	audit = false;
+	audit = true;
 	glog = log;
 
 }
@@ -94,7 +94,7 @@ int ConnectionManager::connectManager(char* ipAddr, int port, struct gst*& msg)
 		}
 
 		if (audit)
-			cout << "AUDIT rcv: " << respuestaServer << endl;
+			//cout << "AUDIT rcv: " << respuestaServer << endl;
 
 		msgQty = decodeMessages(&msgArray, respuestaServer);
 		if (msgQty == -1){
@@ -173,7 +173,7 @@ int ConnectionManager::receive(char* buffer){
 
 	else{
 		if (audit)
-			cout << "AUDIT rcv: " << buffer << endl;
+			//cout << "AUDIT rcv: " << buffer << endl;
 		memcpy(msgLenChar, buffer, 3);
 		msgLen = atoi(msgLenChar);
 
@@ -193,7 +193,7 @@ int ConnectionManager::receive(char* buffer){
 
 int ConnectionManager::sendMsg(char* buffer, int len){
 	if (audit)
-		cout << "AUDIT snd: " << buffer << endl;
+		//cout << "AUDIT snd: " << buffer << endl;
 	return send(mySocket , buffer , len , 0);
 }
 

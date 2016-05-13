@@ -1,0 +1,10 @@
+#include "BackgroundTemplate.h"	
+
+
+void BackgroundTemplate()
+{
+}
+void BackgroundTemplate::render()
+{
+}
+	

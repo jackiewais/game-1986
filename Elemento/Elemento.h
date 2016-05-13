@@ -17,8 +17,10 @@ enum status:char{
 	DESCONECTADO = 'd',
 	TRUCO = 'e',
 	PAUSA = 'f',
-	RESET = 'g',
-	NO_PAUSA = 'h'
+	NO_PAUSA = 'h',
+	START = 's',
+	RESET = 'r'
+
 	};
 
 class Elemento {

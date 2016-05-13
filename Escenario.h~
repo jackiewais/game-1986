@@ -56,8 +56,7 @@ struct type_Escenario{
 	list<type_Elemento> elementos;
 };
 
-
-enum tipoELemento {FONDO, VENTANA, ELEMENTO, JUGADOR1, JUGADOR2, JUGADOR3, JUGADOR4, JUGADOR5, NO_ELEM};
+enum tipoELemento {FONDO, ELEMENTO, JUGADOR1, JUGADOR2, JUGADOR3, JUGADOR4, JUGADOR5, NO_ELEM};
 
 class Escenario{
 
@@ -72,8 +71,6 @@ class Escenario{
 		int scroll ;
 
 		bool pausa = true;
-		bool reset = false;
-		bool started;
 
 		//list<backgroundObjects> objects;
 		list<BackgroundTemplate*> backgroundObjetcs;
@@ -111,7 +108,6 @@ class Escenario{
 	public:
 
 	Escenario();
-	Escenario(ConnectionManager* connectionManager,int scroll);
 	Escenario(int widht, int height, ConnectionManager* connectionManager, int scroll);
     bool lunchScreen(struct gst* position);
 	void insertBackgroundObject(string path, int x, int y, int height, int scrH  );
@@ -120,10 +116,12 @@ class Escenario{
 	void renderBackgroundObjects(int scrollingOffset);	
 	type_Elemento parseMsg(string s);
 	void generarEscenario();
-	void setEscenarioSize(int height);
+	void setEscenarioSize(int width, int height);
 
-	int cantJugadores;
 
 };
+
+
+
 
 #endif /* ESCENARIO_H_ */
