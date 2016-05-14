@@ -308,6 +308,7 @@ void Escenario::sendStatus(){
 
 	sndMsg = genUpdateGstFromElemento(jugadores[clientId] -> elemento);
 	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
+	bufferSnd[bufferSndLen] = '\0';
 	conManager->sendMsg(bufferSnd,bufferSndLen);
 	delete bufferSnd;
 }
@@ -328,81 +329,64 @@ void Escenario::receiveStatus(){
 
 }
 
-type_Elemento Escenario::parseMsg(string s)
+type_Elemento Escenario::parseMsg(struct gst* msg)
 {
-	//std::string s = "SPRITEID,LONGLONGLONGLONG,PATH";
-
-	std::string delimiter = ",";
-	// COUNT = nos indica la cantidad de iteraciones sobre el string en cuestion.
-	// 0 = representa el ID del elemento.
-	// 1 = representa el ancho, el alto y las posiciones.
-	// 2 = representa el path específico del sprite.
-	int count = 0;
-	int longToken = 0;
-	char* digitosAlto;
-	char* digitosAncho;
-
-	// Los elementos que componen el escenario.
 	type_Elemento miElemento;
+	char numero[posl+1], id[idl+1], path[pathl+1];
 
-	size_t pos = 0;
-	std::string token;
-	while ((pos = s.find(delimiter)) != std::string::npos)
-	{
-	    token = s.substr(0, pos);
-	    if(count == 0)
-	    {
-	    	// 0 = representa el ID del elemento con el que estamos trabajando.
-	    	miElemento.elementoId = token;
-	    }
-	    else if (count == 1)
-	    {
-	    	// 1 = representa el ancho, el alto y las posiciones del elemento en cuestión.
-	    	// Resguardamos la información obtenida referente a los tamaños.
-	    	digitosAncho = new char[token.substr(0,4).length()+1];
-	    	digitosAlto = new char[token.substr(4,4).length()+1];
-	    	if(myUtil.sonDigitos(digitosAncho) && myUtil.sonDigitos(digitosAlto)) {
-	    		miElemento.ancho = std::stoi( token.substr (0,4) );
-	    		miElemento.alto = std::stoi( token.substr (4,4) );
-	    	} else {
-	    		miElemento.ancho = 10; miElemento.alto = 10;
-				if (miElemento.elementoId == "FONDO") {miElemento.ancho = 100; miElemento.alto = 1000;}
-				else if (miElemento.elementoId == "VENTANA") {miElemento.ancho = 800; miElemento.alto = 600;}
-				else if (miElemento.elementoId == "ELEMENTO") {miElemento.ancho = 10; miElemento.alto = 10;}
-	    	}
-	    	// Resguardamos la información obtenida referente a las posiciones.
-	    	digitosAncho = new char[token.substr(8,4).length()+1];
-	    	digitosAlto = new char[token.substr(12,4).length()+1];
-	    	if(myUtil.sonDigitos(digitosAncho) && myUtil.sonDigitos(digitosAlto)) {
-	    		miElemento.posicionX = std::stoi( token.substr (8,4) );
-	    		miElemento.posicionY = std::stoi( token.substr (12,4) );
-	    	} else {
-	    		// Usamos los valores por defecto.
-	    		miElemento.posicionX = 10;
-	    		miElemento.posicionY = 15;
-	    	}
-	    }
-	    else if (count == 2)
-	    {
-			// Chequeamos la existencia del archivo imagen en cuestión.
-			ifstream fondoSprite (token.c_str());
-			if (!fondoSprite.good()) {
-				// El archivo imagen que queremos usar no existe, usamos el default.
-				if (miElemento.elementoId == "FONDO") miElemento.spritePath = "background.bmp";
-				else if (miElemento.elementoId == "VENTANA") miElemento.spritePath = "background.bmp";
-				else if (miElemento.elementoId == "ELEMENTO") miElemento.spritePath = "sprites/pelota.png";
-			}
-			else{
-				// El path de la imagen es correcto y la podemos recuperar.
-				miElemento.spritePath = token;
-			}
-	    }
-	    std::cout << token << std::endl;
-	    s.erase(0, pos + delimiter.length());
+	memcpy(id, msg->id, idl);
+	id[idl] = '\0';
+	miElemento.elementoId = id;
 
-	    // Incrementamos COUNT siempre.-
-	    count++;
+	// Resguardamos la información obtenida referente a los tamaños.
+	if(myUtil.sonDigitos(msg->ancho) && myUtil.sonDigitos(msg->alto)) {
+		memcpy(numero, msg->ancho, posl);
+		numero[posl] = '\0';
+		miElemento.ancho = std::atoi( numero );
+		memcpy(numero, msg->alto, posl);
+		numero[posl] = '\0';
+		miElemento.alto = std::atoi( numero );
+	} else {
+		miElemento.ancho = 10; miElemento.alto = 10;
+		if (miElemento.elementoId == "FO") {miElemento.ancho = 100; miElemento.alto = 1000;}
+		else if (miElemento.elementoId == "VE") {miElemento.ancho = 800; miElemento.alto = 600;}
+		else if (miElemento.elementoId == "EL") {miElemento.ancho = 10; miElemento.alto = 10;}
 	}
+
+	// Resguardamos la información obtenida referente a las posiciones.
+	if(myUtil.sonDigitos(msg->posx) && myUtil.sonDigitos(msg->posy)) {
+		memcpy(numero, msg->posx, posl);
+		numero[posl] = '\0';
+		miElemento.posicionX = std::atoi( numero );
+		memcpy(numero, msg->posy, posl);
+		numero[posl] = '\0';
+		miElemento.posicionY = std::atoi( numero );
+	} else {
+		miElemento.ancho = 10; miElemento.alto = 10;
+		if (miElemento.elementoId == "FO") {miElemento.ancho = 100; miElemento.alto = 1000;}
+		else if (miElemento.elementoId == "VE") {miElemento.ancho = 800; miElemento.alto = 600;}
+		else if (miElemento.elementoId == "EL") {miElemento.ancho = 10; miElemento.alto = 10;}
+	}
+
+
+	if (miElemento.elementoId == "VE") miElemento.spritePath = "background.bmp";
+	else {
+	// Chequeamos la existencia del archivo imagen en cuestión.
+		char * first_token = strtok(msg->path, "=");
+		memset(path, '\0', pathl);
+		memcpy(path, first_token, pathl);
+		ifstream fondoSprite (path);
+		if (!fondoSprite.good()) {
+			// El archivo imagen que queremos usar no existe, usamos el default.
+			if (miElemento.elementoId == "FO") miElemento.spritePath = "background.bmp";
+			else if (miElemento.elementoId == "EL") miElemento.spritePath = "sprites/pelota.png";
+		}
+		else{
+			// El path de la imagen es correcto y la podemos recuperar.
+			miElemento.spritePath = path;
+		}
+	}
+
 
 	// ==============================================
 	// Lógica para setear las variables dentro de
@@ -413,9 +397,9 @@ type_Elemento Escenario::parseMsg(string s)
 		list<type_Elemento> jugadores;
 	*/
 	// ==============================================
-	if (miElemento.elementoId == "FONDO") miEscenario = miElemento;
-	else if (miElemento.elementoId == "VENTANA") miVentana = miElemento;
-	else if (miElemento.elementoId == "ELEMENTO") obstaculos.push_back(miElemento);
+	if (miElemento.elementoId == "FO") miEscenario = miElemento;
+	else if (miElemento.elementoId == "VE") miVentana = miElemento;
+	else if (miElemento.elementoId == "EL") obstaculos.push_back(miElemento);
 	else if (miElemento.elementoId == "JUGADOR1") spriteJugadores.push_back(miElemento);
 	else if (miElemento.elementoId == "JUGADOR2") spriteJugadores.push_back(miElemento);
 	else if (miElemento.elementoId == "JUGADOR3") spriteJugadores.push_back(miElemento);

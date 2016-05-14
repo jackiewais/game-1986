@@ -57,7 +57,7 @@ struct type_Escenario{
 };
 
 
-enum tipoELemento {FONDO, VENTANA, ELEMENTO, JUGADOR1, JUGADOR2, JUGADOR3, JUGADOR4, JUGADOR5, NO_ELEM};
+enum tipoELemento {FO, VE, EL, NO_ELEM};
 
 class Escenario{
 
@@ -118,7 +118,7 @@ class Escenario{
 	void setSize(int width, int height );
 	void mostrarVariables();
 	void renderBackgroundObjects(int scrollingOffset);	
-	type_Elemento parseMsg(string s);
+	type_Elemento parseMsg(struct gst* msg);
 	void generarEscenario();
 	void setEscenarioSize(int height);
 

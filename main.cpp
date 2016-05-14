@@ -26,7 +26,7 @@ Log glog;
 int msgsQty;
 char userName[50];
 
-map<tipoELemento, type_Elemento> elements;
+map<int, type_Elemento> elements;
 Escenario* mapa;
 
 enum messageType {CHAR, INT, DOUBLE, STRING, ERROR};
@@ -36,22 +36,25 @@ void playGame(ConnectionManager* connectionManager, struct gst* position){
 	bool quit = false;
 	type_Elemento elem;
 	/*descomentar esto cuando este listo el server
-	 * ya no sería necesaria la parte del for con los elementos del escenario (si con los jugadores)
+	 * ya no sería necesaria la parte del for con los elementos del escenario (si con los jugadores)*/
 	int height;
 	while (!quit){
-		for (map<tipoELemento,type_Elemento>::iterator it=elements.begin(); it!=elements.end(); ++it) {
+		for (map<int,type_Elemento>::iterator it=elements.begin(); it!=elements.end(); ++it) {
 			elem = it->second;
-			if (it->first == FONDO){
+			//if (elem.elementoId == "VE"){
+			//	mapa->setSize(elem.ancho, elem.alto);
+			//}
+			if (elem.elementoId == "FO"){
 				height = elem.alto;
-		    	mapa->setSize(elem.ancho, height);
+		    	mapa->setEscenarioSize(height);
 		    } else {
 		    	elem = it->second;
-		    	mapa->insertBackgroundObject(elem.elementoId, elem.posicionX, elem.posicionY,
+		    	mapa->insertBackgroundObject(elem.spritePath, elem.posicionX, elem.posicionY,
 		    			elem.alto, height);
 		    }
 
-		}*/
-	while (!quit){ // borrar esta linea cuando se descomente lo de arriba
+		}
+/*	while (!quit){  borrar esta linea cuando se descomente lo de arriba
 		int width= 500;	// tiene que ser el valor de ancho del escenario. Entonces el escenario es igual de ancho que la ventana (se levanta del xml)
 		int height = 500; // puede ser cualquiera (es el alto de la ventana)
 
@@ -71,7 +74,7 @@ mapa->insertBackgroundObject("enfermera", 300,700,84,height);
 		mapa->insertBackgroundObject("sprites/pelota.png", 150,700,40,height);
 		mapa->insertBackgroundObject("sprites/pelota.png", 100,100,40,height);
 		mapa->insertBackgroundObject("sprites/pelota.png", 450,657,40,height);
-		mapa->insertBackgroundObject("sprites/pelota.png", 300,500,40,height);
+		mapa->insertBackgroundObject("sprites/pelota.png", 300,500,40,height);*/
 
 		quit = mapa->lunchScreen(position);
 	}
@@ -139,34 +142,10 @@ void mostrarLogin(char* ipChar, int& portNumber) {
 	}
 }
 
-string toUpercase(string id){
-	string upId;
-	for (int i=0; i<id.length(); ++i)
-		upId[i] = toupper(id[i]);
-	return upId;
-}
-
-tipoELemento getId(string id) {
-	if (id == "FONDO")
-		return FONDO;
-	else if (id == "ELEMENTO")
-		return ELEMENTO;
-	else if (id == "JUGADOR1")
-		return JUGADOR1;
-	else if (id == "JUGADOR2")
-		return JUGADOR2;
-	else if (id == "JUGADOR3")
-		return JUGADOR3;
-	else if (id == "JUGADOR4")
-		return JUGADOR4;
-	else if (id == "JUGADOR5")
-		return JUGADOR5;
-	else return NO_ELEM;
-}
-
 void loadScenario(ConnectionManager* connectionManager) {
 	char *bufferSnd, bufferRcv[BUFLEN];
 	struct gst* sndMsg;
+	struct gst** msgs;
 	int bufferSndLen;
 	mapa = new Escenario(connectionManager,1);
 
@@ -175,15 +154,11 @@ void loadScenario(ConnectionManager* connectionManager) {
 
 	connectionManager -> sendMsg(bufferSnd,bufferSndLen);
 	memset(bufferRcv,0,BUFLEN);
-	if (connectionManager -> receive(bufferRcv) != 0) {
-		msgsQty = atoi(bufferRcv);
+	if (connectionManager -> receive(bufferRcv) == 0) {
+		msgsQty = decodeMessages(&msgs, bufferRcv);
 		for (int i = 0; i < msgsQty; i++) {
-			memset(bufferRcv,0,BUFLEN);
-			if (connectionManager -> receive(bufferRcv) == 0){
-				type_Elemento element = mapa->parseMsg(bufferRcv);
-				tipoELemento id = getId(toUpercase(element.elementoId));
-				//elements.insert(pair<tipoELemento,type_Elemento>(id,element));
-			}
+			type_Elemento element = mapa->parseMsg(msgs[i]);
+			elements.insert(pair<int,type_Elemento>(i,element));
 		}
 	}
 	mapa->generarEscenario();
@@ -198,14 +173,13 @@ int main( int argc, char* args[] )
 	glog.createFile(3);
 	ConnectionManager connectionManager(glog);
 	struct gst* position;
-//	leerXML();
 	while (!connectionManager.isConnected()){
 		mostrarLogin(ipAddr, port);
 		connectionManager.connectManager(ipAddr, port, position);
 	}
 
 	//elementos[clientId] es el elemento controlado por el cliente
-//	loadScenario(); descomentar esto cuando este listo el server
+	loadScenario(&connectionManager);
 	isRunning = true;
 	while(isRunning)
 	{
