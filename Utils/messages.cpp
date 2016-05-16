@@ -25,9 +25,12 @@ void intToFixedChar(int n, char* p, int length){
 void cleanGst(struct gst* msg){
 	memset(msg->type,0,typel +1);
 	memset(msg->id,0,idl +1);
+	memset(msg->ancho,0,posl +1);
+	memset(msg->alto,0,posl +1);
 	memset(msg->posx,0,posl +1);
 	memset(msg->posy,0,posl +1);
 	memset(msg->info,0,infol +1);
+	memset(msg->path,0,pathl +1);
 
 }
 

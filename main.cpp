@@ -99,29 +99,6 @@ int finish(ConnectionManager *connectionManager)
 }
 
 
-/*void interchangeStatus(map<int,Elemento*> &elementos){
-
-	char *bufferSnd, bufferRcv[BUFLEN];
-	struct gst* sndMsg, ** rcvMsgs;
-	int bufferSndLen, rcvMsgsQty;
-
-	sndMsg = genUpdateGstFromElemento(elementos[clientId]);
-	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
-
-	send(socketCliente,bufferSnd,bufferSndLen,0);
-
-	memset(bufferRcv,0,BUFLEN);
-	if (receiveMsg(bufferRcv) == 0){
-		rcvMsgsQty = decodeMessages(&rcvMsgs, bufferRcv);
-
-		if (rcvMsgsQty != -1){
-			processMessages(elementos, rcvMsgs, rcvMsgsQty);
-		}
-	}
-
-}
-*/
-
 void mostrarLogin(char* ipChar, int& portNumber) {
 
 	bool ok = false;
@@ -178,12 +155,10 @@ int main( int argc, char* args[] )
 		connectionManager.connectManager(ipAddr, port, position);
 	}
 
-	//elementos[clientId] es el elemento controlado por el cliente
 	loadScenario(&connectionManager);
 	isRunning = true;
 	while(isRunning)
 	{
-		//interchangeStatus(elementos);
 		playGame(&connectionManager, position);
 		isRunning = false;
 	}
