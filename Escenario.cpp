@@ -113,9 +113,9 @@ bool Escenario::lunchScreen(struct gst* position){
 						if (started){
 							pausa = !pausa; 							
 							jugador->elemento->updateStatus((pausa)?PAUSA:NO_PAUSA);
-for(auto const &it : jugadores) {
-				it.second ->managePausa(pausa);
-			}
+							for(auto const &it : jugadores) {
+								it.second ->managePausa(pausa);
+							}
 							
 						}
 						break;
@@ -158,10 +158,9 @@ for(auto const &it : jugadores) {
 			scrollingOffset+=scroll;
 			escenarioHeight+=scroll;
 			if (escenarioHeight>escenarioSize.height)
-			
 			{ 
-			reset = true;
-						jugador->elemento->update(jugador->elemento->getPosX(),jugador->elemento->getPosY(),RESET);
+				reset = true;
+				jugador->elemento->update(jugador->elemento->getPosX(),jugador->elemento->getPosY(),RESET);
 			}
 			if( scrollingOffset >gBGTexture.getHeight() )
 			{
@@ -200,13 +199,14 @@ for(auto const &it : jugadores) {
 
 	}
 			
-	close();
+	if (quit)
+		close();
 
 	return quit;
 }
 
 void Escenario::insertBackgroundObject(string path , int x , int y, int height, int scrH ){
-
+	std::cout << "inserto objeto de fondo \n";
 	BackgroundTemplate* object = new BackgroundTemplate(gRenderer,path, x,y,height, scrH);
 	
 	backgroundObjetcs.push_back(object);
@@ -214,11 +214,13 @@ void Escenario::insertBackgroundObject(string path , int x , int y, int height, 
 
 void Escenario::renderBackgroundObjects(int scrollingOffset)
 {
-	for (list<BackgroundTemplate *>::iterator it=backgroundObjetcs.begin(); it != backgroundObjetcs.end(); ++it)
+	for (list<BackgroundTemplate *>::iterator it=backgroundObjetcs.begin(); it != backgroundObjetcs.end(); ++it){
 		(*it)->render(scrollingOffset);
+	}
 }
 
 void Escenario::setSize(int width, int height) {
+	std::cout << "setting scenario size \n";
 	this->screen.height=height;
 	this->screen.width=width;
 }
@@ -266,10 +268,10 @@ bool Escenario::init()
 bool Escenario::loadMedia()
 {
 	bool success = true;
-
+	std::cout << "mi escenario spritePAth: " << miEscenario.spritePath << "\n";
 	// CARGAMOS LA IMAGEN DE FONDO.
 	//if( !gBGTexture.loadFromFile(miEscenario.spritePath) )
-	if( !gBGTexture.loadFromFile( "background.bmp") )
+	if( !gBGTexture.loadFromFile( miEscenario.spritePath) )
 	{
 		printf( "Failed to load background texture!\n" );
 		success = false;
