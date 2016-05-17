@@ -24,7 +24,7 @@ private:
 public:
 	ConnectionManager(Log &log);
 	virtual ~ConnectionManager();
-	int connectManager(char* ipAddr, int port, struct gst*& msg);
+	int connectManager(char* ipAddr, int port, string username, struct gst*& msg);
 	int disconnect();
 	int receive(char* buffer);
 	int sendMsg(char* buffer, int len);

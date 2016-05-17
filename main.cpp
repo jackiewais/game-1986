@@ -99,11 +99,14 @@ int finish(ConnectionManager *connectionManager)
 }
 
 
-void mostrarLogin(char* ipChar, int& portNumber) {
+void mostrarLogin(char* ipChar, int& portNumber, string& name) {
+
 
 	bool ok = false;
 	cout << "--- Log in ---" << endl;
 	cout << "Por favor ingrese los siguientes datos: " << endl;
+	cout << "Nombre de usuario:" << endl;
+	getline(cin,name);
 	cout << "Ip del servidor: " << endl;
 	cin >> ipChar;
 	while (!ok){
@@ -144,6 +147,7 @@ void loadScenario(ConnectionManager* connectionManager) {
 int main( int argc, char* args[] )
 {
 	char ipAddr[20];
+	string userName;
 	int port;
 	isConnected = false;
 	bool isRunning = false;
@@ -151,8 +155,8 @@ int main( int argc, char* args[] )
 	ConnectionManager connectionManager(glog);
 	struct gst* position;
 	while (!connectionManager.isConnected()){
-		mostrarLogin(ipAddr, port);
-		connectionManager.connectManager(ipAddr, port, position);
+		mostrarLogin(ipAddr, port, userName);
+		connectionManager.connectManager(ipAddr, port, userName, position);
 	}
 
 	loadScenario(&connectionManager);

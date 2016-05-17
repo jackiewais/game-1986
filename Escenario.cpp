@@ -31,7 +31,7 @@ list<type_Elemento> spriteJugadores;
 // Luego se le pide al servidor los datos del Escenario.
 // Para luego invocar al método: generarEscenario() que se encarga
 // de completar todos los datos relacionados al escenario.-
-Escenario::Escenario(ConnectionManager* connectionManager,int scroll) {
+Escenario::Escenario(ConnectionManager* connectionManager, int scroll) {
  	this->scroll=scroll;
 	conManager = connectionManager;
 	clientId = connectionManager -> getId();
@@ -52,7 +52,7 @@ Escenario::Escenario(int height, int width, ConnectionManager* connectionManager
 	}
 	else
 	{
-		this->gBGTexture.gRenderer=gRenderer;
+		this -> gBGTexture.gRenderer = gRenderer;
 
 		if( !loadMedia() )
 		{
@@ -82,8 +82,6 @@ bool Escenario::lunchScreen(struct gst* position){
 	SDL_Event e;
 	int scrollingOffset = 0;
 
-	//crearJugador(atoi(position -> id),"Juan",atoi(position -> posx));
-	//crearJugador(2,"Roman",screen.height*2/3);
 	for(int i = 1; i <= cantJugadores; i++){
 		//if (i != clientId)
 			crearJugador(i,"Pepe",screen.height*i/(cantJugadores+1));
@@ -197,7 +195,6 @@ for(auto const &it : jugadores) {
 		SDL_RenderPresent( gRenderer );
 
 		receiveStatus();
-		//interchangeStatus(elementos);
 		updateJugadores();
 		jugador->cleanStatus();
 
