@@ -4,12 +4,13 @@
 using namespace std;
 
 
-Pelota::Pelota(LTexture* gText, int posIX, int posIY)
+Pelota::Pelota(LTexture* gText, int posIX, int posIY, int velDisparo)
 {
 	gPelotaTexture = *gText;
 	mPosX = posIX-(PEL_WIDTH/2);
 	mPosY = posIY;
 	isOut = false;
+	PEL_VEL = velDisparo;
 }
 
 /*void Pelota::setData(SDL_Renderer* gRend)

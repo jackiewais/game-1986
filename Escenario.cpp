@@ -66,11 +66,16 @@ Escenario::Escenario(int height, int width, ConnectionManager* connectionManager
 }
 
 void Escenario::setEscenarioSize( int height){
-this->escenarioSize.height=height;
+	this->escenarioSize.height=height;
+}
+
+void Escenario::setVelocidades(int velocidadDesplazamiento, int velocidadDisparo){
+	this->velocidadDesplazamiento = velocidadDesplazamiento;
+	this->velocidadDisparo = velocidadDisparo;
 }
 
 void Escenario::crearJugador(int jugId, string nombre, int posXIni){
-	Jugador* otroJugador = new Jugador(gRenderer,screen.width,screen.height, jugId, nombre);
+	Jugador* otroJugador = new Jugador(gRenderer,screen.width,screen.height, jugId, nombre, velocidadDesplazamiento, velocidadDisparo);
 	Elemento* elemento = new Elemento(jugId,posXIni,screen.height-68);
 	otroJugador->setElemento(elemento);
 	jugadores[jugId] = otroJugador;

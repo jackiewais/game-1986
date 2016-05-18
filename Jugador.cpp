@@ -4,12 +4,15 @@
 
 using namespace std;
 
-Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre)
+Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre, int velDesplazamiento, int velDisparo)
 {
 	gJugadorTexture.gRenderer = gRend;
 
 	id = intJug;
 	name = nombre;
+
+	JUG_VEL = velDesplazamiento;
+	PEL_VEL = velDisparo;
 
     //Initialize the offsets
     mPosX = scr_width*intJug/3;
@@ -98,7 +101,7 @@ void Jugador::hacerTruco(){
 }
 
 void Jugador::patear(){
-	Pelota* pelota = new Pelota(&pelotaHelper.gPelotaTexture,mPosX+(JUG_WIDTH/2),mPosY);
+	Pelota* pelota = new Pelota(&pelotaHelper.gPelotaTexture,mPosX+(JUG_WIDTH/2),mPosY, PEL_VEL);
 	lista_pelotas.push_back(pelota);
 	elemento->update(mPosX,mPosY,DISPARANDO);
 }

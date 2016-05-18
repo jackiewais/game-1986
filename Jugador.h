@@ -16,9 +16,10 @@ class Jugador
 		static const int JUG_HEIGHT = 68;
 		static const int JUGADOR_ANIMATION_FRAMES = 6;
 
-		static const int JUG_VEL = 5;
+		int JUG_VEL;
+		int PEL_VEL;
 
-		Jugador(SDL_Renderer* gRend , int scr_width, int scr_height, int intJug, string nombre);
+		Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre, int velDesplazamiento, int velDisparo);
 		~Jugador();
 
 		void patear();

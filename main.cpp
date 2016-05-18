@@ -23,7 +23,7 @@ unsigned short clientId;
 
 bool isConnected, isRunning;
 Log glog;
-int msgsQty;
+int msgsQty, velocidadDesplazamiento, velocidadDisparo;
 char userName[50];
 
 map<int, type_Elemento> elements;
@@ -39,6 +39,8 @@ void playGame(ConnectionManager* connectionManager, struct gst* position){
 	 * ya no sería necesaria la parte del for con los elementos del escenario (si con los jugadores)*/
 	int height;
 	while (!quit){
+		int velDisp = velocidadDesplazamiento + velocidadDisparo;
+		mapa->setVelocidades(velocidadDesplazamiento, velDisp);
 		for (map<int,type_Elemento>::iterator it=elements.begin(); it!=elements.end(); ++it) {
 			elem = it->second;
 			//if (elem.elementoId == "VE"){
@@ -138,7 +140,9 @@ void loadScenario(ConnectionManager* connectionManager) {
 	if (connectionManager -> receive(bufferRcv) == 0) {
 		msgsQty = decodeMessages(&msgs, bufferRcv);
 		mapa->setCantJugadores(stoi(msgs[0]->id));
-		for (int i = 1; i < msgsQty; i++) {
+		velocidadDesplazamiento = stoi(msgs[1]->ancho);
+		velocidadDisparo = stoi(msgs[1]->alto);
+		for (int i = 2; i < msgsQty; i++) {
 			type_Elemento element = mapa->parseMsg(msgs[i]);
 			elements.insert(pair<int,type_Elemento>(i,element));
 		}

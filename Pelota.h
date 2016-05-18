@@ -7,9 +7,9 @@ class Pelota
 		static const int PEL_WIDTH = 20;
 		static const int PEL_HEIGHT = 20;
 
-		static const int PEL_VEL = 10;
+		int PEL_VEL;
 
-		Pelota(LTexture* gText, int posIX, int posIY);
+		Pelota(LTexture* gText, int posIX, int posIY, int velDisparo);
 		~Pelota();
 
 		void setDataCopy(LTexture* gText);

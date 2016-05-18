@@ -70,7 +70,7 @@ class Escenario{
 		resolution escenarioSize;
 		// fps
 		int scroll ;
-
+		int velocidadDesplazamiento, velocidadDisparo;
 		bool pausa = true;
 		bool reset = false;
 		bool started;
@@ -118,6 +118,7 @@ class Escenario{
     bool lunchScreen(struct gst* position);
 	void insertBackgroundObject(string path, int x, int y, int height, int scrH  );
 	void setSize(int width, int height );
+	void setVelocidades(int velocidadDesplazamiento, int velocidadDisparo);
 	void mostrarVariables();
 	void renderBackgroundObjects(int scrollingOffset);	
 	type_Elemento parseMsg(struct gst* msg);

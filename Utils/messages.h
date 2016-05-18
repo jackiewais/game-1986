@@ -105,5 +105,6 @@ struct gst* genGstFromElemento(Parser::type_Elemento * elem, char path[pathl]);
 
 struct gst* genGstFromVentana(Parser::type_Ventana* ventana);
 
+struct gst* genGstFromVelocidades(int velocidadDesplazamiento, int velocidadDisparos);
 
 #endif
