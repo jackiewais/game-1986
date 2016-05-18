@@ -109,6 +109,7 @@ bool Escenario::lunchScreen(struct gst* position){
 			//User requests quit
 			if( e.type == SDL_QUIT ){
 				quit = true;
+				jugador->elemento->updateStatus(DESCONECTADO);
 			}
 
 			if ( e.type == SDL_KEYUP && e.key.repeat == 0){
