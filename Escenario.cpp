@@ -31,11 +31,15 @@ list<type_Elemento> spriteJugadores;
 // Luego se le pide al servidor los datos del Escenario.
 // Para luego invocar al método: generarEscenario() que se encarga
 // de completar todos los datos relacionados al escenario.-
-Escenario::Escenario(ConnectionManager* connectionManager, int scroll, int cantJugador) {
+Escenario::Escenario(ConnectionManager* connectionManager, int scroll) {
  	this->scroll=scroll;
 	conManager = connectionManager;
 	clientId = connectionManager -> getId();
-	cantJugadores = cantJugador;
+	cantJugadores = 2;
+	
+}
+void Escenario::setCantJugadores(int cantJugador){
+cantJugadores=cantJugadores;
 }
 
 //Deprecado.

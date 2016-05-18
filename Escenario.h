@@ -107,11 +107,12 @@ class Escenario{
 		void receiveStatus();
 		int receiveMsg(char* buffer);
 		void processMessages(struct gst** rcvMsgsQty, int msgsQty);
+		void setCantJugadores(int cantJugadores);
 
 	public:
 
 	Escenario();
-	Escenario(ConnectionManager* connectionManager,int scroll, int cantJugador);
+	Escenario(ConnectionManager* connectionManager,int scroll);
 	Escenario(int widht, int height, ConnectionManager* connectionManager, int scroll);
     bool lunchScreen(struct gst* position);
 	void insertBackgroundObject(string path, int x, int y, int height, int scrH  );

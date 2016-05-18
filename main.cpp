@@ -128,7 +128,7 @@ void loadScenario(ConnectionManager* connectionManager) {
 	struct gst* sndMsg;
 	struct gst** msgs;
 	int bufferSndLen;
-	mapa = new Escenario(connectionManager,1,2);
+	mapa = new Escenario(connectionManager,1);
 
 	sndMsg = genAdminGst(0,command::REQ_SCENARIO);
 	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
