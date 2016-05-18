@@ -35,11 +35,10 @@ Escenario::Escenario(ConnectionManager* connectionManager, int scroll) {
  	this->scroll=scroll;
 	conManager = connectionManager;
 	clientId = connectionManager -> getId();
-	cantJugadores = 2;
 	
 }
 void Escenario::setCantJugadores(int cantJugador){
-cantJugadores=cantJugadores;
+	cantJugadores=cantJugador;
 }
 
 //Deprecado.

@@ -137,7 +137,8 @@ void loadScenario(ConnectionManager* connectionManager) {
 	memset(bufferRcv,0,BUFLEN);
 	if (connectionManager -> receive(bufferRcv) == 0) {
 		msgsQty = decodeMessages(&msgs, bufferRcv);
-		for (int i = 0; i < msgsQty; i++) {
+		mapa->setCantJugadores(stoi(msgs[0]->id));
+		for (int i = 1; i < msgsQty; i++) {
 			type_Elemento element = mapa->parseMsg(msgs[i]);
 			elements.insert(pair<int,type_Elemento>(i,element));
 		}

@@ -61,34 +61,37 @@ int decodeMessages(struct gst*** msgs, char* msgsChar){
 		memcpy((*msgIdx) -> id, charIdx, idl);
 		charIdx += idl;
 
-		if ((*msgIdx) -> type[0] == '1' || (*msgIdx) -> type[0] == '2'){
-			memcpy((*msgIdx) -> posx, charIdx, posl);
-			charIdx += posl;
-			memcpy((*msgIdx) -> posy, charIdx, posl);
-			charIdx += posl;
+		if ((*msgIdx) -> type[0] != '9') {
+			if ((*msgIdx) -> type[0] == '1' || (*msgIdx) -> type[0] == '2'){
+				memcpy((*msgIdx) -> posx, charIdx, posl);
+				charIdx += posl;
+				memcpy((*msgIdx) -> posy, charIdx, posl);
+				charIdx += posl;
+			}
+
+			if ((*msgIdx) -> type[0] == '2' || (*msgIdx) -> type[0] == '8'){
+				memcpy((*msgIdx) -> info, charIdx, infol);
+				charIdx += infol;
+			} else if ((*msgIdx) -> type[0] == '0'){
+				memcpy((*msgIdx) -> ancho, charIdx, posl);
+				charIdx += posl;
+				memcpy((*msgIdx) -> alto, charIdx, posl);
+				charIdx += posl;
+				memcpy((*msgIdx) -> posx, charIdx, posl);
+				charIdx += posl;
+				memcpy((*msgIdx) -> posy, charIdx, posl);
+				charIdx += posl;
+				memcpy((*msgIdx) -> path, charIdx, pathl);
+				charIdx += pathl;
+			}
+			else if ((*msgIdx) -> type[0] != '3'){
+				cout << "DEBUG decodeMessages msgIdx -> type = " << (*msgIdx) -> type[0] << endl;
+				cout << "DEBUG decodeMessages msgQty = " << i << endl;
+				cout << "DEBUG decodeMessages charIdx = " << charIdx << endl;
+				return -1;
+			}
 		}
 
-		if ((*msgIdx) -> type[0] == '2' || (*msgIdx) -> type[0] == '8'){
-			memcpy((*msgIdx) -> info, charIdx, infol);
-			charIdx += infol;
-		} else if ((*msgIdx) -> type[0] == '0'){
-			memcpy((*msgIdx) -> ancho, charIdx, posl);
-			charIdx += posl;
-			memcpy((*msgIdx) -> alto, charIdx, posl);
-			charIdx += posl;
-			memcpy((*msgIdx) -> posx, charIdx, posl);
-			charIdx += posl;
-			memcpy((*msgIdx) -> posy, charIdx, posl);
-			charIdx += posl;
-			memcpy((*msgIdx) -> path, charIdx, pathl);
-			charIdx += pathl;
-		}
-		else if ((*msgIdx) -> type[0] != '3'){
-			cout << "DEBUG decodeMessages msgIdx -> type = " << (*msgIdx) -> type[0] << endl;
-			cout << "DEBUG decodeMessages msgQty = " << i << endl;
-			cout << "DEBUG decodeMessages charIdx = " << charIdx << endl;
-			return -1;
-		}
 
 		msgIdx++;
 	}
@@ -162,6 +165,18 @@ int encodeMessages(char** msgsChar, struct gst** msgs, int qty){
 
 	intToFixedChar(pkglen, buffer, lengthl);
 	return pkglen;
+}
+
+struct gst* genGstFromCantJug(int cantJug) {
+	struct gst* newMsg = new struct gst;
+
+	newMsg -> type[0] = (char) msgType::CANT_JUG;
+
+	char cantidad[idl];
+	intToFixedChar(cantJug, cantidad, idl);
+	memcpy(newMsg -> id, cantidad, idl);
+
+	return newMsg;
 }
 
 struct gst* genGstFromFondo(Parser::type_Escenario * escenario, char path[pathl]) {

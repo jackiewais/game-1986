@@ -74,7 +74,8 @@ enum msgType:char{
 	UPDATE = '2',
 	REMOVE = '3',
 	CONTROL = '8',
-	OBJETO = '0'
+	OBJETO = '0',
+	CANT_JUG = '9'
 
 };
 
