@@ -49,6 +49,7 @@ void playGame(ConnectionManager* connectionManager, struct gst* position){
 		    	mapa->setEscenarioSize(height);
 		    } else {
 		    	elem = it->second;
+			cout << elem.spritePath << endl;
 		    	mapa->insertBackgroundObject(elem.spritePath, elem.posicionX, elem.posicionY,
 		    			elem.alto, height);
 		    }
@@ -127,7 +128,7 @@ void loadScenario(ConnectionManager* connectionManager) {
 	struct gst* sndMsg;
 	struct gst** msgs;
 	int bufferSndLen;
-	mapa = new Escenario(connectionManager,1);
+	mapa = new Escenario(connectionManager,1,2);
 
 	sndMsg = genAdminGst(0,command::REQ_SCENARIO);
 	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
