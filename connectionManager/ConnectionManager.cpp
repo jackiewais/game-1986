@@ -110,6 +110,7 @@ int ConnectionManager::connectManager(char* ipAddr, int port, string username, s
 		}
 		else if (msgArray[0] -> info[0] == (char)command::CON_FAIL){
 			glog.writeErrorLine("ERROR al conectar con el servidor: conexion rechazada");
+			
 			return 1;
 
 		}
@@ -134,7 +135,7 @@ int ConnectionManager::connectManager(char* ipAddr, int port, string username, s
 		// el primer mensaje recibidio del server tiene que ser de control con el status de la
 		// conexion CON_SUCCESS o CON_FAIL
 
-		if ((msgArray[0] -> type[0] != msgType::CONTROL) || (msgQty != 2)){
+		if ((msgArray[0] -> type[0] != msgType::CONTROL)){
 			glog.writeErrorLine("ERROR respuesta del servidor incorrecta"
 								+ string(respuestaServer));
 			return 1;

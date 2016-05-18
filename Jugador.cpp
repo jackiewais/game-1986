@@ -51,6 +51,7 @@ bool Jugador::loadMedia()
 	if( !gJugadorTexture.loadFromFile  ( "sprites/spriteJugador" + to_string(id) + ".png" ))
 	{
 		printf( "Failed to load player texture!\n" );
+	gJugadorTexture.loadFromFile  ( "vacio.bmp" );
 		success = false;
 	}else
 	{

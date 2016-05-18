@@ -24,7 +24,7 @@ using namespace std;
 
 ConnectionManager::ConnectionManager(Log &log) {
 	connected = false;
-	audit = true;
+	audit = false;
 	glog = log;
 
 }
@@ -34,7 +34,7 @@ ConnectionManager::~ConnectionManager() {
 }
 
 // INVOCACIÓN A LA LÓGICA PARA CONECTARNOS AL SERVIDOR.
-int ConnectionManager::connectManager(char* ipAddr, int port, struct gst*& msg)
+int ConnectionManager::connectManager(char* ipAddr, int port, string username, struct gst*& msg)
 {
 	ipChar = string(ipAddr);
 	portNum = (unsigned short)port;
@@ -93,8 +93,36 @@ int ConnectionManager::connectManager(char* ipAddr, int port, struct gst*& msg)
 			return 1;
 		}
 
-		if (audit)
-			//cout << "AUDIT rcv: " << respuestaServer << endl;
+		msgQty = decodeMessages(&msgArray, respuestaServer);
+		if (msgQty == -1){
+			glog.writeErrorLine("ERROR al decodificar la respuesta del servidor "
+					+ string(respuestaServer));
+			return 1;
+		}
+
+		// el primer mensaje recibidio del server tiene que ser de control con el status de la
+		// conexion CON_SUCCESS o CON_FAIL
+
+		if ((msgArray[0] -> type[0] != msgType::CONTROL)){
+			glog.writeErrorLine("ERROR respuesta del servidor incorrecta"
+								+ string(respuestaServer));
+			return 1;
+		}
+		else if (msgArray[0] -> info[0] == (char)command::CON_FAIL){
+			glog.writeErrorLine("ERROR al conectar con el servidor: conexion rechazada");
+			return 1;
+
+		}
+
+		char* usernameChar = new char[username.size() + 1];
+		strcpy(usernameChar, username.c_str());
+
+		sendMsg(usernameChar, username.size());
+
+		if (receive(respuestaServer) == -1){
+			glog.writeErrorLine("ERROR recibiendo información del socket");
+			return 1;
+		}
 
 		msgQty = decodeMessages(&msgArray, respuestaServer);
 		if (msgQty == -1){
@@ -116,6 +144,8 @@ int ConnectionManager::connectManager(char* ipAddr, int port, struct gst*& msg)
 			return 1;
 
 		}
+
+
 		id = atoi(msgArray[0] ->id);
 
 
@@ -173,7 +203,7 @@ int ConnectionManager::receive(char* buffer){
 
 	else{
 		if (audit)
-			//cout << "AUDIT rcv: " << buffer << endl;
+			cout << "AUDIT rcv: " << buffer << endl;
 		memcpy(msgLenChar, buffer, 3);
 		msgLen = atoi(msgLenChar);
 
@@ -193,7 +223,7 @@ int ConnectionManager::receive(char* buffer){
 
 int ConnectionManager::sendMsg(char* buffer, int len){
 	if (audit)
-		//cout << "AUDIT snd: " << buffer << endl;
+		cout << "AUDIT snd: " << buffer << endl;
 	return send(mySocket , buffer , len , 0);
 }
 

@@ -4,12 +4,15 @@
 
 using namespace std;
 
-Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre)
+Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre, int velDesplazamiento, int velDisparo)
 {
 	gJugadorTexture.gRenderer = gRend;
 
 	id = intJug;
 	name = nombre;
+
+	JUG_VEL = velDesplazamiento;
+	PEL_VEL = velDisparo;
 
     //Initialize the offsets
     mPosX = scr_width*intJug/3;
@@ -48,6 +51,7 @@ bool Jugador::loadMedia()
 	if( !gJugadorTexture.loadFromFile  ( "sprites/spriteJugador" + to_string(id) + ".png" ))
 	{
 		printf( "Failed to load player texture!\n" );
+	gJugadorTexture.loadFromFile  ( "vacio.bmp" )
 		success = false;
 	}else
 	{
@@ -63,7 +67,7 @@ bool Jugador::loadMedia()
 void Jugador::handleEvent( SDL_Event& e )
 {
 	//Si está haciendo el truco, no me puedo mover ni patear
-	if (!truco.active){
+
 			//If a key was pressed
 			if( e.type == SDL_KEYDOWN && e.key.repeat == 0){
 				//Adjust the velocity
@@ -72,8 +76,10 @@ void Jugador::handleEvent( SDL_Event& e )
 					case SDLK_DOWN: mVelY += JUG_VEL; break;
 					case SDLK_LEFT: mVelX -= JUG_VEL; break;
 					case SDLK_RIGHT: mVelX += JUG_VEL; break;
-
+					case SDLK_SPACE: if (!truco.active) patear(); break;
+					case SDLK_RETURN: if (!truco.active) hacerTruco(); break;
 				}
+
 			}
 			//If a key was released
 			else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){
@@ -83,11 +89,11 @@ void Jugador::handleEvent( SDL_Event& e )
 					case SDLK_DOWN: mVelY -= JUG_VEL; break;
 					case SDLK_LEFT: mVelX += JUG_VEL; break;
 					case SDLK_RIGHT: mVelX -= JUG_VEL; break;
-					case SDLK_SPACE: patear(); break;
-					case SDLK_RETURN: hacerTruco(); break;
+
 				}
+
 			}
-	}
+
 }
 
 void Jugador::hacerTruco(){
@@ -96,7 +102,7 @@ void Jugador::hacerTruco(){
 }
 
 void Jugador::patear(){
-	Pelota* pelota = new Pelota(&pelotaHelper.gPelotaTexture,mPosX+(JUG_WIDTH/2),mPosY);
+	Pelota* pelota = new Pelota(&pelotaHelper.gPelotaTexture,mPosX+(JUG_WIDTH/2),mPosY, PEL_VEL);
 	lista_pelotas.push_back(pelota);
 	elemento->update(mPosX,mPosY,DISPARANDO);
 }
@@ -114,18 +120,20 @@ void Jugador::moverPelotas(){
 
 void Jugador::move()
 {
-    mPosX += mVelX;
-    if( ( mPosX < 0 ) || ( mPosX + JUG_WIDTH > screen_width ) ){
-        //Move back
-        mPosX -= mVelX;
-    }
+	if (!truco.active){
+		mPosX += mVelX;
+		if( ( mPosX < 0 ) || ( mPosX + JUG_WIDTH > screen_width ) ){
+			//Move back
+			mPosX -= mVelX;
+		}
 
-    mPosY += mVelY;
-    if( ( mPosY < 0 ) || ( mPosY + JUG_HEIGHT > screen_height ) ){
-        mPosY -= mVelY;
-    }
 
-    elemento->updatePos(mPosX,mPosY);
+		mPosY += mVelY;
+		if( ( mPosY < 0 ) || ( mPosY + JUG_HEIGHT > screen_height ) ){
+			mPosY -= mVelY;
+		}
+	}
+	elemento->updatePos(mPosX,mPosY);
 
 }
 
@@ -137,8 +145,7 @@ void Jugador::forzarPosicion(int x, int y){
 
 void Jugador::updateFromElemento(){
 	forzarPosicion(elemento->getPosX(),elemento->getPosY());
-	cout << elemento->getPosX() << endl;
-	cout << elemento->getPosY() << endl;
+
 	switch (elemento->getEstado()){
 		case DISPARANDO:
 			patear();

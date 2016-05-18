@@ -7,8 +7,9 @@ BackgroundTemplate::BackgroundTemplate(SDL_Renderer* gRender, string path, int x
 	if( !textura.loadFromFile  ( path ) )// ( "sprites/spriteJugador.bmp" ) )
 	{
 		printf( "Failed to load ball texture!\n" );
-		
+		textura.loadFromFile  ( "vacio.bmp" )	;
 	}
+	
 	this->posX=x;
 	this->posY=y;
 	this->height = height;

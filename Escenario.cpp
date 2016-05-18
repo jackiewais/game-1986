@@ -385,8 +385,8 @@ type_Elemento Escenario::parseMsg(struct gst* msg)
 		ifstream fondoSprite (path);
 		if (!fondoSprite.good()) {
 			// El archivo imagen que queremos usar no existe, usamos el default.
-			if (miElemento.elementoId == "FO") miElemento.spritePath = "background.bmp";
-			else if (miElemento.elementoId == "EL") miElemento.spritePath = "sprites/pelota.png";
+			if (miElemento.elementoId == "FO") miElemento.spritePath = "vacio.bmp";
+			else if (miElemento.elementoId == "EL") miElemento.spritePath = "vacio.bmp";
 		}
 		else{
 			// El path de la imagen es correcto y la podemos recuperar.
