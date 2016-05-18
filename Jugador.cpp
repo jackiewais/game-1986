@@ -78,7 +78,7 @@ void Jugador::handleEvent( SDL_Event& e )
 					case SDLK_SPACE: if (!truco.active) patear(); break;
 					case SDLK_RETURN: if (!truco.active) hacerTruco(); break;
 				}
-				cout << "PRESS PosY: " + to_string(mPosY) + " - velY: " + to_string(mVelY) << endl;
+
 			}
 			//If a key was released
 			else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){
@@ -90,7 +90,7 @@ void Jugador::handleEvent( SDL_Event& e )
 					case SDLK_RIGHT: mVelX -= JUG_VEL; break;
 
 				}
-				cout << "SUELYPosY: " + to_string(mPosY) + " - velY: " + to_string(mVelY) << endl;
+
 			}
 
 }
@@ -126,7 +126,7 @@ void Jugador::move()
 			mPosX -= mVelX;
 		}
 
-		cout << "PosY: " + to_string(mPosY) + " - velY: " + to_string(mVelY) << endl;
+
 		mPosY += mVelY;
 		if( ( mPosY < 0 ) || ( mPosY + JUG_HEIGHT > screen_height ) ){
 			mPosY -= mVelY;
