@@ -80,6 +80,7 @@ bool Escenario::lunchScreen(struct gst* position){
 
 	bool quit = false;
 	started = false;
+	pausa = true;
 	int escenarioHeight=0;
 
 	SDL_Event e;
