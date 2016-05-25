@@ -124,6 +124,7 @@ class Escenario{
 	type_Elemento parseMsg(struct gst* msg);
 	void generarEscenario();
 	void setEscenarioSize(int height);
+	void deleteBackgroundObjetcs();
 
 	int cantJugadores;
 

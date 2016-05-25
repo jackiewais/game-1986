@@ -40,7 +40,15 @@ Escenario::Escenario(ConnectionManager* connectionManager, int scroll) {
 void Escenario::setCantJugadores(int cantJugador){
 	cantJugadores=cantJugador;
 }
-
+void Escenario::deleteBackgroundObjetcs(){
+//elimino las texturas en los backgroundTemplate
+for (list<BackgroundTemplate *>::iterator it=backgroundObjetcs.begin(); it != backgroundObjetcs.end(); ++it){
+		(*it)->~BackgroundTemplate();
+		delete(*it);
+	}
+//vacio la lista. 	
+this->backgroundObjetcs.clear();
+}
 //Deprecado.
 Escenario::Escenario(int height, int width, ConnectionManager* connectionManager,int scroll) {
  	this->scroll=scroll;
@@ -211,6 +219,9 @@ bool Escenario::lunchScreen(struct gst* position){
 			
 	if (quit)
 		close();
+	else{
+		deleteBackgroundObjetcs();
+	}
 
 	return quit;
 }
