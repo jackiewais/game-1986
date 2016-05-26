@@ -12,6 +12,8 @@
 #include "Elemento/Elemento.h"
 #include "connectionManager/ConnectionManager.h"
 #include "Escenario.h"
+#include "Sound.h"
+#include <SDL2/SDL_mixer.h>
 
 using namespace std;
 
@@ -23,6 +25,7 @@ unsigned short clientId;
 
 bool isConnected, isRunning;
 Log glog;
+Sound gsound;
 int msgsQty, velocidadDesplazamiento, velocidadDisparo;
 char userName[50];
 
@@ -152,6 +155,8 @@ void loadScenario(ConnectionManager* connectionManager) {
 
 int main( int argc, char* args[] )
 {
+	gsound.play("./Sounds/aplausos.wav",25);
+
 	char ipAddr[20];
 	string userName;
 	int port;
