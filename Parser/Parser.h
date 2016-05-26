@@ -28,6 +28,7 @@ namespace Parser {
 		int cantMaxClientes;
 		int puerto;
 		unsigned short logLevel;
+		int audit;
 	};
 
 	struct type_mensaje {
@@ -50,7 +51,7 @@ namespace Parser {
 	// DATOS RELACIONADOS CON LA SEGUNDA ENTREGA.
 	// ================================================================================
 
-	enum spriteType {DISPARO, VUELTA, PELOTA, ENFERMERA, JUGADOR, FONDO, BLANCO};
+	enum spriteType {DI, VU, PE, EN, JU, FO, BL};
 
 	struct type_Ventana{
 		int ancho;
@@ -93,6 +94,7 @@ namespace Parser {
 	};
 
 	struct type_DatosGraficos{
+		int cantJug;
 		int logLevel;
 		type_Ventana ventana;
 		list<type_Sprite> sprites;
@@ -103,7 +105,8 @@ namespace Parser {
 	// ================================================================================
 
 	bool fileExists(const char* name);
-
+	char* toUpercase(char* tipo);
+	spriteType formatTipoSprite(char * tipo);
 	const char* getDefaultNameServer();
 	const char* getDefaultNameClient();
 	const char* getDefaultNameServerMap();

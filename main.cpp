@@ -4,8 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <limits>
+#include <string>
+#include <list>
 #include "Logger/Log.h"
 #include "Parser/Parser.h"
 #include "Utils/messages.h"
@@ -130,11 +133,27 @@ void mostrarLogin(char* ipChar, int& portNumber, string& name) {
 	}
 }
 
+Parser::spriteType formatearTipoSprite(char * tipo) {
+	if (strcmp(tipo,"02")==0)
+		return Parser::PE;
+	if (strcmp(tipo,"00")==0)
+		return Parser::DI;
+	if (strcmp(tipo,"01")==0)
+		return Parser::VU;
+	if (strcmp(tipo, "04")==0)
+		return Parser::JU;
+	if (strcmp(tipo, "03")==0)
+		return Parser::EN;
+	if (strcmp(tipo, "05")==0)
+		return Parser::FO;
+	return Parser::BL;
+}
+
 void loadScenario(ConnectionManager* connectionManager) {
-	char *bufferSnd, bufferRcv[BUFLEN];
-	struct gst* sndMsg;
-	struct gst** msgs;
-	int bufferSndLen;
+	char *bufferSnd, *bufferSndS, bufferRcv[BUFLEN], bufferRcvS[BUFLEN];
+	struct gst* sndMsg, * sndMsgS;
+	struct gst** msgs, **msgsS;
+	int bufferSndLen, bufferSndLenS;
 	mapa = new Escenario(connectionManager,1);
 
 	sndMsg = genAdminGst(0,command::REQ_SCENARIO);
@@ -152,6 +171,34 @@ void loadScenario(ConnectionManager* connectionManager) {
 			elements.insert(pair<int,type_Elemento>(i,element));
 		}
 	}
+	//se piden los sprites
+	list<Parser::type_Sprite*> sprites;
+	sndMsgS = genAdminGst(0,command::REQ_SPRITES);
+	bufferSndLenS = encodeMessages(&bufferSndS, &sndMsgS, 1);
+	connectionManager -> sendMsg(bufferSndS,bufferSndLenS);
+	memset(bufferRcvS,0,BUFLEN);
+	if (connectionManager -> receive(bufferRcvS) == 0) {
+		msgsQty = decodeMessages(&msgsS, bufferRcvS);
+		for (int i = 0; i < msgsQty; i++) {
+			Parser::type_Sprite sprite;
+			sprite.id = formatearTipoSprite(msgsS[i]->id);
+			char path[pathl+1];
+			char * first_token = strtok(msgsS[i]->path, "=");
+			//memset(path, '\0', pathl);
+			//memcpy(path, first_token, pathl);
+			ifstream fondoSprite (first_token);
+			if (!fondoSprite.good()) {
+				// El archivo imagen que queremos usar no existe, usamos el default.
+				sprite.path = "vacio.bmp";
+			}
+			else{
+				// El path de la imagen es correcto y la podemos recuperar.
+				sprite.path = first_token;
+			}
+			sprites.push_back(&sprite);
+		}
+	}
+	mapa->addSprites(sprites);
 	mapa->generarEscenario();
 }
 

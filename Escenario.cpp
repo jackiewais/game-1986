@@ -392,9 +392,8 @@ type_Elemento Escenario::parseMsg(struct gst* msg)
 	if (miElemento.elementoId == "VE") miElemento.spritePath = "background.bmp";
 	else {
 	// Chequeamos la existencia del archivo imagen en cuestión.
-		char * first_token = strtok(msg->path, "=");
 		memset(path, '\0', pathl);
-		memcpy(path, first_token, pathl);
+		memcpy(path, msg->path, pathl);
 		ifstream fondoSprite (path);
 		if (!fondoSprite.good()) {
 			// El archivo imagen que queremos usar no existe, usamos el default.
@@ -494,6 +493,9 @@ void Escenario::generarEscenario()
 	}
 }
 
+void Escenario::addSprites(list<Parser::type_Sprite*> sprites) {
+	this->sprites = sprites;
+}
 
 void Escenario::updateJugadores(){
 	for(auto const &it : jugadores) {
@@ -524,6 +526,7 @@ void Escenario::updateJugadores(){
 		}
 	}
 }
+
 
 
 
