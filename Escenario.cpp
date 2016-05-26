@@ -113,6 +113,8 @@ bool Escenario::lunchScreen(struct gst* position){
 
 	reset = false;
 
+	cout << "Debug: lunchScreen va a entrar al while" << endl;
+
 	while( !quit && !reset)
 	{
 

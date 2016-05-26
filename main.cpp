@@ -59,6 +59,8 @@ void playGame(ConnectionManager* connectionManager, struct gst* position){
 		    			elem.alto, height);
 		    }
 
+			cout << "Debug: paso playGame" << endl;
+
 		}
 /*	while (!quit){  borrar esta linea cuando se descomente lo de arriba
 		int width= 500;	// tiene que ser el valor de ancho del escenario. Entonces el escenario es igual de ancho que la ventana (se levanta del xml)
