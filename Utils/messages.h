@@ -75,7 +75,8 @@ enum msgType:char{
 	REMOVE = '3',
 	CONTROL = '8',
 	OBJETO = '0',
-	CANT_JUG = '9'
+	CANT_JUG = '9',
+	SPRITE = '5'
 
 };
 
@@ -83,7 +84,8 @@ enum command:char{
 	CON_SUCCESS = 's',
 	CON_FAIL = 'f',
 	DISCONNECT = 'q',
-	REQ_SCENARIO = 'e'
+	REQ_SCENARIO = 'e',
+	REQ_SPRITES = 'l'
 };
 
 /* En *msgs crea un array de punteros a gst's. Se accede a los gst como *((*msgs)[n])
@@ -106,5 +108,7 @@ struct gst* genGstFromElemento(Parser::type_Elemento * elem, char path[pathl]);
 struct gst* genGstFromVentana(Parser::type_Ventana* ventana);
 
 struct gst* genGstFromVelocidades(int velocidadDesplazamiento, int velocidadDisparos);
+
+struct gst* genGstFromSprite(Parser::type_Sprite * sprite);
 
 #endif

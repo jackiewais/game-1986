@@ -11,6 +11,7 @@ int msg1len = typel + idl + posl + posl,
 	msg2len = typel + idl + posl + posl + infol,
 	msg3len = typel + idl,
 	msg8len = typel + idl + infol,
+	msg5len = typel + idl + pathl,
 	msg0lin = typel + idl + posl + posl + posl + posl + pathl;
 
 void intToFixedChar(int n, char* p, int length){
@@ -72,7 +73,12 @@ int decodeMessages(struct gst*** msgs, char* msgsChar){
 			if ((*msgIdx) -> type[0] == '2' || (*msgIdx) -> type[0] == '8'){
 				memcpy((*msgIdx) -> info, charIdx, infol);
 				charIdx += infol;
-			} else if ((*msgIdx) -> type[0] == '0'){
+			}
+
+			else if ((*msgIdx) -> type[0] == '5'){
+				memcpy((*msgIdx) -> path, charIdx, pathl);
+				charIdx += pathl;
+			}else if ((*msgIdx) -> type[0] == '0'){
 				memcpy((*msgIdx) -> ancho, charIdx, posl);
 				charIdx += posl;
 				memcpy((*msgIdx) -> alto, charIdx, posl);
@@ -158,6 +164,13 @@ int encodeMessages(char** msgsChar, struct gst** msgs, int qty){
 			pkglen += posl + posl + posl + posl + pathl;
 		}
 
+		if ((*msgs) -> type[0] == '5'){
+			memcpy(bufferIt, (*msgs) -> path, pathl);
+			bufferIt += pathl;
+
+			pkglen += pathl;
+		}
+
 		msgs++;
 		
 	}
@@ -225,6 +238,21 @@ struct gst* genGstFromFondo(Parser::type_Escenario * escenario, char path[pathl]
 
 	memset(newMsg -> path, '=', pathl);
 	memcpy(newMsg -> path, path, pathl);
+
+	return newMsg;
+}
+
+struct gst* genGstFromSprite(Parser::type_Sprite * sprite) {
+	struct gst* newMsg = new struct gst;
+
+	newMsg -> type[0] = (char) msgType::SPRITE;
+
+	char charId[idl];
+	intToFixedChar(sprite->id, charId, idl);
+	memcpy(newMsg -> id, charId, idl);
+
+	memset(newMsg -> path, '=', pathl);
+	memcpy(newMsg -> path, sprite->path, pathl);
 
 	return newMsg;
 }

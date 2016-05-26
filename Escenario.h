@@ -78,6 +78,8 @@ class Escenario{
 		//list<backgroundObjects> objects;
 		list<BackgroundTemplate*> backgroundObjetcs;
 
+		list<Parser::type_Sprite*> sprites;
+
 		//The surface contained by the window
 		SDL_Surface* gScreenSurface = NULL;
 
@@ -125,6 +127,7 @@ class Escenario{
 	void generarEscenario();
 	void setEscenarioSize(int height);
 	void deleteBackgroundObjetcs();
+	void addSprites(list<Parser::type_Sprite*> sprites);
 
 	int cantJugadores;
 
