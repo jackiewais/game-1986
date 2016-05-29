@@ -84,8 +84,30 @@ void Escenario::setVelocidades(int velocidadDesplazamiento, int velocidadDisparo
 	this->velocidadDisparo = velocidadDisparo;
 }
 
+void Escenario::getSpritePath(char *&spritePath, Parser::spriteType id) {
+	list<Parser::type_Sprite*>::iterator iter;
+	for (iter = sprites.begin(); iter != sprites.end(); iter ++) {
+		if ((*iter)->id == id){
+			spritePath = (*iter)->path;
+			break;
+		}
+	}
+}
+
 void Escenario::crearJugador(int jugId, string nombre, int posXIni){
-	Jugador* otroJugador = new Jugador(gRenderer,screen.width,screen.height, jugId, nombre, velocidadDesplazamiento, velocidadDisparo);
+	char *spritePathPelota, *spritePathJugador1, *spritePathJugador2,
+		*spritePathJugador3, *spritePathTruco;
+	getSpritePath(spritePathPelota, Parser::PE);
+	getSpritePath(spritePathJugador1, Parser::J1);
+	getSpritePath(spritePathJugador2, Parser::J2);
+	getSpritePath(spritePathJugador3, Parser::J3);
+	getSpritePath(spritePathTruco, Parser::VU);
+	cout << "sprite pelota " << spritePathPelota << endl;
+	cout << "sprite jugador " << spritePathJugador1 << endl;
+	cout << "sprite truco " << spritePathTruco << endl;
+	Jugador* otroJugador = new Jugador(gRenderer,screen.width,screen.height, jugId, nombre,
+			velocidadDesplazamiento, velocidadDisparo, spritePathPelota, spritePathJugador1,
+			spritePathJugador2, spritePathJugador3, spritePathTruco);
 	Elemento* elemento = new Elemento(jugId,posXIni,screen.height-68);
 	otroJugador->setElemento(elemento);
 	jugadores[jugId] = otroJugador;
@@ -354,7 +376,7 @@ void Escenario::receiveStatus(){
 
 type_Elemento Escenario::parseMsg(struct gst* msg)
 {
-	type_Elemento miElemento;
+	type_Elemento miElemento = type_Elemento();
 	char numero[posl+1], id[idl+1], path[pathl+1];
 
 	memcpy(id, msg->id, idl);

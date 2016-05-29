@@ -1,11 +1,12 @@
 #include "TrucoJugador.h"
 
-void TrucoJugador::init(SDL_Renderer* gRend)
+void TrucoJugador::init(SDL_Renderer* gRend, char *spritePath)
 {
 	gTrucoTexture.gRenderer = gRend;
 
     frame = 0;
     rep = 0;
+    this->spritePath = spritePath;
 	//Load media
 	if( !loadMedia())
 	{
@@ -18,7 +19,7 @@ bool TrucoJugador::loadMedia()
 {
 	bool success = true;
 
-	if( !gTrucoTexture.loadFromFile  ( "sprites/truco.png" ) )
+	if( !gTrucoTexture.loadFromFile  ( this->spritePath ) )
 	{
 		printf( "Failed to load move texture!\n" );
 		success = false;

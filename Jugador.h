@@ -19,7 +19,15 @@ class Jugador
 		int JUG_VEL;
 		int PEL_VEL;
 
-		Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre, int velDesplazamiento, int velDisparo);
+		char *spritePathPelota;
+		char *spritePathJugador1;
+		char *spritePathJugador2;
+		char *spritePathJugador3;
+		char * spritePathTruco;
+
+		Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre,
+				int velDesplazamiento, int velDisparo, char *spritePathPelota, char *spritePathJugador1,
+				char *spritePathJugador2, char *spritePathJugador3, char * spritePathTruco);
 		~Jugador();
 
 		void patear();

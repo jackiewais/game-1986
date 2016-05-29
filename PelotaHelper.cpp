@@ -3,9 +3,10 @@
 
 using namespace std;
 
-void PelotaHelper::initTexture(SDL_Renderer* gRend)
+void PelotaHelper::initTexture(SDL_Renderer* gRend, char *spritePath)
 {
 	gPelotaTexture.gRenderer = gRend;
+	this->spritePath = spritePath;
 
 	//Load media
 	if( !loadMedia())
@@ -19,7 +20,7 @@ bool PelotaHelper::loadMedia()
 	//Loading success flag
 	bool success = true;
 
-	if( !gPelotaTexture.loadFromFile  ( "sprites/pelota.png" ) )// ( "sprites/spriteJugador.bmp" ) )
+	if( !gPelotaTexture.loadFromFile  ( this->spritePath ) )// ( "sprites/spriteJugador.bmp" ) )
 	{
 		printf( "Failed to load ball texture!\n" );
 		success = false;

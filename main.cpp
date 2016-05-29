@@ -141,10 +141,14 @@ Parser::spriteType formatearTipoSprite(char * tipo) {
 	if (strcmp(tipo,"01")==0)
 		return Parser::VU;
 	if (strcmp(tipo, "04")==0)
-		return Parser::JU;
+		return Parser::J1;
+	if (strcmp(tipo, "05")==0)
+		return Parser::J2;
+	if (strcmp(tipo, "06")==0)
+		return Parser::J3;
 	if (strcmp(tipo, "03")==0)
 		return Parser::EN;
-	if (strcmp(tipo, "05")==0)
+	if (strcmp(tipo, "07")==0)
 		return Parser::FO;
 	return Parser::BL;
 }
@@ -180,22 +184,26 @@ void loadScenario(ConnectionManager* connectionManager) {
 	if (connectionManager -> receive(bufferRcvS) == 0) {
 		msgsQty = decodeMessages(&msgsS, bufferRcvS);
 		for (int i = 0; i < msgsQty; i++) {
-			Parser::type_Sprite sprite;
-			sprite.id = formatearTipoSprite(msgsS[i]->id);
-			char path[pathl+1];
+			Parser::type_Sprite *sprite = new Parser::type_Sprite();
+			sprite->id = formatearTipoSprite(msgsS[i]->id);
 			char * first_token = strtok(msgsS[i]->path, "=");
-			//memset(path, '\0', pathl);
-			//memcpy(path, first_token, pathl);
 			ifstream fondoSprite (first_token);
 			if (!fondoSprite.good()) {
 				// El archivo imagen que queremos usar no existe, usamos el default.
-				sprite.path = "vacio.bmp";
+				if (sprite->id == Parser::PE)
+					sprite->path = "vacio.bmp";
+				if (sprite->id == Parser::J1 || sprite->id == Parser::J2 || sprite->id == Parser::J3)
+					sprite->path = "vacio.bmp";
+				if (sprite->id == Parser::VU)
+					sprite->path = "vacio.bmp";
+				if (sprite->id == Parser::DI)
+					sprite->path = "vacio.bmp";
 			}
 			else{
 				// El path de la imagen es correcto y la podemos recuperar.
-				sprite.path = first_token;
+				sprite->path = first_token;
 			}
-			sprites.push_back(&sprite);
+			sprites.push_back(sprite);
 		}
 	}
 	mapa->addSprites(sprites);

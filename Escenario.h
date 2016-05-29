@@ -109,6 +109,7 @@ class Escenario{
 		void receiveStatus();
 		int receiveMsg(char* buffer);
 		void processMessages(struct gst** rcvMsgsQty, int msgsQty);
+		void getSpritePath(char *&spritePathPelota, Parser::spriteType id);
 
 
 	public:

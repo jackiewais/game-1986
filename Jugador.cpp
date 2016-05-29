@@ -7,7 +7,9 @@ using namespace std;
 
 Sound jsound;
 
-Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre, int velDesplazamiento, int velDisparo)
+Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre,
+		int velDesplazamiento, int velDisparo, char *spritePathPelota, char *spritePathJugador1,
+		char *spritePathJugador2, char *spritePathJugador3, char * spritePathTruco)
 {
 	gJugadorTexture.gRenderer = gRend;
 
@@ -30,14 +32,20 @@ Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug,
     screen_width = scr_width;
     screen_height = scr_height;
 
+    this->spritePathPelota = spritePathPelota;
+    this->spritePathJugador1 = spritePathJugador1;
+    this->spritePathJugador2 = spritePathJugador2;
+    this->spritePathJugador3 = spritePathJugador3;
+    this->spritePathTruco = spritePathTruco;
+
 	//Load media
 	if( !loadMedia())
 	{
 		printf( "Failed to load media!\n" );
 	}
 
-	pelotaHelper.initTexture(gJugadorTexture.gRenderer);
-	truco.init(gJugadorTexture.gRenderer);
+	pelotaHelper.initTexture(gJugadorTexture.gRenderer, this->spritePathPelota);
+	truco.init(gJugadorTexture.gRenderer, this->spritePathTruco);
 
 	lDesconectado.setData(gJugadorTexture.gRenderer, "Jugador " + to_string(id) + " desconectado",screen_width/2,(id-1)*24,24);
 }
@@ -50,8 +58,15 @@ bool Jugador::loadMedia()
 {
 	//Loading success flag
 	bool success = true;
+	char * path;
+	if (id == 1)
+		path = this->spritePathJugador1;
+	if (id == 2)
+		path = this->spritePathJugador2;
+	if (id == 3)
+		path = this->spritePathJugador3;
 
-	if( !gJugadorTexture.loadFromFile  ( "sprites/spriteJugador" + to_string(id) + ".png" ))
+	if( !gJugadorTexture.loadFromFile  ( path ))
 	{
 		printf( "Failed to load player texture!\n" );
 	gJugadorTexture.loadFromFile  ( "vacio.bmp" );
