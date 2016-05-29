@@ -204,7 +204,9 @@ void loadScenario(ConnectionManager* connectionManager) {
 
 int main( int argc, char* args[] )
 {
-	gsound.play("./Sounds/aplausos.wav",25);
+	if( SDL_Init(SDL_INIT_AUDIO) < 0 ) exit(1);
+	if(Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,MIX_DEFAULT_CHANNELS,1024) == -1)
+	{ printf("%s",Mix_GetError()); }
 
 	char ipAddr[20];
 	string userName;
@@ -221,6 +223,8 @@ int main( int argc, char* args[] )
 
 	loadScenario(&connectionManager);
 	isRunning = true;
+
+	gsound.play(gsound.SONIDO_APLAUSO,25);
 	while(isRunning)
 	{
 		playGame(&connectionManager, position);
@@ -229,5 +233,9 @@ int main( int argc, char* args[] )
 	finish(&connectionManager);
 
 
+	Mix_CloseAudio();
+	//while(Mix_Init(0))
+	//    Mix_Quit();
+	SDL_Quit();
 	return 0;
 }

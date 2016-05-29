@@ -14,10 +14,12 @@
 #include <sys/socket.h>
 #include "Utils/messages.h"
 #include "Utils/Util.h"
+#include "Sound.h"
 
 #define BUFLEN 1000
 
 using namespace std;
+Sound esound;
 SDL_Renderer* gRenderer = NULL;
 SDL_Window* gWindow = NULL;
 Util myUtil;
@@ -448,6 +450,8 @@ void Escenario::processMessages(struct gst** msgs, int msgQty){
 					//cout << "DEBUG processMessages recibi start" << endl;
 					pausa = false;
 					started = true;
+
+					esound.play(esound.SONIDO_APLAUSO,20);
 
 					for(auto const &it : jugadores) {
 						it.second->managePausa(pausa);

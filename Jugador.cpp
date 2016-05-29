@@ -1,8 +1,11 @@
 #include "Jugador.h"
+#include "Sound.h"
 #include <iostream>
 #include <string>
 
 using namespace std;
+
+Sound jsound;
 
 Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre, int velDesplazamiento, int velDisparo)
 {
@@ -97,11 +100,13 @@ void Jugador::handleEvent( SDL_Event& e )
 }
 
 void Jugador::hacerTruco(){
+	jsound.play(jsound.SONIDO_TRUCO,25);
 	truco.hacerTruco(mPosX,mPosY);
 	elemento->update(mPosX,mPosY,TRUCO);
 }
 
 void Jugador::patear(){
+	jsound.play(jsound.SONIDO_PATEANDO,25);
 	Pelota* pelota = new Pelota(&pelotaHelper.gPelotaTexture,mPosX+(JUG_WIDTH/2),mPosY, PEL_VEL);
 	lista_pelotas.push_back(pelota);
 	elemento->update(mPosX,mPosY,DISPARANDO);
