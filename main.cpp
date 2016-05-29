@@ -16,6 +16,7 @@
 #include "connectionManager/ConnectionManager.h"
 #include "Escenario.h"
 #include "Sound.h"
+#include "Login.h"
 #include <SDL2/SDL_mixer.h>
 
 using namespace std;
@@ -27,6 +28,7 @@ unsigned short clientId;
 
 Log glog;
 Sound gsound;
+Login glogin;
 int msgsQty, velocidadDesplazamiento, velocidadDisparo;
 char userName[50];
 
@@ -87,42 +89,10 @@ int finish(ConnectionManager *connectionManager)
 }
 
 
-void mostrarLogin(char* ipChar, int& portNumber, string& name) {
 
-
-	bool ok = false;
-	cout << "--- Log in ---" << endl;
-	cout << "Por favor ingrese los siguientes datos: " << endl;
-
-	//getline(cin,name);
-
-	while (!ok){
-
-		cout << "Nombre de usuario:" << endl;
-		cin >> name;
-		if (!cin){
-			cout << "Reingrese el nombre de usuario:" << endl;
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			ok = false;
-		}else
-			ok = true;
-	}
-	ok = false;
-
-	cout << "Ip del servidor: " << endl;
-	cin >> ipChar;
-	while (!ok){
-		cout << "Puerto: " << endl;
-		cin >> portNumber;
-		if (!cin){
-			cout << "Error: Debe ingresar un número" << endl;
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			ok = false;
-		}else
-			ok = true;
-	}
+void mostrarLogin(char* ipChar, int& portNumber, string& name)
+{
+	glogin.ventanaLogin(ipChar,portNumber,name);
 }
 
 Parser::spriteType formatearTipoSprite(char * tipo) {
