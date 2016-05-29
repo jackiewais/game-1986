@@ -421,7 +421,7 @@ type_Elemento Escenario::parseMsg(struct gst* msg)
 		ifstream fondoSprite (path);
 		if (!fondoSprite.good()) {
 			// El archivo imagen que queremos usar no existe, usamos el default.
-			if (miElemento.elementoId == "FO") miElemento.spritePath = "vacio.bmp";
+			if (miElemento.elementoId == "FO") miElemento.spritePath = "vacioBackground.bmp";
 			else if (miElemento.elementoId == "EL") miElemento.spritePath = "vacio.bmp";
 		}
 		else{

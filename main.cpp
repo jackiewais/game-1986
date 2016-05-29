@@ -63,27 +63,6 @@ void playGame(ConnectionManager* connectionManager, struct gst* position){
 			cout << "Debug: paso playGame" << endl;
 
 		}
-/*	while (!quit){  borrar esta linea cuando se descomente lo de arriba
-		int width= 500;	// tiene que ser el valor de ancho del escenario. Entonces el escenario es igual de ancho que la ventana (se levanta del xml)
-		int height = 500; // puede ser cualquiera (es el alto de la ventana)
-
-		//crea una ventana y muestra una imagen
-		Escenario* mapa = new Escenario(width,height,connectionManager,1);
-		int x = 200;
-		int y = 500;
-		//cargo varios backround
-		mapa->setEscenarioSize(2000); //setea el alto del escenario. Esto se levanta del xml
-
-		mapa->insertBackgroundObject("enfermera", 0,-416,84,height);
-		mapa->insertBackgroundObject("enfermera", 250,250,84,height);
-		mapa->insertBackgroundObject("enfermera", 400,400,84,height);
-		mapa->insertBackgroundObject("enfermera", 300,700,84,height);
-		mapa->insertBackgroundObject("sprites/pelota.png", x,y,40,height);
-		mapa->insertBackgroundObject("sprites/pelota.png", 200,2000,40,height);
-		mapa->insertBackgroundObject("sprites/pelota.png", 150,700,40,height);
-		mapa->insertBackgroundObject("sprites/pelota.png", 100,100,40,height);
-		mapa->insertBackgroundObject("sprites/pelota.png", 450,657,40,height);
-		mapa->insertBackgroundObject("sprites/pelota.png", 300,500,40,height);*/
 
 		quit = mapa->lunchScreen(position);
 	}
@@ -204,13 +183,13 @@ void loadScenario(ConnectionManager* connectionManager) {
 			if (!fondoSprite.good()) {
 				// El archivo imagen que queremos usar no existe, usamos el default.
 				if (sprite->id == Parser::PE)
-					strcpy(sprite->path, "vacio.bmp");
+					sprite->path = "vacioPelota.png";
 				if (sprite->id == Parser::J1 || sprite->id == Parser::J2 || sprite->id == Parser::J3)
-					strcpy(sprite->path, "vacio.bmp");
+					sprite->path = "vacioJugador.png";
 				if (sprite->id == Parser::VU)
-					strcpy(sprite->path, "vacio.bmp");
+					sprite->path = "vacioTruco.png";
 				if (sprite->id == Parser::DI)
-					strcpy(sprite->path, "vacio.bmp");
+					sprite->path = "vacioDisparo.png";
 			}
 			else{
 				// El path de la imagen es correcto y la podemos recuperar.
