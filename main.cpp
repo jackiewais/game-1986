@@ -22,11 +22,9 @@ using namespace std;
 
 #define BUFLEN 1000
 
-
 unsigned short logLevel;
 unsigned short clientId;
 
-bool isConnected, isRunning;
 Log glog;
 Sound gsound;
 int msgsQty, velocidadDesplazamiento, velocidadDisparo;
@@ -116,8 +114,23 @@ void mostrarLogin(char* ipChar, int& portNumber, string& name) {
 	bool ok = false;
 	cout << "--- Log in ---" << endl;
 	cout << "Por favor ingrese los siguientes datos: " << endl;
-	cout << "Nombre de usuario:" << endl;
-	getline(cin,name);
+
+	//getline(cin,name);
+
+	while (!ok){
+
+		cout << "Nombre de usuario:" << endl;
+		cin >> name;
+		if (!cin){
+			cout << "Reingrese el nombre de usuario:" << endl;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			ok = false;
+		}else
+			ok = true;
+	}
+	ok = false;
+
 	cout << "Ip del servidor: " << endl;
 	cin >> ipChar;
 	while (!ok){
@@ -191,13 +204,13 @@ void loadScenario(ConnectionManager* connectionManager) {
 			if (!fondoSprite.good()) {
 				// El archivo imagen que queremos usar no existe, usamos el default.
 				if (sprite->id == Parser::PE)
-					sprite->path = "vacio.bmp";
+					strcpy(sprite->path, "vacio.bmp");
 				if (sprite->id == Parser::J1 || sprite->id == Parser::J2 || sprite->id == Parser::J3)
-					sprite->path = "vacio.bmp";
+					strcpy(sprite->path, "vacio.bmp");
 				if (sprite->id == Parser::VU)
-					sprite->path = "vacio.bmp";
+					strcpy(sprite->path, "vacio.bmp");
 				if (sprite->id == Parser::DI)
-					sprite->path = "vacio.bmp";
+					strcpy(sprite->path, "vacio.bmp");
 			}
 			else{
 				// El path de la imagen es correcto y la podemos recuperar.
@@ -219,8 +232,7 @@ int main( int argc, char* args[] )
 	char ipAddr[20];
 	string userName;
 	int port;
-	isConnected = false;
-	bool isRunning = false;
+
 	glog.createFile(3);
 	ConnectionManager connectionManager(glog);
 	struct gst* position;
@@ -230,14 +242,11 @@ int main( int argc, char* args[] )
 	}
 
 	loadScenario(&connectionManager);
-	isRunning = true;
 
 	gsound.play(gsound.SONIDO_APLAUSO,25);
-	while(isRunning)
-	{
-		playGame(&connectionManager, position);
-		isRunning = false;
-	}
+
+	playGame(&connectionManager, position);
+
 	finish(&connectionManager);
 
 

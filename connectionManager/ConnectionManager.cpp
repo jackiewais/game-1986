@@ -146,9 +146,7 @@ int ConnectionManager::connectManager(char* ipAddr, int port, string username, s
 
 		}
 
-
 		id = atoi(msgArray[0] ->id);
-
 
 		glog.writeLine("Conectado correctamente con el servidor");
 
