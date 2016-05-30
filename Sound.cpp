@@ -21,10 +21,11 @@ void processSound(char* path, int vol)
 	while (Mix_Playing(channel)) {SDL_Delay(100);}
 }
 
+// Comentado para la entrega del TP2.
 void Sound::play(char* path, int vol)
 {
-	//Mix_PlayChannel(16,sound,0);
-	thread t(processSound,path,vol);
+	// Mix_PlayChannel(16,sound,0);
+	// thread t(processSound,path,vol);
 	// No esperamos a que el hilo termine.
-	t.detach();
+	// t.detach();
 }
