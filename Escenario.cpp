@@ -247,6 +247,9 @@ bool Escenario::lunchScreen(struct gst* position){
 		close();
 	else{
 		deleteBackgroundObjetcs();
+		lpausa.close();
+		lesperando.close();
+		delete jugador;
 	}
 
 	return quit;
