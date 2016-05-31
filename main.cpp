@@ -38,38 +38,6 @@ Escenario* mapa;
 enum messageType {CHAR, INT, DOUBLE, STRING, ERROR};
 
 
-void playGame(ConnectionManager* connectionManager, struct gst* position){
-	bool quit = false;
-	type_Elemento elem;
-	/*descomentar esto cuando este listo el server
-	 * ya no sería necesaria la parte del for con los elementos del escenario (si con los jugadores)*/
-	int height;
-	while (!quit){
-		int velDisp = velocidadDesplazamiento + velocidadDisparo;
-		mapa->setVelocidades(velocidadDesplazamiento, velDisp);
-		for (map<int,type_Elemento>::iterator it=elements.begin(); it!=elements.end(); ++it) {
-			elem = it->second;
-			//if (elem.elementoId == "VE"){
-			//	mapa->setSize(elem.ancho, elem.alto);
-			//}
-			if (elem.elementoId == "FO"){
-				height = elem.alto;
-		    	mapa->setEscenarioSize(height);
-		    } else {
-		    	elem = it->second;
-			cout << elem.spritePath << endl;
-		    	mapa->insertBackgroundObject(elem.spritePath, elem.posicionX, elem.posicionY,
-		    			elem.alto, height);
-		    }
-
-			cout << "Debug: paso playGame" << endl;
-
-		}
-
-		quit = mapa->lunchScreen(position);
-	}
-
-}
 
 
 
@@ -172,6 +140,44 @@ void loadScenario(ConnectionManager* connectionManager) {
 	mapa->generarEscenario();
 }
 
+void playGame(ConnectionManager* connectionManager, struct gst* position){
+	bool quit = false;
+	type_Elemento elem;
+	/*descomentar esto cuando este listo el server
+	 * ya no sería necesaria la parte del for con los elementos del escenario (si con los jugadores)*/
+	int height;
+
+	while (!quit){
+
+		loadScenario(connectionManager);
+		int velDisp = velocidadDesplazamiento + velocidadDisparo;
+		mapa->setVelocidades(velocidadDesplazamiento, velDisp);
+		for (map<int,type_Elemento>::iterator it=elements.begin(); it!=elements.end(); ++it) {
+			elem = it->second;
+			//if (elem.elementoId == "VE"){
+			//	mapa->setSize(elem.ancho, elem.alto);
+			//}
+			if (elem.elementoId == "FO"){
+				height = elem.alto;
+		    	mapa->setEscenarioSize(height);
+		    } else {
+		    	elem = it->second;
+			cout << elem.spritePath << endl;
+		    	mapa->insertBackgroundObject(elem.spritePath, elem.posicionX, elem.posicionY,
+		    			elem.alto, height);
+		    }
+
+			cout << "Debug: paso playGame" << endl;
+
+		}
+
+		quit = mapa->lunchScreen(position);
+		elements.clear();
+	}
+
+}
+
+
 int main( int argc, char* args[] )
 {
 	if( SDL_Init(SDL_INIT_AUDIO) < 0 ) exit(1);
@@ -190,7 +196,7 @@ int main( int argc, char* args[] )
 		connectionManager.connectManager(ipAddr, port, userName, position);
 	}
 
-	loadScenario(&connectionManager);
+	//loadScenario(&connectionManager);
 
 	gsound.play(gsound.SONIDO_APLAUSO,25);
 
