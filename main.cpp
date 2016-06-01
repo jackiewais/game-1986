@@ -83,13 +83,19 @@ Parser::spriteType formatearTipoSprite(char * tipo) {
 	return Parser::BL;
 }
 
-void loadScenario(ConnectionManager* connectionManager) {
+void loadScenario(ConnectionManager* connectionManager,  struct gst* dataEscenario) {
 	char *bufferSnd, *bufferSndS, bufferRcv[BUFLEN], bufferRcvS[BUFLEN];
 	struct gst* sndMsg, * sndMsgS;
 	struct gst** msgs, **msgsS;
 	int bufferSndLen, bufferSndLenS;
-	mapa = new Escenario(connectionManager,1);
-
+	if (dataEscenario == NULL){
+		mapa = new Escenario(connectionManager,1);
+	}
+	else{
+		mapa = new Escenario(connectionManager, 1, 
+		       atoi(dataEscenario -> alto), dataEscenario -> info[0] == 'Y');
+	}
+	
 	sndMsg = genAdminGst(0,command::REQ_SCENARIO);
 	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
 
@@ -141,15 +147,21 @@ void loadScenario(ConnectionManager* connectionManager) {
 }
 
 void playGame(ConnectionManager* connectionManager, struct gst* position){
-	bool quit = false;
+	bool quit = false, first = true;
 	type_Elemento elem;
 	/*descomentar esto cuando este listo el server
 	 * ya no sería necesaria la parte del for con los elementos del escenario (si con los jugadores)*/
 	int height;
 
 	while (!quit){
-
-		loadScenario(connectionManager);
+		
+		if (first){
+			first = false;
+			loadScenario(connectionManager, position);
+		}
+		else{
+			loadScenario(connectionManager, NULL);
+		}
 		int velDisp = velocidadDesplazamiento + velocidadDisparo;
 		mapa->setVelocidades(velocidadDesplazamiento, velDisp);
 		for (map<int,type_Elemento>::iterator it=elements.begin(); it!=elements.end(); ++it) {

@@ -69,7 +69,7 @@ class Escenario{
 		//EscenarioSize = tamaño del nivel
 		resolution escenarioSize;
 		// fps
-		int scroll ;
+		int scroll, scrollingOffset;
 		int velocidadDesplazamiento, velocidadDisparo;
 		bool pausa = true;
 		bool reset = false;
@@ -116,6 +116,7 @@ class Escenario{
 
 	Escenario();
 	Escenario(ConnectionManager* connectionManager,int scroll);
+	Escenario(ConnectionManager* connectionManager,int scroll, int offset, bool playing);
 	Escenario(int widht, int height, ConnectionManager* connectionManager, int scroll);
 	void setCantJugadores(int cantJugadores);
     bool lunchScreen(struct gst* position);

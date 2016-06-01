@@ -37,8 +37,23 @@ Escenario::Escenario(ConnectionManager* connectionManager, int scroll) {
  	this->scroll=scroll;
 	conManager = connectionManager;
 	clientId = connectionManager -> getId();
+	scrollingOffset = 0;
+	started = false;
+	pausa = true;
 	
 }
+
+Escenario::Escenario(ConnectionManager* connectionManager, int scroll, int offset, bool playing) {
+	pausa = !playing;
+	started = playing;
+ 	this->scroll=scroll;
+ 	scrollingOffset = offset;
+	conManager = connectionManager;
+	clientId = connectionManager -> getId();
+	
+}
+
+
 void Escenario::setCantJugadores(int cantJugador){
 	cantJugadores=cantJugador;
 }
@@ -116,12 +131,14 @@ void Escenario::crearJugador(int jugId, string nombre, int posXIni){
 bool Escenario::lunchScreen(struct gst* position){
 
 	bool quit = false;
-	started = false;
-	pausa = true;
 	int escenarioHeight=0;
+	if (reset){
+		scrollingOffset = 0;
+	}
+
 
 	SDL_Event e;
-	int scrollingOffset = 0;
+	
 
 	for(int i = 1; i <= cantJugadores; i++){
 		//if (i != clientId)
