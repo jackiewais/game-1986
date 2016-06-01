@@ -119,7 +119,7 @@ class Escenario{
 	Escenario(ConnectionManager* connectionManager,int scroll, int offset, bool playing);
 	Escenario(int widht, int height, ConnectionManager* connectionManager, int scroll);
 	void setCantJugadores(int cantJugadores);
-    bool lunchScreen(struct gst* position);
+    bool lunchScreen(struct gst* position, bool forcePos);
 	void insertBackgroundObject(string path, int x, int y, int height, int scrH  );
 	void setSize(int width, int height );
 	void setVelocidades(int velocidadDesplazamiento, int velocidadDisparo);

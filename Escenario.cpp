@@ -130,7 +130,7 @@ void Escenario::crearJugador(int jugId, string nombre, int posXIni){
 	jugadores[jugId] = otroJugador;
 }
 
-bool Escenario::lunchScreen(struct gst* position){
+bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 
 	bool quit = false;
 	int escenarioHeight=0;
@@ -148,9 +148,12 @@ bool Escenario::lunchScreen(struct gst* position){
 
 	}
 	Jugador* jugador = jugadores[clientId];
-	int posX = atoi(position->posx);
-	int posY = atoi(position->posy);
-	jugador->forzarPosicion(posX,posY);
+	if (forcePos){
+		int posX = atoi(position->posx);
+		int posY = atoi(position->posy);
+		jugador->forzarPosicion(posX,posY);
+
+	}
 
 	Label lpausa;
 	lpausa.setData(gRenderer, string("Pause"),screen.width/2,screen.height/2,72);

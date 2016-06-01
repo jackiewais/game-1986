@@ -156,7 +156,7 @@ void playGame(ConnectionManager* connectionManager, struct gst* position){
 	while (!quit){
 		
 		if (first){
-			first = false;
+
 			loadScenario(connectionManager, position);
 		}
 		else{
@@ -183,7 +183,8 @@ void playGame(ConnectionManager* connectionManager, struct gst* position){
 
 		}
 
-		quit = mapa->lunchScreen(position);
+		quit = mapa->lunchScreen(position, first);
+		first = false;
 		elements.clear();
 	}
 
