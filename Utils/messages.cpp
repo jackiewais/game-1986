@@ -1,11 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <iostream>
 #include "messages.h"
 #include "../Elemento/Elemento.h"
-
-using namespace std;
 
 int msg1len = typel + idl + posl + posl,
 	msg2len = typel + idl + posl + posl + infol,
@@ -36,18 +33,16 @@ void cleanGst(struct gst* msg){
 }
 
 int decodeMessages(struct gst*** msgs, char* msgsChar){
-
 	int nOfMsgs;
 
-	char nOfMsgsChar[nOfMsgsl+1],
+	char nOfMsgsChar[nOfMsgsl + 1],
 		  *charIdx = msgsChar;
 
 	charIdx += lengthl;
+	nOfMsgsChar[nOfMsgsl] = 0;
 	memcpy(nOfMsgsChar, charIdx, nOfMsgsl);
-	nOfMsgsChar[nOfMsgsl] = '\0';
 	nOfMsgs = atoi(nOfMsgsChar);
 	charIdx += nOfMsgsl;
-
 	*msgs = new struct gst*[nOfMsgs];
 	struct gst** msgIdx = *msgs;
 
@@ -62,41 +57,57 @@ int decodeMessages(struct gst*** msgs, char* msgsChar){
 		memcpy((*msgIdx) -> id, charIdx, idl);
 		charIdx += idl;
 
-		if ((*msgIdx) -> type[0] != '9') {
-			if ((*msgIdx) -> type[0] == '1' || (*msgIdx) -> type[0] == '2'){
-				memcpy((*msgIdx) -> posx, charIdx, posl);
-				charIdx += posl;
-				memcpy((*msgIdx) -> posy, charIdx, posl);
-				charIdx += posl;
-			}
-
-			if ((*msgIdx) -> type[0] == '2' || (*msgIdx) -> type[0] == '8'){
-				memcpy((*msgIdx) -> info, charIdx, infol);
-				charIdx += infol;
-			}
-
-			else if ((*msgIdx) -> type[0] == '5'){
-				memcpy((*msgIdx) -> path, charIdx, pathl);
-				charIdx += pathl;
-			}else if ((*msgIdx) -> type[0] == '0'){
-				memcpy((*msgIdx) -> ancho, charIdx, posl);
-				charIdx += posl;
-				memcpy((*msgIdx) -> alto, charIdx, posl);
-				charIdx += posl;
-				memcpy((*msgIdx) -> posx, charIdx, posl);
-				charIdx += posl;
-				memcpy((*msgIdx) -> posy, charIdx, posl);
-				charIdx += posl;
-				memcpy((*msgIdx) -> path, charIdx, pathl);
-				charIdx += pathl;
-			}
-			else if ((*msgIdx) -> type[0] != '3'){
-				cout << "DEBUG decodeMessages msgIdx -> type = " << (*msgIdx) -> type[0] << endl;
-				cout << "DEBUG decodeMessages msgQty = " << i << endl;
-				cout << "DEBUG decodeMessages charIdx = " << charIdx << endl;
-				return -1;
-			}
+		if ((*msgIdx) -> type[0] == '2'){
+			memcpy((*msgIdx) -> posx, charIdx, posl);
+			charIdx += posl;
+			memcpy((*msgIdx) -> posy, charIdx, posl);
+			charIdx += posl;
 		}
+
+		if ((*msgIdx) -> type[0] == '2' || (*msgIdx) -> type[0] == '8'){
+			memcpy((*msgIdx) -> info, charIdx, infol);
+			charIdx += infol;
+		}
+
+		else if ((*msgIdx) -> type[0] == '5'){
+			memcpy((*msgIdx) -> path, charIdx, pathl);
+			charIdx += pathl;
+		}
+
+		else if ((*msgIdx) -> type[0] == '0'){
+			memcpy((*msgIdx) -> ancho, charIdx, posl);
+			charIdx += posl;
+			memcpy((*msgIdx) -> alto, charIdx, posl);
+			charIdx += posl;
+			memcpy((*msgIdx) -> posx, charIdx, posl);
+			charIdx += posl;
+			memcpy((*msgIdx) -> posy, charIdx, posl);
+			charIdx += posl;
+			memcpy((*msgIdx) -> path, charIdx, pathl);
+			charIdx += pathl;
+		}
+
+		else if ((*msgIdx) -> type[0] == '1'){
+			memcpy((*msgIdx) -> alto, charIdx, posl);
+			charIdx += posl;
+			memcpy((*msgIdx) -> posx, charIdx, posl);
+			charIdx += posl;
+			memcpy((*msgIdx) -> posy, charIdx, posl);
+			charIdx += posl;
+			memcpy((*msgIdx) -> info, charIdx, infol);
+			charIdx += infol;
+		}
+
+		else if ((*msgIdx) -> type[0] == '9') {
+		}
+
+		else if ((*msgIdx) -> type[0] != '3'){
+			cout << "DEBUG decodeMessages msgIdx -> type = " << (*msgIdx) -> type[0] << endl;
+			cout << "DEBUG decodeMessages msgQty = " << i << endl;
+			cout << "DEBUG decodeMessages charIdx = " << charIdx << endl;
+			return -1;
+		}
+
 
 
 		msgIdx++;
@@ -129,7 +140,7 @@ int encodeMessages(char** msgsChar, struct gst** msgs, int qty){
 		
 		pkglen += typel + idl;
 
-		if ((*msgs) -> type[0] == '1' || (*msgs) -> type[0] == '2'){
+		if ((*msgs) -> type[0] == '2'){
 			memcpy(bufferIt, (*msgs) -> posx, posl);
 			bufferIt += posl;
 			memcpy(bufferIt, (*msgs) -> posy, posl);
@@ -145,7 +156,7 @@ int encodeMessages(char** msgsChar, struct gst** msgs, int qty){
 			pkglen += infol;
 		}
 
-		if ((*msgs) -> type[0] == '0'){
+		else if ((*msgs) -> type[0] == '0'){
 			memcpy(bufferIt, (*msgs) -> ancho, posl);
 			bufferIt += posl;
 
@@ -164,11 +175,28 @@ int encodeMessages(char** msgsChar, struct gst** msgs, int qty){
 			pkglen += posl + posl + posl + posl + pathl;
 		}
 
-		if ((*msgs) -> type[0] == '5'){
+		else if ((*msgs) -> type[0] == '5'){
 			memcpy(bufferIt, (*msgs) -> path, pathl);
 			bufferIt += pathl;
 
 			pkglen += pathl;
+		}
+
+		else if ((*msgs) -> type[0] == '1'){
+			memcpy(bufferIt, (*msgs) -> alto, posl);
+			bufferIt += posl;
+
+			memcpy(bufferIt, (*msgs) -> posx, posl);
+			bufferIt += posl;
+
+			memcpy(bufferIt, (*msgs) -> posy, posl);
+			bufferIt += posl;
+
+			memcpy(bufferIt, (*msgs) -> info, infol);
+			bufferIt += infol;
+
+			pkglen +=  posl + posl + posl + infol;
+
 		}
 
 		msgs++;
@@ -182,6 +210,8 @@ int encodeMessages(char** msgsChar, struct gst** msgs, int qty){
 
 struct gst* genGstFromVelocidades(int velocidadDesplazamiento, int velocidadDisparos) {
 	struct gst* newMsg = new struct gst;
+	cleanGst(newMsg);
+
 	newMsg -> type[0] = (char) msgType::OBJETO;
 
 	char velocidad[posl];
@@ -206,10 +236,12 @@ struct gst* genGstFromVelocidades(int velocidadDesplazamiento, int velocidadDisp
 
 struct gst* genGstFromCantJug(int cantJug) {
 	struct gst* newMsg = new struct gst;
+	cleanGst(newMsg);
 
 	newMsg -> type[0] = (char) msgType::CANT_JUG;
 
-	char cantidad[idl];
+	char cantidad[idl + 1];
+	cantidad[idl] = 0;
 	intToFixedChar(cantJug, cantidad, idl);
 	memcpy(newMsg -> id, cantidad, idl);
 
@@ -218,6 +250,7 @@ struct gst* genGstFromCantJug(int cantJug) {
 
 struct gst* genGstFromFondo(Parser::type_Escenario * escenario, char path[pathl]) {
 	struct gst* newMsg = new struct gst;
+	cleanGst(newMsg);
 
 	newMsg -> type[0] = (char) msgType::OBJETO;
 
@@ -242,23 +275,9 @@ struct gst* genGstFromFondo(Parser::type_Escenario * escenario, char path[pathl]
 	return newMsg;
 }
 
-struct gst* genGstFromSprite(Parser::type_Sprite * sprite) {
-	struct gst* newMsg = new struct gst;
-
-	newMsg -> type[0] = (char) msgType::SPRITE;
-
-	char charId[idl];
-	intToFixedChar(sprite->id, charId, idl);
-	memcpy(newMsg -> id, charId, idl);
-
-	memset(newMsg -> path, '=', pathl);
-	memcpy(newMsg -> path, sprite->path, pathl);
-
-	return newMsg;
-}
-
 struct gst* genGstFromElemento(Parser::type_Elemento * elem, char path[pathl]) {
 	struct gst* newMsg = new struct gst;
+	cleanGst(newMsg);
 
 	newMsg -> type[0] = (char) msgType::OBJETO;
 
@@ -285,6 +304,7 @@ struct gst* genGstFromElemento(Parser::type_Elemento * elem, char path[pathl]) {
 
 struct gst* genGstFromVentana(Parser::type_Ventana* ventana){
 	struct gst* newMsg = new struct gst;
+	cleanGst(newMsg);
 
 	newMsg -> type[0] = (char) msgType::OBJETO;
 
@@ -304,6 +324,21 @@ struct gst* genGstFromVentana(Parser::type_Ventana* ventana){
 	memcpy(newMsg -> posy, charMedida, posl);
 
 	memset(newMsg -> path, '=', pathl);
+
+	return newMsg;
+}
+
+struct gst* genGstFromSprite(Parser::type_Sprite * sprite) {
+	struct gst* newMsg = new struct gst;
+	cleanGst(newMsg);
+
+	newMsg -> type[0] = (char) msgType::SPRITE;
+
+	intToFixedChar(sprite->id, newMsg -> id, idl);
+	cout << "DEBUG genGstFromSprite " << newMsg -> id << endl;
+
+	memset(newMsg -> path, '=', pathl);
+	memcpy(newMsg -> path, sprite->path, pathl);
 
 	return newMsg;
 }
@@ -336,10 +371,35 @@ struct gst* genAdminGst(int clientId, command comando){
 
 	newMsg -> type[0] = (char) msgType::CONTROL;
 
-	char charId[idl];
-	intToFixedChar(clientId, charId, idl);
-	memcpy(newMsg -> id, charId, idl);
+	char temp[idl + 1];
+	temp[idl] = 0;
+
+	intToFixedChar(clientId, temp, idl);
+	memcpy(newMsg -> id, temp, idl);
 
 	newMsg -> info[0] = (char) comando;
+	return newMsg;
+}
+
+struct gst* genInitGst(int id, int progress, int posx, int posy, bool playing){
+
+	struct gst* newMsg = new struct gst;
+	cleanGst(newMsg);
+
+	newMsg -> type[0] = (char) msgType::INIT;
+
+
+	intToFixedChar(id, newMsg -> id, idl);
+	intToFixedChar(progress , newMsg -> alto, posl);
+	intToFixedChar(posx, newMsg -> posx, posl);
+	intToFixedChar(posy, newMsg -> posy, posl);
+
+	if (playing){
+		newMsg -> info[0] = 'Y';
+	}
+	else{
+		newMsg -> info[0] = 'N';
+	}
+
 	return newMsg;
 }
