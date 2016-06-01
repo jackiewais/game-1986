@@ -180,11 +180,7 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 				switch(e.key.keysym.sym){
 					case SDLK_p:
 						if (started){
-							pausa = !pausa; 							
-							jugador->elemento->updateStatus((pausa)?PAUSA:NO_PAUSA);
-							for(auto const &it : jugadores) {
-								it.second ->managePausa(pausa);
-							}
+							jugador->elemento->updateStatus((!pausa)?PAUSA:NO_PAUSA);
 							
 						}
 						break;
@@ -196,15 +192,7 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 
 					case SDLK_a:
 						if (!started){
-							/*pausa = false;
-							started = true;
 
-							for(auto const &it : jugadores) {
-								it.second->managePausa(pausa);
-								it.second ->hacerTruco();
-							}
-							break;
-							*/
 							jugador->elemento->updateStatus(status::START);
 						}
 						break;
@@ -512,12 +500,15 @@ void Escenario::processMessages(struct gst** msgs, int msgQty){
 				else if (msgs[i]->info[0] == (char) status::RESET) {
 					reset = true;
 				}
-				else if (msgs[i]->info[0] == (char) status::PAUSA) {
-					pausa = true;
+				else if ((msgs[i]->info[0] == (char) status::PAUSA) ||
+						(msgs[i]->info[0] == (char) status::NO_PAUSA)){
+					//pausa = true;
+					pausa = (msgs[i]->info[0] == (char) status::PAUSA);
 					for(auto const &it : jugadores) {
 						it.second->managePausa(pausa);
 					}
 				}
+
 			}
 		}
 		else if (msgs[i] -> type[0] == '8'){
@@ -559,7 +550,6 @@ void Escenario::updateJugadores(){
 			switch (it.second->elemento->getEstado()){
 				case PAUSA:
 					if (!pausa){
-						pausa = true;
 						for(auto const &j : jugadores) {
 							j.second->managePausa(pausa);
 						}
@@ -567,7 +557,6 @@ void Escenario::updateJugadores(){
 					break;
 				case NO_PAUSA:
 					if (pausa){
-						pausa = false;
 						for(auto const &j : jugadores) {
 							j.second->managePausa(pausa);
 						}
