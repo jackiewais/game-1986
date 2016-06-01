@@ -125,6 +125,8 @@ void Escenario::crearJugador(int jugId, string nombre, int posXIni){
 			spritePathJugador2, spritePathJugador3, spritePathTruco);
 	Elemento* elemento = new Elemento(jugId,posXIni,screen.height-68);
 	otroJugador->setElemento(elemento);
+	if (started)
+		otroJugador->managePausa(pausa);
 	jugadores[jugId] = otroJugador;
 }
 
@@ -146,6 +148,9 @@ bool Escenario::lunchScreen(struct gst* position){
 
 	}
 	Jugador* jugador = jugadores[clientId];
+	int posX = atoi(position->posx);
+	int posY = atoi(position->posy);
+	jugador->forzarPosicion(posX,posY);
 
 	Label lpausa;
 	lpausa.setData(gRenderer, string("Pause"),screen.width/2,screen.height/2,72);

@@ -210,7 +210,7 @@ int main( int argc, char* args[] )
 
 	//loadScenario(&connectionManager);
 
-	gsound.play(gsound.SONIDO_APLAUSO,25);
+	//gsound.play(gsound.SONIDO_APLAUSO,25);
 
 	playGame(&connectionManager, position);
 
