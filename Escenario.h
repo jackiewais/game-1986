@@ -69,7 +69,7 @@ class Escenario{
 		//EscenarioSize = tamaño del nivel
 		resolution escenarioSize;
 		// fps
-		int scroll, scrollingOffset;
+		int scroll, escenarioHeight;
 		int velocidadDesplazamiento, velocidadDisparo;
 		bool pausa = true;
 		bool reset = false;

@@ -92,8 +92,7 @@ void loadScenario(ConnectionManager* connectionManager,  struct gst* dataEscenar
 		mapa = new Escenario(connectionManager,1);
 	}
 	else{
-		mapa = new Escenario(connectionManager, 1, 
-		       atoi(dataEscenario -> alto), dataEscenario -> info[0] == 'Y');
+		mapa = new Escenario(connectionManager, 1, atoi(dataEscenario -> alto), dataEscenario -> info[0] == 'Y');
 	}
 	
 	sndMsg = genAdminGst(0,command::REQ_SCENARIO);

@@ -37,7 +37,7 @@ Escenario::Escenario(ConnectionManager* connectionManager, int scroll) {
  	this->scroll=scroll;
 	conManager = connectionManager;
 	clientId = connectionManager -> getId();
-	scrollingOffset = 0;
+	escenarioHeight = 0;
 	started = false;
 	pausa = true;
 	
@@ -47,7 +47,7 @@ Escenario::Escenario(ConnectionManager* connectionManager, int scroll, int offse
 	pausa = !playing;
 	started = playing;
  	this->scroll=scroll;
- 	scrollingOffset = offset;
+ 	escenarioHeight = offset;
 	conManager = connectionManager;
 	clientId = connectionManager -> getId();
 	
@@ -133,11 +133,15 @@ void Escenario::crearJugador(int jugId, string nombre, int posXIni){
 bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 
 	bool quit = false;
-	int escenarioHeight=0;
+	int scrollingOffset = escenarioHeight % gBGTexture.getHeight();
 	if (reset){
 		scrollingOffset = 0;
+		escenarioHeight = 0;
 	}
 
+	cout << "DEBUG lunchScreen: gBGTexture.getHeight() = " << gBGTexture.getHeight() << endl;
+	cout << "DEBUG lunchScreen: scrollingOffset = " << scrollingOffset << endl;
+	cout << "DEBUG lunchScreen: escenarioHeight = " << escenarioHeight << endl;
 
 	SDL_Event e;
 	
@@ -162,7 +166,6 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 
 	reset = false;
 
-	cout << "Debug: lunchScreen va a entrar al while" << endl;
 
 	while( !quit && !reset)
 	{
@@ -187,7 +190,7 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 
 					case SDLK_r:
 						reset = true;
-						jugador->elemento->update(jugador->elemento->getPosX(),jugador->elemento->getPosY(),RESET);
+						jugador->elemento->updateStatus(status::RESET);
 						break;
 
 					case SDLK_a:
@@ -201,9 +204,17 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 
 			if (!pausa){
 				jugador->handleEvent(e);
+
 			}
 
 		}
+
+		if (escenarioHeight == escenarioSize.height)
+		{
+			reset = true;
+			jugador->elemento->updateStatus(status::RESET);
+		}
+
 		sendStatus();
 
 		if (!pausa){
@@ -214,11 +225,6 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 			//Scroll background
 			scrollingOffset+=scroll;
 			escenarioHeight+=scroll;
-			if (escenarioHeight>escenarioSize.height)
-			{ 
-				reset = true;
-				jugador->elemento->update(jugador->elemento->getPosX(),jugador->elemento->getPosY(),RESET);
-			}
 			if( scrollingOffset >gBGTexture.getHeight() )
 			{
 				scrollingOffset = 0;
@@ -356,6 +362,9 @@ void Escenario::close()
 	SDL_DestroyWindow( gWindow );
 	SDL_DestroyRenderer( gRenderer );
 	gRenderer = NULL;
+	backgroundObjetcs.clear();
+	sprites.clear();
+
 	
 	SDL_Quit();
 
