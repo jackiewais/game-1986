@@ -25,7 +25,7 @@ class Jugador
 		char *spritePathJugador3;
 		char * spritePathTruco;
 
-		Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre,
+		Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, int cantJug, string nombre,
 				int velDesplazamiento, int velDisparo, char *spritePathPelota, char *spritePathJugador1,
 				char *spritePathJugador2, char *spritePathJugador3, char * spritePathTruco);
 		~Jugador();

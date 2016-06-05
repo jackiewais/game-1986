@@ -117,10 +117,11 @@ void Escenario::crearJugador(int jugId, string nombre, int posXIni){
 	getSpritePath(spritePathJugador2, Parser::J2);
 	getSpritePath(spritePathJugador3, Parser::J3);
 	getSpritePath(spritePathTruco, Parser::VU);
-	cout << "sprite pelota " << spritePathPelota << endl;
-	cout << "sprite jugador " << spritePathJugador1 << endl;
-	cout << "sprite truco " << spritePathTruco << endl;
-	Jugador* otroJugador = new Jugador(gRenderer,screen.width,screen.height, jugId, nombre,
+	//cout << "sprite pelota " << spritePathPelota << endl;
+	//cout << "sprite jugador " << spritePathJugador1 << endl;
+	//cout << "sprite truco " << spritePathTruco << endl;
+	cout << "DEBUG crearJugador posXIni = " << posXIni << endl;
+	Jugador* otroJugador = new Jugador(gRenderer,screen.width,screen.height, jugId, cantJugadores, nombre,
 			velocidadDesplazamiento, velocidadDisparo, spritePathPelota, spritePathJugador1,
 			spritePathJugador2, spritePathJugador3, spritePathTruco);
 	Elemento* elemento = new Elemento(jugId,posXIni,screen.height-68);
@@ -148,7 +149,7 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 
 	for(int i = 1; i <= cantJugadores; i++){
 		//if (i != clientId)
-			crearJugador(i,"Pepe",screen.height*i/(cantJugadores+1));
+			crearJugador(i,"Pepe",screen.width*i/(cantJugadores+1));
 
 	}
 	Jugador* jugador = jugadores[clientId];

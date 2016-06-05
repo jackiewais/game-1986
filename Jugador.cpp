@@ -7,7 +7,7 @@ using namespace std;
 
 Sound jsound;
 
-Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, string nombre,
+Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug, int cantJug, string nombre,
 		int velDesplazamiento, int velDisparo, char *spritePathPelota, char *spritePathJugador1,
 		char *spritePathJugador2, char *spritePathJugador3, char * spritePathTruco)
 {
@@ -20,7 +20,8 @@ Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug,
 	PEL_VEL = velDisparo;
 
     //Initialize the offsets
-    mPosX = scr_width*intJug/3;
+    mPosX = scr_width*intJug/(cantJug + 1);
+    cout << "DEBUG Jugador mPosX = " << mPosX << endl;
     mPosY = scr_height-JUG_HEIGHT;
 
     //Initialize the velocity
@@ -61,10 +62,12 @@ bool Jugador::loadMedia()
 	char * path;
 	if (id == 1)
 		path = this->spritePathJugador1;
-	if (id == 2)
+	else if (id == 2)
 		path = this->spritePathJugador2;
-	if (id == 3)
+	else if (id == 3)
 		path = this->spritePathJugador3;
+	else
+		path = "vacio.bmp";
 
 	if( !gJugadorTexture.loadFromFile  ( path ))
 	{
