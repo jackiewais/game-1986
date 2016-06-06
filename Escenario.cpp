@@ -164,6 +164,8 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 	lpausa.setData(gRenderer, string("Pause"),screen.width/2,screen.height/2,72);
 	Label lesperando;
 	lesperando.setData(gRenderer, string("Esperando Jugadores"),screen.width/2,screen.height/2+36,24);
+	Label ldesconectado;
+	ldesconectado.setData(gRenderer, string("Servidor desconectado, presione una tecla para salir"),screen.width/2,screen.height/2+60,20);
 
 	reset = false;
 
@@ -196,11 +198,13 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 
 					case SDLK_a:
 						if (!started){
-
 							jugador->elemento->updateStatus(status::START);
 						}
 						break;
 				}
+				if (desconectado)
+					quit = true;
+
 			}
 
 			if (!pausa){
@@ -254,6 +258,8 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 			lpausa.render();
 		if (!started)
 			lesperando.render();
+		if (desconectado)
+			ldesconectado.render();
 
 		SDL_RenderPresent( gRenderer );
 
@@ -269,6 +275,7 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 		deleteBackgroundObjetcs();
 		lpausa.close();
 		lesperando.close();
+		ldesconectado.close();
 		delete jugador;
 		close();
 	}
@@ -396,6 +403,12 @@ void Escenario::receiveStatus(){
 
 		if (rcvMsgsQty != -1){
 			processMessages(rcvMsgs, rcvMsgsQty);
+		}
+	}else{
+		desconectado = true;
+		pausa = true;
+		for(auto const &j : jugadores) {
+			j.second->managePausa(pausa);
 		}
 	}
 
