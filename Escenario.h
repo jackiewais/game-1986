@@ -74,6 +74,7 @@ class Escenario{
 		bool pausa = true;
 		bool reset = false;
 		bool started;
+		bool desconectado = false;
 
 		//list<backgroundObjects> objects;
 		list<BackgroundTemplate*> backgroundObjetcs;

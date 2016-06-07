@@ -73,7 +73,7 @@ int ConnectionManager::connectManager(char* ipAddr, int port, string username, s
 		return 1;
 	} else {
 		struct timeval timeout;
-		timeout.tv_sec = 180;
+		timeout.tv_sec = 30;
 		timeout.tv_usec = 0;
 
 		 if (setsockopt (mySocket, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout,sizeof(timeout)) < 0)
@@ -119,7 +119,7 @@ int ConnectionManager::connectManager(char* ipAddr, int port, string username, s
 		strcpy(usernameChar, username.c_str());
 
 		sendMsg(usernameChar, username.size());
-
+		delete[] usernameChar; // LULA
 		if (receive(respuestaServer) == -1){
 			glog.writeErrorLine("ERROR recibiendo información del socket");
 			return 1;
@@ -198,9 +198,10 @@ int ConnectionManager::receive(char* buffer){
 	rcvLen = recv(mySocket, buffer, BUFLEN -1 , 0);
 	if( rcvLen < 0){
 		glog.writeErrorLine("ERROR al recibir la respuesta. El servidor no responde");
-	}
-
-	else{
+	}else if (rcvLen == 0){
+		glog.writeErrorLine("ERROR al recibir la respuesta. El servidor esta desconectado");
+		return -1;
+	}else{
 		if (audit)
 			cout << "AUDIT rcv: " << buffer << endl;
 		memcpy(msgLenChar, buffer, 3);

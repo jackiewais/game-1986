@@ -66,5 +66,3 @@ status Elemento::getEstado(){
 	return estado;
 }
 
-
-

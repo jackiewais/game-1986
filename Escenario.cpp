@@ -164,16 +164,19 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 	lpausa.setData(gRenderer, string("Pause"),screen.width/2,screen.height/2,72);
 	Label lesperando;
 	lesperando.setData(gRenderer, string("Esperando Jugadores"),screen.width/2,screen.height/2+36,24);
+	Label ldesconectado;
+	ldesconectado.setData(gRenderer, string("Servidor desconectado, presione una tecla para salir"),screen.width/2,screen.height/2+60,20);
 
 	reset = false;
 
 
 	while( !quit && !reset)
 	{
-
+		
 		//Handle events on queue
 		while( SDL_PollEvent( &e ) != 0 )
 		{
+			
 			//User requests quit
 			if( e.type == SDL_QUIT ){
 				quit = true;
@@ -196,11 +199,13 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 
 					case SDLK_a:
 						if (!started){
-
 							jugador->elemento->updateStatus(status::START);
 						}
 						break;
 				}
+				if (desconectado)
+					quit = true;
+
 			}
 
 			if (!pausa){
@@ -209,15 +214,15 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 			}
 
 		}
-
+		cout << " 2 " << endl;
 		if (escenarioHeight == escenarioSize.height)
 		{
 			reset = true;
 			jugador->elemento->updateStatus(status::RESET);
 		}
-
+		if(!desconectado)
 		sendStatus();
-
+	
 		if (!pausa){
 			jugador->move();
 			for(auto const &it : jugadores) {
@@ -248,19 +253,26 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 			}
 		}
 
+		
+		
+
 		//Renderizo mi jugador para que esté adelante
 		jugador->render();
+		
 		if (pausa)
 			lpausa.render();
 		if (!started)
 			lesperando.render();
-
+		if (this->desconectado){
+			cout << desconectado << endl;
+			ldesconectado.render();
+			}
 		SDL_RenderPresent( gRenderer );
-
 		receiveStatus();
 		updateJugadores();
 		jugador->cleanStatus();
-
+	
+		
 	}
 			
 	if (quit)
@@ -269,7 +281,12 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 		deleteBackgroundObjetcs();
 		lpausa.close();
 		lesperando.close();
-		delete jugador;
+		ldesconectado.close();
+		for (map<int,Jugador*>::iterator it = jugadores.begin(); it != jugadores.end(); ++it){ //LULA
+			(*it).second->destructorJugador();
+			delete (*it).second;
+		}
+		jugadores.clear();
 		close();
 	}
 
@@ -382,7 +399,7 @@ void Escenario::sendStatus(){
 	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
 	bufferSnd[bufferSndLen] = '\0';
 	conManager->sendMsg(bufferSnd,bufferSndLen);
-	delete bufferSnd;
+	delete[] bufferSnd;
 }
 
 void Escenario::receiveStatus(){
@@ -397,6 +414,14 @@ void Escenario::receiveStatus(){
 		if (rcvMsgsQty != -1){
 			processMessages(rcvMsgs, rcvMsgsQty);
 		}
+	}else{
+		this->desconectado = true;
+		
+		pausa = true;
+		for(auto const &j : jugadores) {
+			j.second->managePausa(pausa);
+		}
+		
 	}
 
 }

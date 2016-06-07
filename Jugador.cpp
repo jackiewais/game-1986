@@ -231,8 +231,9 @@ void Jugador::manageDesconexion(bool d){
 	manageAlpha();
 }
 
-Jugador::~Jugador()
+void Jugador::destructorJugador()
 {
 	gJugadorTexture.free();
 	lDesconectado.close();
+//	delete elemento; //LULA
 }
