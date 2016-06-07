@@ -121,6 +121,7 @@ void loadScenario(ConnectionManager* connectionManager,  struct gst* dataEscenar
 		for (int i = 0; i < msgsQty; i++) {
 			Parser::type_Sprite *sprite = new Parser::type_Sprite();
 			sprite->id = formatearTipoSprite(msgsS[i]->id);
+
 			char * first_token = strtok(msgsS[i]->path, "=");
 			ifstream fondoSprite (first_token);
 			if (!fondoSprite.good()) {
@@ -136,6 +137,7 @@ void loadScenario(ConnectionManager* connectionManager,  struct gst* dataEscenar
 			}
 			else{
 				// El path de la imagen es correcto y la podemos recuperar.
+
 				sprite->path = first_token;
 			}
 			sprites.push_back(sprite);

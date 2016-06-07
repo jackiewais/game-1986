@@ -119,7 +119,7 @@ int ConnectionManager::connectManager(char* ipAddr, int port, string username, s
 		strcpy(usernameChar, username.c_str());
 
 		sendMsg(usernameChar, username.size());
-
+		delete[] usernameChar; // LULA
 		if (receive(respuestaServer) == -1){
 			glog.writeErrorLine("ERROR recibiendo información del socket");
 			return 1;

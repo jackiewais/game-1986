@@ -32,7 +32,7 @@ private:
 public:
 	Elemento(int idEl, int x, int y);
 	Elemento(struct gst*);
-//	virtual ~Elemento();
+	~Elemento();
 	void update(int x, int y, status estado);
 	void update(struct gst*);
 	void updateStatus(status estado);

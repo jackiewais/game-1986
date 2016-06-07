@@ -282,7 +282,11 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 		lpausa.close();
 		lesperando.close();
 		ldesconectado.close();
-		delete jugador;
+		for (map<int,Jugador*>::iterator it = jugadores.begin(); it != jugadores.end(); ++it){ //LULA
+			(*it).second->destructorJugador();
+			delete (*it).second;
+		}
+		jugadores.clear();
 		close();
 	}
 
@@ -395,7 +399,7 @@ void Escenario::sendStatus(){
 	bufferSndLen = encodeMessages(&bufferSnd, &sndMsg, 1);
 	bufferSnd[bufferSndLen] = '\0';
 	conManager->sendMsg(bufferSnd,bufferSndLen);
-	delete bufferSnd;
+	delete[] bufferSnd;
 }
 
 void Escenario::receiveStatus(){
