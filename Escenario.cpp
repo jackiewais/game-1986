@@ -172,10 +172,11 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 
 	while( !quit && !reset)
 	{
-
+		
 		//Handle events on queue
 		while( SDL_PollEvent( &e ) != 0 )
 		{
+			
 			//User requests quit
 			if( e.type == SDL_QUIT ){
 				quit = true;
@@ -213,15 +214,15 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 			}
 
 		}
-
+		cout << " 2 " << endl;
 		if (escenarioHeight == escenarioSize.height)
 		{
 			reset = true;
 			jugador->elemento->updateStatus(status::RESET);
 		}
-
+		if(!desconectado)
 		sendStatus();
-
+	
 		if (!pausa){
 			jugador->move();
 			for(auto const &it : jugadores) {
@@ -252,21 +253,26 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 			}
 		}
 
+		
+		
+
 		//Renderizo mi jugador para que esté adelante
 		jugador->render();
+		
 		if (pausa)
 			lpausa.render();
 		if (!started)
 			lesperando.render();
-		if (desconectado)
+		if (this->desconectado){
+			cout << desconectado << endl;
 			ldesconectado.render();
-
+			}
 		SDL_RenderPresent( gRenderer );
-
 		receiveStatus();
 		updateJugadores();
 		jugador->cleanStatus();
-
+	
+		
 	}
 			
 	if (quit)
@@ -405,11 +411,13 @@ void Escenario::receiveStatus(){
 			processMessages(rcvMsgs, rcvMsgsQty);
 		}
 	}else{
-		desconectado = true;
+		this->desconectado = true;
+		
 		pausa = true;
 		for(auto const &j : jugadores) {
 			j.second->managePausa(pausa);
 		}
+		
 	}
 
 }
