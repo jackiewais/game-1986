@@ -21,7 +21,7 @@ Jugador::Jugador(SDL_Renderer* gRend, int scr_width, int scr_height, int intJug,
 
     //Initialize the offsets
     mPosX = scr_width*intJug/(cantJug + 1);
-    cout << "DEBUG Jugador mPosX = " << mPosX << endl;
+    //cout << "DEBUG Jugador mPosX = " << mPosX << endl;
     mPosY = scr_height-JUG_HEIGHT;
 
     //Initialize the velocity

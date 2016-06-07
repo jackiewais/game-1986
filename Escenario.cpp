@@ -120,7 +120,7 @@ void Escenario::crearJugador(int jugId, string nombre, int posXIni){
 	//cout << "sprite pelota " << spritePathPelota << endl;
 	//cout << "sprite jugador " << spritePathJugador1 << endl;
 	//cout << "sprite truco " << spritePathTruco << endl;
-	cout << "DEBUG crearJugador posXIni = " << posXIni << endl;
+	//cout << "DEBUG crearJugador posXIni = " << posXIni << endl;
 	Jugador* otroJugador = new Jugador(gRenderer,screen.width,screen.height, jugId, cantJugadores, nombre,
 			velocidadDesplazamiento, velocidadDisparo, spritePathPelota, spritePathJugador1,
 			spritePathJugador2, spritePathJugador3, spritePathTruco);
@@ -140,9 +140,9 @@ bool Escenario::lunchScreen(struct gst* position, bool forcePos){
 		escenarioHeight = 0;
 	}
 
-	cout << "DEBUG lunchScreen: gBGTexture.getHeight() = " << gBGTexture.getHeight() << endl;
-	cout << "DEBUG lunchScreen: scrollingOffset = " << scrollingOffset << endl;
-	cout << "DEBUG lunchScreen: escenarioHeight = " << escenarioHeight << endl;
+	//cout << "DEBUG lunchScreen: gBGTexture.getHeight() = " << gBGTexture.getHeight() << endl;
+	//cout << "DEBUG lunchScreen: scrollingOffset = " << scrollingOffset << endl;
+	//cout << "DEBUG lunchScreen: escenarioHeight = " << escenarioHeight << endl;
 
 	SDL_Event e;
 	
